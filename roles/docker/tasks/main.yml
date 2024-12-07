@@ -1,0 +1,57 @@
+- name: Create Docker keyring directory
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Add Docker's official GPG key
+  shell: |
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    chmod a+r /etc/apt/keyrings/docker.asc
+  args:
+    executable: /bin/bash
+
+- name: Add Docker repository
+  shell: |
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+  args:
+    executable: /bin/bash
+
+- name: Update apt package list
+  apt:
+    update_cache: yes
+- name: Install Docker packages
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+
+- name: Create docker group
+  group:
+    name: docker
+    state: present
+
+- name: Add user to docker group
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
+
+- name: Reset connection to allow user changes to affect ansible user
+  meta: reset_connection
+
+- name: Verify Docker installation
+  docker_container:
+    name: hello-world
+    image: hello-world
+    state: started
+  register: hello_world_result
+  ignore_errors: yes
+
+- name: Show Docker verification result
+  debug:
+    var: hello_world_result
