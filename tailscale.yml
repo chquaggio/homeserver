@@ -1,8 +1,8 @@
-- name: Servers
+- name: Configure Tailscale on servers
+  hosts: home_server
   become: yes
   roles:
     - role: artis3n.tailscale
       vars:
-        # Example pulling the API key from the env vars on the host running Ansible
         tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
         tailscale_args: "--ssh"
