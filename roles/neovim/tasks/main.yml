@@ -5,20 +5,51 @@
     dest: /tmp/nvim-linux64.tar.gz
     mode: '0644'
 
+- name: Extract Neovim archive to /tmp
+  unarchive:
+    src: /tmp/nvim-linux64.tar.gz
+    dest: /tmp
+    remote_src: yes
+
+- name: Get installed Neovim version
+  shell: "which nvim && nvim -v | head -n1 | cut -d' ' -f2 || echo 'none'"
+  register: installed_nvim_version
+  ignore_errors: true
+
+- name: Get downloaded Neovim version
+  command: /tmp/nvim-linux64/bin/nvim -v | cut -f1 -d $'\n' | cut -f2 -d " "
+  register: downloaded_nvim_version
+
 - name: Remove existing Neovim installation
   file:
     path: /opt/nvim
     state: absent
   become: true
+  when: installed_nvim_version.stdout != downloaded_nvim_version.stdout
 
-- name: Extract Neovim archive to /opt
-  unarchive:
-    src: /tmp/nvim-linux64.tar.gz
-    dest: /opt
-    remote_src: yes
+- name: Move new Neovim to /opt
+  command: mv /tmp/nvim-linux64 /opt/nvim
   become: true
+  when: installed_nvim_version.stdout != downloaded_nvim_version.stdout
 
 - name: Clean up downloaded archive
   file:
     path: /tmp/nvim-linux64.tar.gz
     state: absent
+
+- name: Clean up extracted files
+  file:
+    path: /tmp/nvim-linux64
+    state: absent
+  when: installed_nvim_version.stdout == downloaded_nvim_version.stdout
+
+- name: Update PATH environment variable in .zshrc
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    line: 'export PATH="$PATH:/opt/nvim/bin"'
+    create: yes
+
+- name: Source the updated .zshrc
+  shell: source {{ ansible_env.HOME }}/.zshrc
+  args:
+    executable: /bin/zsh
