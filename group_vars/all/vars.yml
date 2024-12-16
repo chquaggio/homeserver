@@ -1,0 +1,18 @@
+
+username: quoghs
+
+password: "{{ vault_password }}"
+
+ssh_public_key: "{{ vault_ssh_public_key }}"
+
+shell: /usr/bin/zsh
+
+dotfiles_repo: https://github.com/chquaggio/dotfiles
+
+extra_packages:
+  - curl
+  - wget
+  - ca-certificates
+  - software-properties-common
+  - apt-transport-https
+  - gnupg

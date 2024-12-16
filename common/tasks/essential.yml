@@ -1,0 +1,31 @@
+---
+- name: Update and upgrade packages 
+  apt:
+    update_cache: yes
+    upgrade: yes
+    autoremove: yes
+
+- name: Check if reboot required
+  stat:
+    path: /var/run/reboot-required
+  register: reboot_required_file
+
+- name: Reboot if required
+  reboot:
+    msg: Rebooting due to a kernel update
+  when: reboot_required_file.stat.exists
+
+- name: Install extra packages
+  package:
+    name: "{{ extra_packages }}"
+    state: present
+
+- name: Install python3-pip
+  apt:
+    name: python3-pip
+    state: present
+
+- name: Install Python Docker package
+  apt:
+    name: python3-docker
+    state: present
