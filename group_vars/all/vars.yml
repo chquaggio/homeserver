@@ -9,6 +9,10 @@ shell: /usr/bin/zsh
 
 dotfiles_repo: https://github.com/chquaggio/dotfiles
 
+docker_dir: /opt/docker/data
+
+docker_compose_dir: /opt/docker/compose
+
 extra_packages:
   - curl
   - wget
