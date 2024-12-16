@@ -1,0 +1,22 @@
+---
+- name: Ensure UFW is installed
+  apt:
+    name: ufw
+    state: present
+
+- name: Allow Tailscale traffic
+  ufw:
+    rule: allow
+    from_ip: 100.64.0.0/10
+    to_any: true
+
+- name: Allow SSH
+  ufw:
+    rule: allow
+    port: 22
+    proto: tcp
+
+- name: Enable UFW
+  ufw:
+    state: enabled
+
