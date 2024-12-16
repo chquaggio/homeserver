@@ -2,3 +2,4 @@
 - include_tasks: common.yml
 - include_tasks: essential.yml
 - include_tasks: user.yml
+- include_tasks: dotfiles.yml

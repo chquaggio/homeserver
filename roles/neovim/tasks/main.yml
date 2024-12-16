@@ -1,0 +1,24 @@
+---
+- name: Download latest Neovim Linux x64 release
+  get_url:
+    url: https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+    dest: /tmp/nvim-linux64.tar.gz
+    mode: '0644'
+
+- name: Remove existing Neovim installation
+  file:
+    path: /opt/nvim
+    state: absent
+  become: true
+
+- name: Extract Neovim archive to /opt
+  unarchive:
+    src: /tmp/nvim-linux64.tar.gz
+    dest: /opt
+    remote_src: yes
+  become: true
+
+- name: Clean up downloaded archive
+  file:
+    path: /tmp/nvim-linux64.tar.gz
+    state: absent

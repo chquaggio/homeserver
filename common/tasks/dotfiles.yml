@@ -1,0 +1,22 @@
+---
+- name: Chown the repo
+  file:
+      path: '/home/{{ username }}/dotfiles'
+      recurse: yes
+      state: directory
+      owner: '{{ username }}'
+      group: '{{ username }}'
+
+- name: Clone the latest dotfiles repo
+  become_user: '{{ username }}'
+  git:
+      repo: '{{ dotfiles_repo }}'
+      dest: '/home/{{ username }}/dotfiles'
+      recursive: no
+      force: yes
+
+- name: Restore config, tmux, zsh
+  become_user: '{{ username }}'
+  shell:
+      cmd: make restore
+      chdir: '/home/{{ username }}/dotfiles'
