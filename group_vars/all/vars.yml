@@ -16,3 +16,4 @@ extra_packages:
   - software-properties-common
   - apt-transport-https
   - gnupg
+  - bat
