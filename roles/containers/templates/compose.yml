@@ -1,21 +1,28 @@
 services:
   web:
     image: nginx:latest
+    container_name: proxy
     ports:
-      - "8080:80"
+      - "443:443"
+      - "80:80"
     volumes:
-      - /:/usr/share/nginx/html:ro
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./quoggioserver.tailf385d.ts.net.crt:/etc/nginx/certs/cert.crt:ro
+      - ./quoggioserver.tailf385d.ts.net.key:/etc/nginx/certs/cert.key:ro
+    networks:
+      - proxy-network
   actual_server:
     image: docker.io/actualbudget/actual-server:latest
+    container_name: actualbudget
     ports:
       # This line makes Actual available at port 5006 of the device you run the server on,
       # i.e. http://localhost:5006. You can change the first number to change the port, if you want.
       - '5006:5006'
-    # environment:
+    environment:
       # Uncomment any of the lines below to set configuration options.
-      # - ACTUAL_HTTPS_KEY=/data/selfhost.key
-      # - ACTUAL_HTTPS_CERT=/data/selfhost.crt
+      # - ACTUAL_HTTPS_KEY=/data/quoggioserver.tailf385d.ts.net.key
+      # - ACTUAL_HTTPS_CERT=/data/quoggioserver.tailf385d.ts.net.crt
+      - ACTUAL_TRUSTED_PROXIES=172.16.0.0/12,192.168.0.0/16  # Docker bridge network
       # - ACTUAL_PORT=5006
       # - ACTUAL_UPLOAD_FILE_SYNC_SIZE_LIMIT_MB=20
       # - ACTUAL_UPLOAD_SYNC_ENCRYPTED_FILE_SYNC_SIZE_LIMIT_MB=50
@@ -26,4 +33,21 @@ services:
       # Change './actual-data' below to the path to the folder you want Actual to store its data in on your server.
       # '/data' is the path Actual will look for its files in by default, so leave that as-is.
       - ./actual-data:/data
+    networks:
+      - proxy-network
     restart: unless-stopped
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    ports:
+      - 3000:3000
+    volumes:
+      - /path/to/config:/app/config # Make sure your local config directory exists
+      - /var/run/docker.sock:/var/run/docker.sock:ro # optional, for docker integrations
+    networks:
+      - proxy-network
+    restart: unless-stopped
+
+networks:
+  proxy-network:
+    driver: bridge
