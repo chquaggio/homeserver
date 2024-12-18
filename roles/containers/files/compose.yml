@@ -85,7 +85,7 @@ services:
       - homepage.icon=jellyfin.png
       - homepage.name=Jellyfin
       - homepage.server=server-docker
-      - homepage.href=https://quoggioserver.tailf385d.ts.net/jellyfin
+      - homepage.href=https://quoggioserver.tailf385d.ts.net/jellyfin/
       - homepage.description=Self hosted TV Shows and Movies player
     networks:
       - proxy-network
