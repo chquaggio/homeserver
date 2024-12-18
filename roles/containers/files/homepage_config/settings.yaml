@@ -1,0 +1,15 @@
+title: Home is where Quoggio is
+# startUrl: https://custom.url
+background:
+  image: /images/background.jpeg
+  blur: sm
+  opacity: 20
+color: indigo
+theme: dark # or light
+statusStyle: "dot"
+quicklaunch:
+  searchDescriptions: true
+  hideInternetSearch: true
+  showSearchSuggestions: true
+  hideVisitURL: true
+  provider: google

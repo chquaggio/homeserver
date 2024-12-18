@@ -1,4 +1,5 @@
 services:
+
   web:
     image: nginx:latest
     container_name: proxy
@@ -11,6 +12,7 @@ services:
       - ./quoggioserver.tailf385d.ts.net.key:/etc/nginx/certs/cert.key:ro
     networks:
       - proxy-network
+
   actual_server:
     image: docker.io/actualbudget/actual-server:latest
     container_name: actualbudget
@@ -20,15 +22,22 @@ services:
       - '5006:5006'
     environment:
       # Uncomment any of the lines below to set configuration options.
-      # - ACTUAL_HTTPS_KEY=/data/quoggioserver.tailf385d.ts.net.key
-      # - ACTUAL_HTTPS_CERT=/data/quoggioserver.tailf385d.ts.net.crt
-      - ACTUAL_TRUSTED_PROXIES=172.16.0.0/12,192.168.0.0/16  # Docker bridge network
+      - ACTUAL_HTTPS_KEY=/data/quoggioserver.tailf385d.ts.net.key
+      - ACTUAL_HTTPS_CERT=/data/quoggioserver.tailf385d.ts.net.crt
+      # - ACTUAL_TRUSTED_PROXIES=172.16.0.0/12,192.168.0.0/16  # Docker bridge network
       # - ACTUAL_PORT=5006
       # - ACTUAL_UPLOAD_FILE_SYNC_SIZE_LIMIT_MB=20
       # - ACTUAL_UPLOAD_SYNC_ENCRYPTED_FILE_SYNC_SIZE_LIMIT_MB=50
       # - ACTUAL_UPLOAD_FILE_SIZE_LIMIT_MB=20
       # See all options and more details at https://actualbudget.github.io/docs/Installing/Configuration
       # !! If you are not using any of these options, remove the 'environment:' tag entirely.
+    labels:
+      - homepage.group=Utilities
+      - homepage.icon=actual.png
+      - homepage.name=Actual
+      - homepage.server=server-docker
+      - homepage.href=https://quoggioserver.tailf385d.ts.net:5006/
+      - homepage.description=Actual budget application
     volumes:
       # Change './actual-data' below to the path to the folder you want Actual to store its data in on your server.
       # '/data' is the path Actual will look for its files in by default, so leave that as-is.
@@ -36,18 +45,51 @@ services:
     networks:
       - proxy-network
     restart: unless-stopped
+
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
     ports:
       - 3000:3000
     volumes:
-      - /path/to/config:/app/config # Make sure your local config directory exists
+      - ./homepage_files/config:/app/config
+      - ./homepage_files/images:/app/public/images
       - /var/run/docker.sock:/var/run/docker.sock:ro # optional, for docker integrations
+    networks:
+      - proxy-network
+    restart: unless-stopped
+
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: jellyfin
+    # network_mode: 'host'
+    ports:
+      - 8096:8096
+    volumes:
+      - ./jellyfin_files/config:/config
+      - ./jellyfin_files/cache:/cache
+      - type: bind
+        source: /media
+        target: /media
+      # - type: bind
+      #   source: /path/to/media2
+      #   target: /media2
+      #   read_only: true
+      # Optional - extra fonts to be used during transcoding with subtitle burn-in
+      # - type: bind
+      #   source: /path/to/fonts
+      #   target: /usr/local/share/fonts/custom
+      #   read_only: true
+    labels:
+      - homepage.group=Media
+      - homepage.icon=jellyfin.png
+      - homepage.name=Jellyfin
+      - homepage.server=server-docker
+      - homepage.href=https://quoggioserver.tailf385d.ts.net/jellyfin
+      - homepage.description=Self hosted TV Shows and Movies player
     networks:
       - proxy-network
     restart: unless-stopped
 
 networks:
   proxy-network:
-    driver: bridge
