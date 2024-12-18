@@ -1,0 +1,22 @@
+---
+- My First Group:
+    - My First Service:
+        href: http://quoggioserver/
+        description: Homepage is awesome
+
+- My Second Group:
+    - My Second Service:
+        href: http://quoggioserver/
+        description: Homepage is the best
+
+- My Third Group:
+    - My Third Service:
+        href: http://quoggioserver/
+        description: Homepage is 😎
+
+# - Media:
+#     - ActualBudget:
+#         href: https://quoggioserver:5006/
+#         description: Audiobook and podcast server and app
+#         server: server-docker
+#         container: actual_server

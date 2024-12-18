@@ -10,15 +10,58 @@
     - "{{ docker_dir }}"
 
 - name: Copy the compose file
-  template: 
+  ansible.builtin.copy:
     src: compose.yml
     dest: "{{ docker_compose_dir }}/compose.yml"
 
-- name: Copy Nginx configuration
-  template:
+- name: Copy the nginx config
+  ansible.builtin.copy:
     src: nginx.conf
     dest: "{{ docker_compose_dir }}/nginx.conf"
+
+- name: Create homepage_images folder
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/homepage_files/images"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+
+- name: Create homepage_config folder
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/homepage_files/config"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+
+- name: Copy homepage configuration
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ docker_compose_dir }}/homepage_files/config"
   become: true
+  with_fileglob:
+    - "files/homepage_config/*"
+
+- name: Copy homepage images
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ docker_compose_dir }}/homepage_files/images"
+  become: true
+  with_fileglob:
+    - "files/images/*"
+
+- name: Create jellyfin config folder
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/jellyfin_files/config"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+
+- name: Create jellyfin cache folder
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/jellyfin_files/cache"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
 
 - name: Docker compose up
   ansible.builtin.shell:
