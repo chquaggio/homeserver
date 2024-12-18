@@ -1,0 +1,5 @@
+---
+- name: Docker compose up
+  ansible.builtin.shell:
+    cmd: "docker compose up -d --build"
+    chdir: "{{ docker_compose_dir }}"

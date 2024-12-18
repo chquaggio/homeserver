@@ -1,0 +1,20 @@
+---
+- name: Make sure that the docker folders exists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+  loop:
+    - "{{ docker_compose_dir }}"
+    - "{{ docker_dir }}"
+
+- name: Copy the compose file
+  ansible.builtin.copy:
+    src: compose.yml
+    dest: "{{ docker_compose_dir }}/compose.yml"
+
+- name: Copy the nginx config
+  ansible.builtin.copy:
+    src: nginx.conf
+    dest: "{{ docker_compose_dir }}/nginx.conf"
