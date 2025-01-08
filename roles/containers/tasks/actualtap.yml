@@ -1,4 +1,18 @@
 ---
+- name: Configure actualtap service
+  set_fact:
+    actualtap_service:
+      name: actualtap-py
+      image: ghcr.io/bobokun/actualtap-py:latest
+      container_name: actualtap-py
+      ports:
+        - 8000:8000
+      volumes:
+        - ./actualtap_config:/config
+      networks:
+        - proxy-network
+      restart: unless-stopped
+
 - name: Setup Actualtap directory 
   ansible.builtin.file:
     path: "{{ docker_compose_dir }}/actualtap_config"

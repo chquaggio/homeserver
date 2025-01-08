@@ -1,0 +1,14 @@
+---
+- name: Configure actual service
+  set_fact:
+    actual_service:
+      name: actualbudget
+      image: docker.io/actualbudget/actual-server:latest
+      container_name: actualbudget
+      ports:
+        - '5006:5006'
+      volumes:
+        - ./actual-data:/data
+      networks:
+        - proxy-network
+      restart: unless-stopped

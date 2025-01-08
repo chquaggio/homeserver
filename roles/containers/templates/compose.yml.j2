@@ -1,0 +1,45 @@
+#jinja2: trim_blocks: False
+services:
+  web:
+    image: nginx:latest
+    container_name: proxy
+    depends_on:
+      - homepage
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./quoggioserver.tailf385d.ts.net.crt:/etc/nginx/certs/cert.crt:ro
+      - ./quoggioserver.tailf385d.ts.net.key:/etc/nginx/certs/cert.key:ro
+    networks:
+      - proxy-network
+  {% for service in services %}
+  {{ service.name }}:
+    image: {{ service.image }}
+    container_name: {{ service.container_name }}
+    {%- if service.depends_on | default([]) %}
+    depends_on:
+      {%- for dependency in service.depends_on %}
+      - {{ dependency }}
+      {%- endfor %}
+    {%- endif %}
+    ports:
+      {%- for port in service.ports %}
+      - "{{ port }}"
+      {%- endfor %}
+    volumes:
+      {%- for volume in service.volumes %}
+      - {{ volume }}
+      {%- endfor %}
+    networks:
+      {%- for network in service.networks %}
+      - {{ network }}
+      {%- endfor %}
+    {%- if service.restart %}
+    restart: {{ service.restart }}
+    {%- endif %}
+  {% endfor %}
+
+networks:
+  proxy-network:

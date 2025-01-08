@@ -1,4 +1,20 @@
 ---
+- name: Configure homepage service
+  set_fact:
+    homepage_service:
+      name: homepage
+      image: ghcr.io/gethomepage/homepage:latest
+      container_name: homepage
+      ports:
+        - "3000:3000"
+      volumes:
+        - ./homepage_files/config:/app/config
+        - ./homepage_files/images:/app/public/images
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+      networks:
+        - proxy-network
+      restart: unless-stopped
+
 - name: Setup Homepage directories
   ansible.builtin.file:
     path: "{{ docker_compose_dir }}/homepage_files/{{ item }}"
