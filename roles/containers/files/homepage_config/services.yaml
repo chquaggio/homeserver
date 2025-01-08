@@ -1,22 +1,28 @@
 ---
-- My First Group:
-    - My First Service:
-        href: http://quoggioserver/
-        description: Homepage is awesome
+- Utilities:
+    - Actual:
+        icon: actual.png
+        href: https://quoggioserver.tailf385d.ts.net:5006/
+        description: Actual budget application
+        server: server-docker
+        container: actualbudget
+        statusStyle: "dot"
+        showStats: true
 
-- My Second Group:
-    - My Second Service:
-        href: http://quoggioserver/
-        description: Homepage is the best
+    - Actualtap:
+        icon: actual.png
+        description: Actual integration with contactless payments
+        server: server-docker
+        container: actualtap-py
+        statusStyle: "dot"
+        showStats: true
 
-- My Third Group:
-    - My Third Service:
-        href: http://quoggioserver/
-        description: Homepage is 😎
-
-# - Media:
-#     - ActualBudget:
-#         href: https://quoggioserver:5006/
-#         description: Audiobook and podcast server and app
-#         server: server-docker
-#         container: actual_server
+- Media:
+    - Jellyfin:
+        icon: jellyfin.png
+        href: https://quoggioserver.tailf385d.ts.net/jellyfin/
+        description: Self hosted TV Shows and Movies player
+        server: server-docker
+        container: jellyfin
+        statusStyle: "dot"
+        showStats: true

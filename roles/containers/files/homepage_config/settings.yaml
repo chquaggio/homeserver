@@ -6,7 +6,7 @@ background:
   opacity: 20
 color: indigo
 theme: dark # or light
-statusStyle: "dot"
+# statusStyle: "dot"
 quicklaunch:
   searchDescriptions: true
   hideInternetSearch: true
