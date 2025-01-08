@@ -1,0 +1,12 @@
+---
+- name: Setup Actualtap directory 
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/actualtap_config"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+
+- name: Copy the config file
+  ansible.builtin.copy:
+    src: actualtap_config/config.yml
+    dest: "{{ docker_compose_dir }}/actualtap_config/config.yml"
