@@ -2,7 +2,7 @@
 - Utilities:
     - Actual:
         icon: actual.png
-        href: https://quoggioserver.tailf385d.ts.net:5006/
+        href: http://quoggioserver:5006/
         description: Actual budget application
         server: server-docker
         container: actualbudget
