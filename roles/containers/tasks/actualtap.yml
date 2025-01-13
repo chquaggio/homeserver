@@ -8,14 +8,14 @@
       ports:
         - 8000:8000
       volumes:
-        - ./actualtap_config:/config
+        - ./actualtap/config:/config
       networks:
         - proxy-network
       restart: unless-stopped
 
 - name: Setup Actualtap directory 
   ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/actualtap_config"
+    path: "{{ docker_compose_dir }}/actualtap"
     owner: "{{ username }}"
     group: "{{ username }}"
     state: directory
@@ -23,4 +23,4 @@
 - name: Copy the config file
   ansible.builtin.copy:
     src: actualtap_config/config.yml
-    dest: "{{ docker_compose_dir }}/actualtap_config/config.yml"
+    dest: "{{ docker_compose_dir }}/actualtap/config/config.yml"

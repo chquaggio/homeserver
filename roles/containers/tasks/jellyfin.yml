@@ -8,8 +8,8 @@
       ports:
         - 8096:8096
       volumes:
-        - ./jellyfin_files/config:/config
-        - ./jellyfin_files/cache:/cache
+        - ./jellyfin/config:/config
+        - ./jellyfin/cache:/cache
         - type: bind
           source: /media
           target: /media
@@ -19,7 +19,7 @@
 
 - name: Setup Jellyfin directories
   ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/jellyfin_files/{{ item }}"
+    path: "{{ docker_compose_dir }}/jellyfin/{{ item }}"
     owner: "{{ username }}"
     group: "{{ username }}"
     state: directory
