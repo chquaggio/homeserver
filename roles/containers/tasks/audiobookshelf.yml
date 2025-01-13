@@ -1,0 +1,31 @@
+---
+- name: Configure audiobookshelf service
+  set_fact:
+    audiobookshelf_service:
+      name: audiobookshelf
+      image: ghcr.io/advplyr/audiobookshelf:latest
+      container_name: audiobookshelf
+      ports:
+        - 13378:80
+      volumes:
+        - /media/Books:/audiobooks
+        - ./audiobookshelf/podcasts:/podcasts
+        - ./audiobookshelf/config:/config
+        - ./audiobookshelf/metadata:/metadata
+      environment:
+        - TZ=Europe/Amsterdam
+      networks:
+        - proxy-network
+      restart: unless-stopped
+
+- name: Setup audiobookshelf directories
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/audiobookshelf/{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+  loop:
+    # - "audiobooks"
+    - "podcasts"
+    - "config"
+    - "metadata"

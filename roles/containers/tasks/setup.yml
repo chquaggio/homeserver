@@ -11,7 +11,7 @@
 
 - name: Combine services
   set_fact:
-    services: "{{ [homepage_service, jellyfin_service, actual_service, actualtap_service] }}"
+    services: "{{ [homepage_service, jellyfin_service, actual_service, actualtap_service, audiobookshelf_service] }}"
 
 - name: Render Docker Compose file
   template:

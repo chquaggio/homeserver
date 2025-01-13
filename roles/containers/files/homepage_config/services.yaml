@@ -26,3 +26,12 @@
         container: jellyfin
         statusStyle: "dot"
         showStats: true
+
+    - Audiobookshelf:
+        icon: audiobookshelf.png
+        href: http://quoggioserver:13378/
+        description: Self-hosted (audio)book and podcast player
+        server: server-docker
+        container: audiobookshelf
+        statusStyle: "dot"
+        showStats: true
