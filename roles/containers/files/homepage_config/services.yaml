@@ -1,7 +1,7 @@
 ---
 - Utilities:
     - Actual:
-        icon: actual.png
+        icon: actual-budget.png
         href: http://quoggioserver:5006/
         description: Actual budget application
         server: server-docker
@@ -10,7 +10,7 @@
         showStats: true
 
     - Actualtap:
-        icon: actual.png
+        icon: actual-budget.png
         description: Actual integration with contactless payments
         server: server-docker
         container: actualtap-py

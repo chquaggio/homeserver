@@ -14,6 +14,7 @@ services:
       - ./quoggioserver.tailf385d.ts.net.key:/etc/nginx/certs/cert.key:ro
     networks:
       - proxy-network
+    restart: unless-stopped
   {% for service in services %}
   {{ service.name }}:
     image: {{ service.image }}
