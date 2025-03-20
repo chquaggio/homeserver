@@ -1,0 +1,30 @@
+---
+- name: Configure Vikunja service
+  set_fact:
+    vikunja_service:
+      name: vikunja
+      image: vikunja/vikunja
+      container_name: vikunja
+      environment:
+        VIKUNJA_SERVICE_JWTSECRET: ayyylmao
+        VIKUNJA_SERVICE_PUBLICURL: http://quoggioserver:3456/
+        VIKUNJA_DATABASE_PATH: /db/vikunja.db
+        VIKUNJA_DATABASE_TYPE: sqlite
+      ports:
+        - 3456:3456
+      volumes:
+        - ./vikunja/files:/app/vikunja/files
+        - ./vikunja/db:/db
+      networks:
+        - proxy-network
+      restart: unless-stopped
+
+- name: Setup Vikunja directories
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/vikunja/{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+  loop:
+    - "files"
+    - "db"

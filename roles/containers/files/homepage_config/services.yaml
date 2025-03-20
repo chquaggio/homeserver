@@ -17,6 +17,15 @@
         statusStyle: "dot"
         showStats: true
 
+    - Vikunja:
+        icon: vikunja.png
+        href: https://vikunja.fantaquoggio.app
+        description: Fluffy to do app
+        server: server-docker
+        container: vikunja
+        statusStyle: "dot"
+        showStats: true
+
 - Media:
     - Jellyfin:
         icon: jellyfin.png
