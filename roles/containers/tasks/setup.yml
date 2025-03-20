@@ -9,6 +9,16 @@
     - "{{ docker_compose_dir }}"
     - "{{ docker_dir }}"
 
+- name: Create Nginx proxy manager volume folders
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+  loop:
+    - "{{ docker_compose_dir }}/npmdata"
+    - "{{ docker_compose_dir }}/letsencrypt"
+
 - name: Combine services
   set_fact:
     services: "{{ [homepage_service, jellyfin_service, actual_service, actualtap_service, audiobookshelf_service] }}"
@@ -23,7 +33,7 @@
 #     src: compose.yml
 #     dest: "{{ docker_compose_dir }}/compose.yml"
 
-- name: Copy the nginx config
-  ansible.builtin.copy:
-    src: nginx.conf
-    dest: "{{ docker_compose_dir }}/nginx.conf"
+# - name: Copy the nginx config
+#   ansible.builtin.copy:
+#     src: nginx.conf
+#     dest: "{{ docker_compose_dir }}/nginx.conf"
