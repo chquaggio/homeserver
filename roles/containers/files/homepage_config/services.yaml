@@ -2,7 +2,7 @@
 - Utilities:
     - Actual:
         icon: actual-budget.png
-        href: http://quoggioserver:5006/
+        href: https://actual.fantaquoggio.app
         description: Actual budget application
         server: server-docker
         container: actualbudget
@@ -17,10 +17,19 @@
         statusStyle: "dot"
         showStats: true
 
+    - Vikunja:
+        icon: vikunja.png
+        href: https://vikunja.fantaquoggio.app
+        description: Fluffy to do app
+        server: server-docker
+        container: vikunja
+        statusStyle: "dot"
+        showStats: true
+
 - Media:
     - Jellyfin:
         icon: jellyfin.png
-        href: https://quoggioserver.tailf385d.ts.net/jellyfin/
+        href: https://jellyfin.fantaquoggio.app
         description: Self hosted TV Shows and Movies player
         server: server-docker
         container: jellyfin
@@ -29,7 +38,7 @@
 
     - Audiobookshelf:
         icon: audiobookshelf.png
-        href: http://quoggioserver:13378/
+        href: https://audiobookshelf.fantaquoggio.app
         description: Self-hosted (audio)book and podcast player
         server: server-docker
         container: audiobookshelf

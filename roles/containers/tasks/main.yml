@@ -4,5 +4,6 @@
 - import_tasks: actual.yml
 - import_tasks: actualtap.yml
 - import_tasks: audiobookshelf.yml
+- import_tasks: vikunja.yml
 - import_tasks: setup.yml
 - import_tasks: run.yml
