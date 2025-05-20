@@ -36,6 +36,12 @@ services:
       {%- for volume in service.volumes %}
       - {{ volume }}
       {%- endfor %}
+    {%- if service.environment | default([]) %}
+    environment:
+      {%- for env in service.environment %}
+      - {{ env }}
+      {%- endfor %}
+    {%- endif %}
     networks:
       {%- for network in service.networks %}
       - {{ network }}

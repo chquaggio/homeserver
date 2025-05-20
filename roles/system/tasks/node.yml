@@ -1,0 +1,22 @@
+---
+- name: Check the latest Node.js version
+  ansible.builtin.uri:
+    url: https://nodejs.org/dist/index.json
+    return_content: yes
+  register: node_releases
+
+- name: Extract the latest stable Node.js version
+  ansible.builtin.set_fact:
+    latest_node_version: "{{ node_releases.json | selectattr('lts', 'defined') | map(attribute='version') | first }}"
+
+- name: Check the installed Node.js version
+  ansible.builtin.command: node -v
+  register: installed_node_version
+  failed_when: false
+  changed_when: false
+
+- name: Install npm and latest Node.js if outdated or not installed
+  ansible.builtin.shell: |
+    curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+  when: installed_node_version.stdout.strip() != latest_node_version

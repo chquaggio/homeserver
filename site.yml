@@ -5,5 +5,5 @@
   roles:
     - { role: common, tags: ['common'] }
     - { role: docker, tags: ['docker'] }
-    - { role: neovim, tags: ['neovim'] }
+    - { role: system, tags: ['system'] }
     - { role: containers, tags: ['containers'] }

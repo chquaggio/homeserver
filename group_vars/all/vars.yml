@@ -21,3 +21,4 @@ extra_packages:
   - apt-transport-https
   - gnupg
   - bat
+  - fzf

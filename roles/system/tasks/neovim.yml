@@ -1,0 +1,25 @@
+---
+- name: Check the latest Neovim version
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/neovim/neovim/releases/latest
+    return_content: yes
+  register: latest_release
+
+- name: Extract the latest version tag
+  ansible.builtin.set_fact:
+    latest_version: "{{ latest_release.json.tag_name }}"
+
+- name: Check the installed Neovim version
+  ansible.builtin.command: nvim -v | cut -f1 -d $'\n' | cut -f2 -d " "
+  register: installed_version
+  failed_when: false
+  changed_when: false
+
+- name: Compare versions and download/install if outdated
+  ansible.builtin.shell: |
+    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
+    sudo rm -rf /opt/nvim
+    sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
+  when: installed_version.stdout.strip() != latest_version
+  args:
+    chdir: /tmp

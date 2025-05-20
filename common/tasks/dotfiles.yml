@@ -18,5 +18,5 @@
 - name: Restore config, tmux, zsh
   become_user: '{{ username }}'
   shell:
-      cmd: make restore
+      cmd: make restore DEVENV=personal
       chdir: '/home/{{ username }}/dotfiles'

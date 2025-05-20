@@ -26,6 +26,15 @@
         statusStyle: "dot"
         showStats: true
 
+    - nginx-proxy-manager:
+        icon: nginx-proxy-manager.png
+        href: http://quoggioserver:81
+        description: nginx-proxy-manager
+        server: server-docker
+        container: proxy
+        statusStyle: "dot"
+        showStats: true
+
 - Media:
     - Jellyfin:
         icon: jellyfin.png
