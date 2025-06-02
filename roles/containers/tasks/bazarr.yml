@@ -1,0 +1,28 @@
+---
+- name: Configure Bazarr service
+  set_fact:
+    bazarr_service:
+      name: bazarr
+      image: lscr.io/linuxserver/bazarr:latest
+      container_name: bazarr
+      ports:
+        - "6767:6767"
+      volumes:
+        - ./bazarr/config:/config
+        - /media/Shows:/tv
+        - /media/Movies:/movies
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=Europe/Rome
+      networks:
+        - proxy-network
+      restart: unless-stopped
+
+- name: Setup Bazarr directories
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/bazarr/config"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+

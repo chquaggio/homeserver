@@ -1,0 +1,27 @@
+- name: Configure Radarr service
+  set_fact:
+    radarr_service:
+      name: radarr
+      image: lscr.io/linuxserver/radarr:latest
+      container_name: radarr
+      ports:
+        - "7878:7878"
+      volumes:
+        - ./radarr/config:/config
+        - /media/Movies:/movies
+        - /media/downloads:/downloads
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=Europe/Rome
+      networks:
+        - proxy-network
+      restart: unless-stopped
+
+- name: Setup Radarr directories
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/radarr/config"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+

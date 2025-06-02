@@ -9,13 +9,13 @@
         statusStyle: "dot"
         showStats: true
 
-    - Actualtap:
-        icon: actual-budget.png
-        description: Actual integration with contactless payments
-        server: server-docker
-        container: actualtap-py
-        statusStyle: "dot"
-        showStats: true
+    # - Actualtap:
+    #     icon: actual-budget.png
+    #     description: Actual integration with contactless payments
+    #     server: server-docker
+    #     container: actualtap-py
+    #     statusStyle: "dot"
+    #     showStats: true
 
     - Vikunja:
         icon: vikunja.png
@@ -32,6 +32,60 @@
         description: nginx-proxy-manager
         server: server-docker
         container: proxy
+        statusStyle: "dot"
+        showStats: true
+
+    - qBitTorrent:
+        icon: qbittorrent.png
+        href: http://quoggioserver:8585
+        description: qBitTorrent
+        server: server-docker
+        container: proxy
+        statusStyle: "dot"
+        showStats: true
+
+    - Sonarr:
+        icon: sonarr.png
+        href: http://quoggioserver:8989
+        description: Sonarr
+        server: server-docker
+        container: proxy
+        statusStyle: "dot"
+        showStats: true
+
+    - Radarr:
+        icon: radarr.png
+        href: http://quoggioserver:7878
+        description: Radarr
+        server: server-docker
+        container: proxy
+        statusStyle: "dot"
+        showStats: true
+
+    - Bazarr:
+        icon: bazarr.png
+        href: http://quoggioserver:6767
+        description: Bazarr
+        server: server-docker
+        container: proxy
+        statusStyle: "dot"
+        showStats: true
+
+    - Jellyseerr:
+        icon: jellyseerr.png
+        href: http://quoggioserver:5055
+        description: Jellyseerr
+        server: server-docker
+        container: jellyseerr
+        statusStyle: "dot"
+        showStats: true
+
+    - Prowlarr:
+        icon: prowlarr.png
+        href: http://quoggioserver:9696
+        description: Prowlarr
+        server: server-docker
+        container: prowlarr
         statusStyle: "dot"
         showStats: true
 

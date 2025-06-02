@@ -1,0 +1,26 @@
+---
+- name: Configure Prowlarr service
+  set_fact:
+    prowlarr_service:
+      name: prowlarr
+      image: lscr.io/linuxserver/prowlarr:latest
+      container_name: prowlarr
+      ports:
+        - "9696:9696"
+      volumes:
+        - ./prowlarr/config:/config
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=Europe/Rome
+      networks:
+        - proxy-network
+      restart: unless-stopped
+
+- name: Setup Prowlarr directories
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/prowlarr/config"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+

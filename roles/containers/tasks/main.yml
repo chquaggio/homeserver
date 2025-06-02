@@ -1,6 +1,13 @@
 ---
 - import_tasks: homepage.yml
 - import_tasks: jellyfin.yml
+- import_tasks: jellyseerr.yml
+- import_tasks: sonarr.yml
+- import_tasks: radarr.yml
+- import_tasks: bazarr.yml
+- import_tasks: qbittorrent.yml
+- import_tasks: prowlarr.yml
+- import_tasks: qbittorrent.yml
 - import_tasks: actual.yml
 # - import_tasks: actualtap.yml
 - import_tasks: audiobookshelf.yml

@@ -1,0 +1,21 @@
+---
+- name: Configure Jellyseerr service
+  set_fact:
+    jellyseerr_service:
+      name: jellyseerr
+      image: fallenbagel/jellyseerr:latest
+      container_name: jellyseerr
+      ports:
+        - "5055:5055"
+      volumes:
+        - ./jellyseerr/config:/app/config
+      networks:
+        - proxy-network
+      restart: unless-stopped
+
+- name: Setup Jellyseerr directories
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/jellyseerr/config"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
