@@ -3,7 +3,7 @@
     - Actual:
         icon: actual-budget.png
         href: https://actual.fantaquoggio.app
-        description: Actual budget application
+        description: Gestisce i sordi
         server: server-docker
         container: actualbudget
         statusStyle: "dot"
@@ -20,7 +20,7 @@
     - Vikunja:
         icon: vikunja.png
         href: https://vikunja.fantaquoggio.app
-        description: Fluffy to do app
+        description: Cos'è questa aria da PM?
         server: server-docker
         container: vikunja
         statusStyle: "dot"
@@ -38,43 +38,53 @@
     - qBitTorrent:
         icon: qbittorrent.png
         href: http://quoggioserver:8585
-        description: qBitTorrent
+        description: Attento ai pornazzi
         server: server-docker
-        container: proxy
+        container: qbittorrent
         statusStyle: "dot"
         showStats: true
 
+    - Mealie:
+        icon: mealie.png
+        href: http://quoggioserver:9925
+        description: Pasta al salame?
+        server: server-docker
+        container: mealie
+        statusStyle: "dot"
+        showStats: true
+
+- Arr:
     - Sonarr:
         icon: sonarr.png
         href: http://quoggioserver:8989
-        description: Sonarr
+        description: Scarica serie tv
         server: server-docker
-        container: proxy
+        container: sonarr
         statusStyle: "dot"
         showStats: true
 
     - Radarr:
         icon: radarr.png
         href: http://quoggioserver:7878
-        description: Radarr
+        description: Scarica film
         server: server-docker
-        container: proxy
+        container: radarr
         statusStyle: "dot"
         showStats: true
 
     - Bazarr:
         icon: bazarr.png
         href: http://quoggioserver:6767
-        description: Bazarr
+        description: THEBOAZAAARRR
         server: server-docker
-        container: proxy
+        container: bazarr
         statusStyle: "dot"
         showStats: true
 
     - Jellyseerr:
         icon: jellyseerr.png
         href: http://quoggioserver:5055
-        description: Jellyseerr
+        description: Chiedi e ti sarà dato
         server: server-docker
         container: jellyseerr
         statusStyle: "dot"
@@ -83,7 +93,7 @@
     - Prowlarr:
         icon: prowlarr.png
         href: http://quoggioserver:9696
-        description: Prowlarr
+        description: Lo smistatore
         server: server-docker
         container: prowlarr
         statusStyle: "dot"
@@ -93,7 +103,7 @@
     - Jellyfin:
         icon: jellyfin.png
         href: https://jellyfin.fantaquoggio.app
-        description: Self hosted TV Shows and Movies player
+        description: Pezzotto
         server: server-docker
         container: jellyfin
         statusStyle: "dot"
@@ -102,7 +112,7 @@
     - Audiobookshelf:
         icon: audiobookshelf.png
         href: https://audiobookshelf.fantaquoggio.app
-        description: Self-hosted (audio)book and podcast player
+        description: Pezzotto per (audio)libri 
         server: server-docker
         container: audiobookshelf
         statusStyle: "dot"

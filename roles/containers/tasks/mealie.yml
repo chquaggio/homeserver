@@ -1,0 +1,28 @@
+---
+- name: Configure mealie service
+  set_fact:
+    mealie_service:
+      name: mealie
+      image: ghcr.io/mealie-recipes/mealie:latest
+      container_name: mealie
+      restart: unless-stopped
+      ports:
+          - "9925:9000"
+      volumes:
+        - ./mealie-data:/app/data/
+      environment:
+        # Set Backend ENV Variables Here
+        ALLOW_SIGNUP: "false"
+        PUID: 1000
+        PGID: 1000
+        TZ: Europe/Rome
+        BASE_URL: https://mealie.fantaquoggio.app
+      networks:
+        - proxy-network
+
+- name: Setup Mealie directory
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/mealie-data"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
