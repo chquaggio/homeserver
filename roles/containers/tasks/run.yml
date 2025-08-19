@@ -1,8 +1,8 @@
 ---
-- name: Docker compose pull
-  ansible.builtin.shell:
-    cmd: "docker compose pull"
-    chdir: "{{ docker_compose_dir }}"
+# - name: Docker compose pull
+#   ansible.builtin.shell:
+#     cmd: "docker compose pull"
+#     chdir: "{{ docker_compose_dir }}"
 - name: Docker compose up
   ansible.builtin.shell:
     # cmd: "docker compose up -d"

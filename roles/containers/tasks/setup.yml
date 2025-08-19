@@ -22,6 +22,7 @@
 - name: Combine services
   set_fact:
     services: "{{ [homepage_service,
+                   openwebui_service,
                    jellyfin_service,
                    jellyseerr_service,
                    sonarr_service,

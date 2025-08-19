@@ -117,3 +117,13 @@
         container: audiobookshelf
         statusStyle: "dot"
         showStats: true
+
+- AI:
+    - Open-webui:
+        icon: open-webui.png
+        href: http://quoggioserver:3333
+        description: Chatroulette
+        server: server-docker
+        container: openwebui
+        statusStyle: "dot"
+        showStats: true

@@ -1,0 +1,27 @@
+---
+- name: Configure openwebui service
+  set_fact:
+    openwebui_service:
+      name: openwebui
+      image: ghcr.io/open-webui/open-webui:main
+      container_name: openwebui
+      restart: unless-stopped
+      ports:
+          - "3333:8080"
+      volumes:
+        - ./open-webui:/app/backend/data
+      environment:
+        # Set Backend ENV Variables Here
+        PUID: 1000
+        PGID: 1000
+        TZ: Europe/Rome
+        OPENAI_API_BASE_URL: http://bestione:8000/v1
+      networks:
+        - proxy-network
+
+- name: Setup Mealie directory
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/open-webui"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
