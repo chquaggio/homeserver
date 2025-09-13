@@ -18,6 +18,7 @@ from actual.queries import get_account, create_account, create_transaction
 # Try to load dotenv if available
 try:
     from dotenv import load_dotenv
+
     load_dotenv()
 except ImportError:
     pass
@@ -41,12 +42,12 @@ def parse_amount(amount_str: str) -> decimal.Decimal:
 
         # Handle European number format: 3.388,00 -> 3388.00
         # If there's both dot and comma, dot is thousands separator
-        if '.' in amount_str and ',' in amount_str:
+        if "." in amount_str and "," in amount_str:
             # Remove dots (thousands separators) and replace comma with dot
-            amount_str = amount_str.replace('.', '').replace(',', '.')
-        elif ',' in amount_str and '.' not in amount_str:
+            amount_str = amount_str.replace(".", "").replace(",", ".")
+        elif "," in amount_str and "." not in amount_str:
             # Only comma present, it's the decimal separator
-            amount_str = amount_str.replace(',', '.')
+            amount_str = amount_str.replace(",", ".")
         # If only dots present, they could be decimal separators (keep as is)
 
         return decimal.Decimal(amount_str)
@@ -110,7 +111,7 @@ def _extract_paypal_payee(line: str) -> str:
     for i, part in enumerate(parts):
         if "PAYPAL" in part.upper() and i + 1 < len(parts):
             parts[i + 1] = parts[i + 1].strip("*")
-            payee = " ".join(parts[i + 1:-1])
+            payee = " ".join(parts[i + 1 : -1])
             if payee:
                 return payee
     return ""
@@ -125,7 +126,7 @@ def _extract_sumup_payee(line: str) -> str:
     for i, part in enumerate(parts):
         if "SUMUP" in part.upper() and i + 1 < len(parts):
             parts[i + 1] = parts[i + 1].strip("*")
-            payee = " ".join(parts[i + 1:-1])
+            payee = " ".join(parts[i + 1 : -1])
             if payee:
                 return payee
     return ""
@@ -220,7 +221,9 @@ def _extract_fallback_payee(lines: list[str], description: str) -> str:
     # Try first meaningful line
     for line in lines:
         line = line.strip()
-        if line and not line.startswith(("PAGAMENTO", "BONIFICO", "ADDEBITO", "COMMISSIONI", "CANONE")):
+        if line and not line.startswith(
+            ("PAGAMENTO", "BONIFICO", "ADDEBITO", "COMMISSIONI", "CANONE")
+        ):
             return line[:50]
 
     # Final fallback based on transaction type
@@ -243,7 +246,7 @@ def import_csv_to_actual(
     budget_name: str,
     account_name: str,
     dry_run: bool = False,
-    skip_existing: bool = True
+    skip_existing: bool = True,
 ) -> None:
     """Import transactions from CSV file to Actual server."""
 
@@ -251,13 +254,13 @@ def import_csv_to_actual(
 
     # Read and parse CSV
     transactions = []
-    with open(csv_file, 'r', encoding='utf-8') as f:
+    with open(csv_file, "r", encoding="utf-8") as f:
         # Skip BOM if present
         content = f.read()
-        if content.startswith('\ufeff'):
+        if content.startswith("\ufeff"):
             content = content[1:]
 
-        reader = csv.reader(content.splitlines(), delimiter=';')
+        reader = csv.reader(content.splitlines(), delimiter=";")
         header = next(reader)
 
         print(f"CSV Headers: {header}")
@@ -278,11 +281,11 @@ def import_csv_to_actual(
                 payee_name = extract_payee_from_description(description)
 
                 transaction = {
-                    'date': value_date,  # Use value date as transaction date
-                    'payee': payee_name,
-                    'notes': description,
-                    'amount': amount,
-                    'row_num': row_num
+                    "date": value_date,  # Use value date as transaction date
+                    "payee": payee_name,
+                    "notes": description,
+                    "amount": amount,
+                    "row_num": row_num,
                 }
 
                 transactions.append(transaction)
@@ -326,28 +329,34 @@ def import_csv_to_actual(
                     for tx_db in transactions_db:
                         # tx_db.get_date() returns a datetime.date object
                         # tx_db.get_amount() returns a decimal.Decimal object
-                        if (tx_db.get_date() == tx['date']
-                                and tx_db.get_amount() == tx['amount']):
+                        if (
+                            tx_db.get_date() == tx["date"]
+                            and tx_db.get_amount() == tx["amount"]
+                        ):
                             existing = True
                             break
 
                     if existing:
                         skipped_count += 1
-                        print(f"Skipping existing transaction: {tx['date']} | {tx['payee'][:30]:30} | {tx['amount']:>10}")
+                        print(
+                            f"Skipping existing transaction: {tx['date']} | {tx['payee'][:30]:30} | {tx['amount']:>10}"
+                        )
                         continue
 
                 # Create transaction
                 create_transaction(
                     actual.session,
-                    tx['date'],
+                    tx["date"],
                     account,
-                    tx['payee'],
-                    notes=tx['notes'],
-                    amount=tx['amount']
+                    tx["payee"],
+                    notes=tx["notes"],
+                    amount=tx["amount"],
                 )
 
                 imported_count += 1
-                print(f"Imported: {tx['date']} | {tx['payee'][:30]:30} | {tx['amount']:>10}")
+                print(
+                    f"Imported: {tx['date']} | {tx['payee'][:30]:30} | {tx['amount']:>10}"
+                )
 
             except Exception as e:
                 print(f"Error importing transaction from row {tx['row_num']}: {e}")
@@ -382,37 +391,53 @@ Environment variables (can be used instead of command line arguments):
   ACTUAL_PASSWORD - Actual server password  
   ACTUAL_BUDGET - Budget file name
   ACTUAL_ACCOUNT - Account name
-        """
+        """,
     )
 
-    parser.add_argument('csv_file', type=Path, help='Path to CSV file containing transactions')
-    parser.add_argument('--url', help='Actual server URL (e.g., http://localhost:5006)')
-    parser.add_argument('--password', help='Actual server password')
-    parser.add_argument('--budget', help='Budget file name')
-    parser.add_argument('--account', help='Account name to import transactions into')
-    parser.add_argument('--dry-run', action='store_true', help='Preview transactions without importing')
-    parser.add_argument('--no-skip-existing', action='store_true', help='Do not skip potentially duplicate transactions')
+    parser.add_argument(
+        "csv_file", type=Path, help="Path to CSV file containing transactions"
+    )
+    parser.add_argument("--url", help="Actual server URL (e.g., http://localhost:5006)")
+    parser.add_argument("--password", help="Actual server password")
+    parser.add_argument("--budget", help="Budget file name")
+    parser.add_argument("--account", help="Account name to import transactions into")
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Preview transactions without importing"
+    )
+    parser.add_argument(
+        "--no-skip-existing",
+        action="store_true",
+        help="Do not skip potentially duplicate transactions",
+    )
 
     args = parser.parse_args()
 
     # Get values from environment variables if not provided via command line
-    url = args.url or os.getenv('ACTUAL_URL')
-    password = args.password or os.getenv('ACTUAL_PASSWORD')
-    budget = args.budget or os.getenv('ACTUAL_BUDGET')
-    account = args.account or os.getenv('ACTUAL_ACCOUNT')
+    url = args.url or os.getenv("ACTUAL_URL")
+    password = args.password or os.getenv("ACTUAL_PASSWORD")
+    budget = args.budget or os.getenv("ACTUAL_BUDGET")
+    account = args.account or os.getenv("ACTUAL_ACCOUNT")
 
     # Validate required parameters
     if not url:
-        print("Error: URL is required (use --url or set ACTUAL_URL environment variable)")
+        print(
+            "Error: URL is required (use --url or set ACTUAL_URL environment variable)"
+        )
         sys.exit(1)
     if not password:
-        print("Error: Password is required (use --password or set ACTUAL_PASSWORD environment variable)")
+        print(
+            "Error: Password is required (use --password or set ACTUAL_PASSWORD environment variable)"
+        )
         sys.exit(1)
     if not budget:
-        print("Error: Budget name is required (use --budget or set ACTUAL_BUDGET environment variable)")
+        print(
+            "Error: Budget name is required (use --budget or set ACTUAL_BUDGET environment variable)"
+        )
         sys.exit(1)
     if not account:
-        print("Error: Account name is required (use --account or set ACTUAL_ACCOUNT environment variable)")
+        print(
+            "Error: Account name is required (use --account or set ACTUAL_ACCOUNT environment variable)"
+        )
         sys.exit(1)
 
     if not args.csv_file.exists():
@@ -427,7 +452,7 @@ Environment variables (can be used instead of command line arguments):
             budget_name=budget,
             account_name=account,
             dry_run=args.dry_run,
-            skip_existing=not args.no_skip_existing
+            skip_existing=not args.no_skip_existing,
         )
     except Exception as e:
         print(f"Error: {e}")

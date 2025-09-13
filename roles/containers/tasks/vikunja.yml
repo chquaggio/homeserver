@@ -5,9 +5,9 @@
       name: vikunja
       image: vikunja/vikunja
       container_name: vikunja
-      # environment:
-      #   VIKUNJA_SERVICE_JWTSECRET: ayyylmao
-      #   VIKUNJA_SERVICE_PUBLICURL: http://quoggioserver:3456/
+      environment:
+        - VIKUNJA_SERVICE_JWTSECRET=ayyylmao
+        - VIKUNJA_SERVICE_PUBLICURL=https://vikunja.fantaquoggio.app
       #   VIKUNJA_DATABASE_PATH: /db/vikunja.db
       #   VIKUNJA_DATABASE_TYPE: sqlite
       ports:
