@@ -12,11 +12,14 @@
         - ./mealie-data:/app/data/
       environment:
         # Set Backend ENV Variables Here
-        ALLOW_SIGNUP: "false"
-        PUID: 1000
-        PGID: 1000
-        TZ: Europe/Rome
-        BASE_URL: https://mealie.fantaquoggio.app
+        - PUID=1000
+        - PGID=1000
+        - TZ=Europe/Rome
+        - OPENAI_BASE_URL=http://bestione:8000/v1
+        - OPENAI_MODEL=Qwen/Qwen3-4B-Instruct-2507
+        - OPENAI_API_KEY=xxx
+        - ALLOW_SIGNUP=false
+        - BASE_URL=https://mealie.fantaquoggio.app
       networks:
         - proxy-network
 
