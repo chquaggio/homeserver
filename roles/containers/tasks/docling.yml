@@ -1,0 +1,13 @@
+---
+- name: Configure docling service
+  set_fact:
+    docling_service:
+      name: docling
+      image: ghcr.io/docling-project/docling-serve-cpu
+      container_name: docling
+      restart: unless-stopped
+      ports:
+          - "5001:5001"
+      networks:
+        - proxy-network
+

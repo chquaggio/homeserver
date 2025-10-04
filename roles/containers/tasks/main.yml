@@ -7,6 +7,7 @@
 - import_tasks: radarr.yml
 - import_tasks: bazarr.yml
 - import_tasks: mealie.yml
+- import_tasks: docling.yml
 - import_tasks: qbittorrent.yml
 - import_tasks: prowlarr.yml
 - import_tasks: qbittorrent.yml

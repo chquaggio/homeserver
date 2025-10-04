@@ -17,6 +17,24 @@
     #     statusStyle: "dot"
     #     showStats: true
 
+    - Mealie:
+        icon: mealie.png
+        href: http://quoggioserver:9925
+        description: Pasta al salame?
+        server: server-docker
+        container: mealie
+        statusStyle: "dot"
+        showStats: true
+
+    - Docling:
+        icon: docling.png
+        href: http://quoggioserver:5001
+        description: convertitore documenti
+        server: server-docker
+        container: docling
+        statusStyle: "dot"
+        showStats: true
+
     - Vikunja:
         icon: vikunja.png
         href: https://vikunja.fantaquoggio.app
@@ -44,14 +62,6 @@
         statusStyle: "dot"
         showStats: true
 
-    - Mealie:
-        icon: mealie.png
-        href: http://quoggioserver:9925
-        description: Pasta al salame?
-        server: server-docker
-        container: mealie
-        statusStyle: "dot"
-        showStats: true
 
 - Arr:
     - Sonarr:

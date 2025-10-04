@@ -32,10 +32,12 @@ services:
       {%- for port in service.ports %}
       - "{{ port }}"
       {%- endfor %}
+    {%- if service.volumes | default([]) %}
     volumes:
       {%- for volume in service.volumes %}
       - {{ volume }}
       {%- endfor %}
+    {%- endif %}
     {%- if service.environment | default([]) %}
     environment:
       {%- for env in service.environment %}

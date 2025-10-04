@@ -31,6 +31,7 @@
                    radarr_service,
                    qbittorrent_service,
                    mealie_service,
+                   docling_service,
                    actual_service,
                    audiobookshelf_service,
                    vikunja_service] }}"
