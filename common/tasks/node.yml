@@ -1,0 +1,30 @@
+---
+- name: Download and install nvm
+  shell: |
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+  args:
+    creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+
+- name: Source nvm and install Node.js 24
+  shell: |
+    . {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm install 24
+  args:
+    creates: "{{ ansible_env.HOME }}/.nvm/versions/node/v24.9.0"
+
+- name: Verify Node.js installation
+  shell: |
+    . {{ ansible_env.HOME }}/.nvm/nvm.sh && node -v
+  register: node_version
+  changed_when: false
+
+- name: Verify npm installation
+  shell: |
+    . {{ ansible_env.HOME }}/.nvm/nvm.sh && npm -v
+  register: npm_version
+  changed_when: false
+
+- name: Display Node.js and npm versions
+  debug:
+    msg: |
+      Node.js version: {{ node_version.stdout }}
+      npm version: {{ npm_version.stdout }}

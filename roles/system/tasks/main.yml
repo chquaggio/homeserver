@@ -1,3 +1,2 @@
 ---
 - include_tasks: neovim.yml
-- include_tasks: node.yml
