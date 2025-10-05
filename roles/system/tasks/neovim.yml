@@ -23,3 +23,7 @@
   when: installed_version.stdout.strip() != latest_version
   args:
     chdir: /tmp
+
+- name: Install tree-sitter-cli
+  shell: |
+    . {{ ansible_env.HOME }}/.nvm/nvm.sh && npm install -g @tree-sitter/cli
