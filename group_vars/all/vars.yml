@@ -22,3 +22,5 @@ extra_packages:
   - gnupg
   - bat
   - fzf
+  - ripgrep
+  - fd-find

@@ -1,0 +1,94 @@
+---
+- name: Check required dependencies for Neovim
+  block:
+
+    - name: Check for tree-sitter-cli
+      shell: |
+        if command -v tree-sitter >/dev/null 2>&1; then
+          tree-sitter --version
+        else
+          echo "MISSING"
+        fi
+      register: tree_sitter_check
+      changed_when: false
+
+    - name: Check for curl
+      shell: |
+        if command -v curl >/dev/null 2>&1; then
+          curl --version | head -n1
+        else
+          echo "MISSING"
+        fi
+      register: curl_check
+      changed_when: false
+
+    - name: Check for fzf (v0.25.1 or greater)
+      shell: |
+        if command -v fzf >/dev/null 2>&1; then
+          fzf --version
+        else
+          echo "MISSING"
+        fi
+      register: fzf_check
+      changed_when: false
+
+    - name: Check for ripgrep
+      shell: |
+        if command -v rg >/dev/null 2>&1; then
+          rg --version | head -n1
+        else
+          echo "MISSING"
+        fi
+      register: ripgrep_check
+      changed_when: false
+
+    - name: link fd
+      shell: |
+        ln -s $(which fdfind) ~/.local/bin/fd
+    - name: Check for fd
+      shell: |
+        if command -v fd >/dev/null 2>&1; then
+          fd --version
+        else
+          echo "MISSING"
+        fi
+      register: fd_check
+      changed_when: false
+
+    - name: Check for lazygit (optional)
+      shell: |
+        if command -v lazygit >/dev/null 2>&1; then
+          lazygit --version
+        else
+          echo "MISSING (optional)"
+        fi
+      register: lazygit_check
+      changed_when: false
+
+    - name: Display dependency check results
+      debug:
+        msg: |
+          Neovim Dependencies Check:
+          ========================
+          tree-sitter-cli: {{ tree_sitter_check.stdout }}
+          curl: {{ curl_check.stdout }}
+          fzf: {{ fzf_check.stdout }}
+          ripgrep: {{ ripgrep_check.stdout }}
+          fd: {{ fd_check.stdout }}
+          lazygit: {{ lazygit_check.stdout }}
+
+    - name: Fail if required dependencies are missing
+      fail:
+        msg: "Required dependency missing: {{ item.name }}"
+      when: item.result.stdout == "MISSING"
+      loop:
+        - { name: "tree-sitter-cli", result: "{{ tree_sitter_check }}" }
+        - { name: "curl", result: "{{ curl_check }}" }
+        - { name: "fzf", result: "{{ fzf_check }}" }
+        - { name: "ripgrep", result: "{{ ripgrep_check }}" }
+        - { name: "fd", result: "{{ fd_check }}" }
+
+    - name: Warn about optional dependencies
+      debug:
+        msg: "Optional dependency missing: lazygit (git TUI)"
+      when: lazygit_check.stdout == "MISSING (optional)"
