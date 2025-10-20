@@ -6,3 +6,8 @@
       vars:
         tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
         tailscale_args: "--ssh"
+- name: Configure Tailscale to not override local DNS
+  ansible.builtin.command:
+    cmd: tailscale up --accept-dns=false
+  register: tailscale_up
+  changed_when: "'already' not in tailscale_up.stderr"

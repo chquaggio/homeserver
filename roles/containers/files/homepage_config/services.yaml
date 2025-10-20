@@ -19,7 +19,7 @@
 
     - Mealie:
         icon: mealie.png
-        href: http://quoggioserver:9925
+        href: https://mealie.fantaquoggio.app
         description: Pasta al salame?
         server: server-docker
         container: mealie
@@ -50,6 +50,15 @@
         description: nginx-proxy-manager
         server: server-docker
         container: proxy
+        statusStyle: "dot"
+        showStats: true
+
+    - pihole:
+        icon: pi-hole.png
+        href: https://pihole.fantaquoggio.app/admin
+        description: adblocker definitivo
+        server: server-docker
+        container: pihole
         statusStyle: "dot"
         showStats: true
 
@@ -131,7 +140,7 @@
 - AI:
     - Open-webui:
         icon: open-webui.png
-        href: http://quoggioserver:3333
+        href: https://chat.fantaquoggio.app
         description: Chatroulette
         server: server-docker
         container: openwebui
