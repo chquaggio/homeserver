@@ -1,9 +1,10 @@
 
 username: quoghs
+password: "{{ VAULT_PASSWORD }}"
+ssh_public_key: "{{ SSH_PUBLIC_KEY }}"
 
-password: "{{ vault_password }}"
-
-ssh_public_key: "{{ vault_ssh_public_key }}"
+ghcr_username: "chquaggio"
+ghcr_token: "{{ GH_TOKEN }}"
 
 shell: /usr/bin/zsh
 

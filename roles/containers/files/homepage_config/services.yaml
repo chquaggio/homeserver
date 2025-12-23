@@ -155,3 +155,12 @@
         container: openwebui
         statusStyle: "dot"
         showStats: true
+
+    - MCP Server:
+        icon: sh-investbrain
+        # href: https://chat.fantaquoggio.app
+        description: Magi
+        server: server-docker
+        container: mymcp
+        statusStyle: "dot"
+        showStats: true
