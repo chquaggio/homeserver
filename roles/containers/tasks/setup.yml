@@ -30,6 +30,7 @@
                    bazarr_service,
                    radarr_service,
                    pihole_service,
+                   trilium_service,
                    qbittorrent_service,
                    mealie_service,
                    docling_service,

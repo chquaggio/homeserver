@@ -9,6 +9,7 @@
 - import_tasks: mealie.yml
 - import_tasks: docling.yml
 - import_tasks: pihole.yml
+- import_tasks: trilium.yml
 - import_tasks: qbittorrent.yml
 - import_tasks: prowlarr.yml
 - import_tasks: qbittorrent.yml

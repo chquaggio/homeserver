@@ -5,6 +5,9 @@
       name: docling
       image: ghcr.io/docling-project/docling-serve-cpu
       container_name: docling
+      environment:
+        # Set Backend ENV Variables Here
+        - DOCLING_SERVE_ENABLE_UI=1
       restart: unless-stopped
       ports:
           - "5001:5001"

@@ -27,7 +27,7 @@
         showStats: true
 
     - Docling:
-        icon: docling.png
+        icon: sh-docling.png
         href: http://quoggioserver:5001
         description: convertitore documenti
         server: server-docker
@@ -44,12 +44,12 @@
         statusStyle: "dot"
         showStats: true
 
-    - nginx-proxy-manager:
-        icon: nginx-proxy-manager.png
-        href: http://quoggioserver:81
-        description: nginx-proxy-manager
+    - Trilium:
+        icon: trilium.png
+        href: http://quoggioserver:5050
+        description: Note taking app
         server: server-docker
-        container: proxy
+        container: trilium
         statusStyle: "dot"
         showStats: true
 
@@ -68,6 +68,15 @@
         description: Attento ai pornazzi
         server: server-docker
         container: qbittorrent
+        statusStyle: "dot"
+        showStats: true
+
+    - nginx-proxy-manager:
+        icon: nginx-proxy-manager.png
+        href: http://quoggioserver:81
+        description: nginx-proxy-manager
+        server: server-docker
+        container: proxy
         statusStyle: "dot"
         showStats: true
 

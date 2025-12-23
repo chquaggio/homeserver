@@ -1,0 +1,28 @@
+---
+- name: Configure trilium service
+  set_fact:
+    trilium_service:
+      name: trilium
+      image: triliumnext/trilium:latest
+      container_name: trilium
+      environment:
+        # Set Backend ENV Variables Here
+        - TRILIUM_DATA_DIR=/home/node/trilium-data
+      volumes:
+        - ./trilium/trilium-data:/home/node/trilium-data
+        - /etc/timezone:/etc/timezone:ro
+        - /etc/localtime:/etc/localtime:ro1
+      restart: unless-stopped
+      ports:
+        - "5050:8080"
+      networks:
+        - proxy-network
+
+- name: Setup Trilium directories
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/trilium/{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+  loop:
+    - "trilium-data"
