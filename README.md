@@ -86,52 +86,67 @@ ansible-playbook site.yml --tags containers
 ## Network Diagram
 
 ```mermaid
-flowchart LR
+flowchart TB
   subgraph Tailnet[Tailscale Tailnet]
-    PC[Home PC\n(bestione)\nLLM API :8000]
-    HS[Homeserver\n(quoggioserver)]
+    PC["Home PC<br/>(bestione)<br/>LLM API :8000"]
+    HS["Homeserver<br/>(quoggioserver)"]
   end
 
   Client[Client devices] -->|Tailscale| Tailnet
 
-  HS -->|DNS queries| PH[Pi-hole\nDNS + local records]
-  PH -->|resolves service names| HS
-
-  subgraph Docker[Docker Compose Stack]
-    NET[proxy-network]
+  subgraph Docker[Docker Compose Stack on Homeserver]
+    subgraph Infrastructure[Infrastructure]
+      PH[pihole<br/>:53/:8053<br/>DNS + MagicDNS]
+    end
     
     subgraph Management[Management & UI]
-      HP[homepage :3000]
-      NPM[nginx-proxy-manager :80/:443/:81]
+      HP[homepage<br/>:3000]
+      NPM[nginx-proxy-manager<br/>:80/:443/:81]
+      HP --- NPM
     end
     
     subgraph Media[Media Stack]
-      JF[jellyfin :8096]
-      JS[jellyseerr :5055]
-      SR[sonarr :8989]
-      RR[radarr :7878]
-      PR[prowlarr :9696]
-      BZ[bazarr :6767]
-      QB[qbittorrent :8585]
-      AB[audiobookshelf :13378]
+      JF[jellyfin<br/>:8096] 
+      JS[jellyseerr<br/>:5055]
+      SR[sonarr<br/>:8989] 
+      RR[radarr<br/>:7878]
+      PR[prowlarr<br/>:9696] 
+      BZ[bazarr<br/>:6767]
+      QB[qbittorrent<br/>:8585] 
+      AB[audiobookshelf<br/>:13378]
+      
+      JF --- JS
+      JS --- SR
+      SR --- RR
+      RR --- PR
+      PR --- BZ
+      BZ --- QB
+      QB --- AB
     end
     
     subgraph Productivity[Productivity & AI]
-      OW[openwebui :3333]
-      TR[trilium :5050]
-      VK[vikunja :3456]
-      ML[mealie :9925]
-      MCP[mymcp :7000]
-      AC[actualbudget :5006]
-    end
-    
-    subgraph Infrastructure[Infrastructure]
-      PH[pihole :53/:8053]
+      OW[openwebui<br/>:3333] 
+      TR[trilium<br/>:5050]
+      VK[vikunja<br/>:3456] 
+      ML[mealie<br/>:9925]
+      MCP[mymcp<br/>:7000] 
+      AC[actualbudget<br/>:5006]
+      
+      OW --- TR
+      TR --- VK
+      VK --- ML
+      ML --- MCP
+      MCP --- AC
     end
   end
 
-  NET --- Management & Media & Productivity & Infrastructure
-  OW -->|HTTP over Tailscale| PC
+  Client -->|DNS queries| PH
+  PH -->|Service name resolution| Management
+  PH -->|Service name resolution| Media  
+  PH -->|Service name resolution| Productivity
+  
+  OW -->|API calls over Tailscale| PC
+
 ```
 
 ## Configuration
