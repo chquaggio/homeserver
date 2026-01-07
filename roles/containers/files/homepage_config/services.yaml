@@ -2,7 +2,7 @@
 - Utilities:
     - Actual:
         icon: actual-budget.png
-        href: https://actual.fantaquoggio.app
+        href: https://actual.fantaquoggio.bid
         description: Gestisce i sordi
         server: server-docker
         container: actualbudget
@@ -19,7 +19,7 @@
 
     - Mealie:
         icon: mealie.png
-        href: https://mealie.fantaquoggio.app
+        href: https://mealie.fantaquoggio.bid
         description: Pasta al salame?
         server: server-docker
         container: mealie
@@ -37,7 +37,7 @@
 
     - Vikunja:
         icon: vikunja.png
-        href: https://vikunja.fantaquoggio.app
+        href: https://vikunja.fantaquoggio.bid
         description: Cos'è questa aria da PM?
         server: server-docker
         container: vikunja
@@ -55,7 +55,7 @@
 
     - pihole:
         icon: pi-hole.png
-        href: https://pihole.fantaquoggio.app/admin
+        href: https://pihole.fantaquoggio.bid/admin
         description: adblocker definitivo
         server: server-docker
         container: pihole
@@ -130,7 +130,7 @@
 - Media:
     - Jellyfin:
         icon: jellyfin.png
-        href: https://jellyfin.fantaquoggio.app
+        href: https://jellyfin.fantaquoggio.bid
         description: Pezzotto
         server: server-docker
         container: jellyfin
@@ -139,7 +139,7 @@
 
     - Audiobookshelf:
         icon: audiobookshelf.png
-        href: https://audiobookshelf.fantaquoggio.app
+        href: https://audiobookshelf.fantaquoggio.bid
         description: Pezzotto per (audio)libri 
         server: server-docker
         container: audiobookshelf
@@ -149,7 +149,7 @@
 - AI:
     - Open-webui:
         icon: open-webui.png
-        href: https://chat.fantaquoggio.app
+        href: https://chat.fantaquoggio.bid
         description: Chatroulette
         server: server-docker
         container: openwebui
@@ -158,7 +158,7 @@
 
     - MCP Server:
         icon: sh-investbrain
-        # href: https://chat.fantaquoggio.app
+        # href: https://chat.fantaquoggio.bid
         description: Magi
         server: server-docker
         container: mymcp
