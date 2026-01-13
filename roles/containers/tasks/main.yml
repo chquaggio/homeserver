@@ -3,6 +3,7 @@
 - import_tasks: actual.yml
 - import_tasks: audiobookshelf.yml
 - import_tasks: bazarr.yml
+- import_tasks: beszel.yml
 - import_tasks: docling.yml
 - import_tasks: homepage.yml
 - import_tasks: jellyfin.yml
@@ -16,7 +17,7 @@
 - import_tasks: radarr.yml
 - import_tasks: sonarr.yml
 - import_tasks: trilium.yml
-- import_tasks: vikunja.yml
+# - import_tasks: vikunja.yml
 - import_tasks: zerobyte.yml
 # - import_tasks: actualtap.yml
 - import_tasks: setup.yml

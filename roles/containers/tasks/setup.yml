@@ -38,7 +38,8 @@
                    docling_service,
                    actual_service,
                    audiobookshelf_service,
-                   vikunja_service] }}"
+                   beszel_service,
+                   beszel_agent_service] }}"
 
 - name: Render Docker Compose file
   template:

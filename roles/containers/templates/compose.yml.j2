@@ -28,10 +28,24 @@ services:
       - {{ dependency }}
       {%- endfor %}
     {%- endif %}
+    {%- if service.ports | default([]) %}
     ports:
       {%- for port in service.ports %}
       - "{{ port }}"
       {%- endfor %}
+    {%- endif %}
+    {%- if service.devices | default([]) %}
+    devices:
+      {%- for device in service.devices %}
+      - "{{ device }}"
+      {%- endfor %}
+    {%- endif %}
+    {%- if service.cap_add | default([]) %}
+    cap_add:
+      {%- for cap_add in service.cap_add %}
+      - "{{ cap_add }}"
+      {%- endfor %}
+    {%- endif %}
     {%- if service.volumes | default([]) %}
     volumes:
       {%- for volume in service.volumes %}

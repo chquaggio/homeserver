@@ -1,0 +1,53 @@
+---
+- name: Configure Beszel service
+  set_fact:
+    beszel_service:
+      name: beszel
+      image: henrygd/beszel
+      container_name: beszel
+      restart: unless-stopped
+      ports:
+        - 8090:8090
+      volumes:
+        - ./beszel/beszel_data:/beszel_data
+        - ./beszel/beszel_socket:/beszel_socket
+      networks:
+        - proxy-network
+
+- name: Configure Beszel-agent service
+  set_fact:
+    beszel_agent_service:
+      name: beszel-agent
+      image: henrygd/beszel-agent:alpine
+      container_name: beszel-agent
+      restart: unless-stopped
+      network_mode: host
+      user: "0:6"  # root user with disk group
+      devices:
+        - /dev/sda:/dev/sda
+      cap_add:
+        - SYS_RAWIO # required for S.M.A.R.T. data
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+        - ./beszel/beszel_socket:/beszel_socket
+        - ./beszel/beszel_agent_data:/var/lib/beszel-agent
+        # monitor other disks / partitions by mounting a folder in /extra-filesystems
+        # - /mnt/disk/.beszel:/extra-filesystems/sda1:ro
+      networks:
+        - proxy-network
+      environment:
+        - LISTEN=/beszel_socket/beszel.sock
+        - KEY=ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKucyzGDcDcrtW3Dz1Fey9HrX9EbsQLotBTaKsjMhrMH
+        - TOKEN=0d90d715-e839-4226-a517-fda8ae5836ed
+        - HUB_URL=http://beszel:8090
+
+- name: Setup Beszel directories
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/beszel/{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+  loop:
+    - "beszel_data"
+    - "beszel_agent_data"
+    - "beszel_socket"

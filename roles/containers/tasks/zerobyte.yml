@@ -15,6 +15,7 @@
         # containers volumes
         - ./actualbudget:/containers/actualbudget
         - ./bazarr/config:/containers/bazarr
+        - ./beszel:/containers/beszel
         - ./jellyfin/config:/containers/jellyfin
         - ./jellyseerr/config:/containers/jellyseer
         - ./mealie-data:/containers/mealie
