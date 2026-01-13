@@ -25,3 +25,4 @@ extra_packages:
   - fzf
   - ripgrep
   - fd-find
+  - smartmontools

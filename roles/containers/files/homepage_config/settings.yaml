@@ -13,3 +13,7 @@ quicklaunch:
   showSearchSuggestions: true
   hideVisitURL: true
   provider: google
+layout:
+  Utilities:
+    style: row
+    columns: 4

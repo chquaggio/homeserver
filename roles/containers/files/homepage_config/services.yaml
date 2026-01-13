@@ -9,14 +9,6 @@
         statusStyle: "dot"
         showStats: true
 
-    # - Actualtap:
-    #     icon: actual-budget.png
-    #     description: Actual integration with contactless payments
-    #     server: server-docker
-    #     container: actualtap-py
-    #     statusStyle: "dot"
-    #     showStats: true
-
     - Trilium:
         icon: trilium.png
         href: http://quoggioserver:5050
@@ -41,6 +33,15 @@
         description: backup
         server: server-docker
         container: zerobyte
+        statusStyle: "dot"
+        showStats: true
+
+    - beszel:
+        icon: beszel.png
+        href: http://quoggioserver:8090
+        description: monitoring
+        server: server-docker
+        container: beszel
         statusStyle: "dot"
         showStats: true
 
@@ -80,15 +81,22 @@
         statusStyle: "dot"
         showStats: true
 
-    - Vikunja:
-        icon: vikunja.png
-        href: https://vikunja.fantaquoggio.bid
-        description: Cos'è questa aria da PM?
-        server: server-docker
-        container: vikunja
-        statusStyle: "dot"
-        showStats: true
+    # - Vikunja:
+    #     icon: vikunja.png
+    #     href: https://vikunja.fantaquoggio.bid
+    #     description: Cos'è questa aria da PM?
+    #     server: server-docker
+    #     container: vikunja
+    #     statusStyle: "dot"
+    #     showStats: true
 
+    # - Actualtap:
+    #     icon: actual-budget.png
+    #     description: Actual integration with contactless payments
+    #     server: server-docker
+    #     container: actualtap-py
+    #     statusStyle: "dot"
+    #     showStats: true
 
 - Arr:
     - Sonarr:
