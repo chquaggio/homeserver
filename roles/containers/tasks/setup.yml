@@ -32,6 +32,7 @@
                    pihole_service,
                    trilium_service,
                    mymcp_service,
+                   zerobyte_service,
                    qbittorrent_service,
                    mealie_service,
                    docling_service,

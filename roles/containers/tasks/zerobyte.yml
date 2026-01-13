@@ -1,0 +1,32 @@
+---
+- name: Configure zerobyte service
+  set_fact:
+    zerobyte_service:
+      name: zerobyte
+      image: ghcr.io/nicotsx/zerobyte:latest
+      container_name: zerobyte
+      environment:
+        # Set Backend ENV Variables Here
+        - TZ=Europe/Rome
+      volumes:
+        - /etc/timezone:/etc/timezone:ro
+        - /etc/localtime:/etc/localtime:ro
+        - /var/lib/zerobyte:/var/lib/zerobyte
+        # containers volumes
+        - ./actualbudget:/containers/actualbudget
+        - ./bazarr/config:/containers/bazarr
+        - ./jellyfin/config:/containers/jellyfin
+        - ./jellyseerr/config:/containers/jellyseer
+        - ./mealie-data:/containers/mealie
+        - ./open-webui:/containers/open-webui
+        - ./pihole/etc:/containers/pihole
+        - ./prowlarr/config:/containers/prowlarr
+        - ./qbittorrent/config:/containers/qbittorrent
+        - ./radarr/config:/containers/radarr
+        - ./sonarr/config:/containers/sonarr
+        - ./trilium/trilium-data:/containers/trilium
+      restart: unless-stopped
+      ports:
+        - "4096:4096"
+      networks:
+        - proxy-network
