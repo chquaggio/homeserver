@@ -6,6 +6,9 @@
       image: ghcr.io/chquaggio/mymcp:latest
       container_name: mymcp
       restart: unless-stopped
+      environment:
+        - TRILIUM_TOKEN={{ trilium_token }}
+        - TRILIUM_BASE_URL_PROD={{ trilium_url }}
       ports:
         - 7000:7000
       networks:

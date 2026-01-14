@@ -6,6 +6,9 @@ ssh_public_key: "{{ SSH_PUBLIC_KEY }}"
 ghcr_username: "chquaggio"
 ghcr_token: "{{ GH_TOKEN }}"
 
+trilium_token: "{{ TRILIUM_TOKEN }}"
+trilium_url: "{{ TRILIUM_BASE_URL_PROD }}"
+
 shell: /usr/bin/zsh
 
 dotfiles_repo: https://github.com/chquaggio/dotfiles
