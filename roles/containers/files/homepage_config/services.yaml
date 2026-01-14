@@ -74,7 +74,7 @@
 
     - Docling:
         icon: sh-docling.png
-        href: http://quoggioserver:5001
+        href: http://quoggioserver:5001/ui
         description: convertitore documenti
         server: server-docker
         container: docling
