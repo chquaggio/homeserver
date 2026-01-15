@@ -25,6 +25,7 @@
                    openwebui_service,
                    jellyfin_service,
                    jellyseerr_service,
+                   cloudflared_service,
                    sonarr_service,
                    prowlarr_service,
                    bazarr_service,

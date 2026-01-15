@@ -1,0 +1,18 @@
+---
+- name: Configure Cloudflared service
+  set_fact:
+    cloudflared_service:
+      name: cloudflared
+      image: cloudflare/cloudflared:latest
+      container_name: cloudflared
+      command: tunnel --no-autoupdate run --token {{ cf_token }}
+      networks:
+        - qnet
+      restart: unless-stopped
+
+- name: Setup Cloudflared directory
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/cloudflared"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory

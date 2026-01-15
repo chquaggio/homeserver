@@ -4,6 +4,7 @@
 - import_tasks: audiobookshelf.yml
 - import_tasks: bazarr.yml
 - import_tasks: beszel.yml
+- import_tasks: cloudflared.yml
 - import_tasks: docling.yml
 - import_tasks: homepage.yml
 - import_tasks: jellyfin.yml
