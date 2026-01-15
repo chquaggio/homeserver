@@ -12,7 +12,7 @@
         - ./beszel/beszel_data:/beszel_data
         - ./beszel/beszel_socket:/beszel_socket
       networks:
-        - proxy-network
+        - qnet
 
 - name: Configure Beszel-agent service
   set_fact:
@@ -34,7 +34,7 @@
         # monitor other disks / partitions by mounting a folder in /extra-filesystems
         # - /mnt/disk/.beszel:/extra-filesystems/sda1:ro
       networks:
-        - proxy-network
+        - qnet
       environment:
         - LISTEN=/beszel_socket/beszel.sock
         - KEY=ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKucyzGDcDcrtW3Dz1Fey9HrX9EbsQLotBTaKsjMhrMH

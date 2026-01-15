@@ -10,7 +10,7 @@
       volumes:
         - ./jellyseerr/config:/app/config
       networks:
-        - proxy-network
+        - qnet
       restart: unless-stopped
 
 - name: Setup Jellyseerr directories

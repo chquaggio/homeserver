@@ -14,7 +14,7 @@
           source: /media
           target: /media
       networks:
-        - proxy-network
+        - qnet
       restart: unless-stopped
 
 - name: Setup Jellyfin directories

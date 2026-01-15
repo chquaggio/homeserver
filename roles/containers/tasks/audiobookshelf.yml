@@ -15,7 +15,7 @@
       environment:
         - TZ=Europe/Amsterdam
       networks:
-        - proxy-network
+        - qnet
       restart: unless-stopped
 
 - name: Setup audiobookshelf directories

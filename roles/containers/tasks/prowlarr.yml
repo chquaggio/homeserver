@@ -14,7 +14,7 @@
         - PGID=1000
         - TZ=Europe/Rome
       networks:
-        - proxy-network
+        - qnet
       restart: unless-stopped
 
 - name: Setup Prowlarr directories

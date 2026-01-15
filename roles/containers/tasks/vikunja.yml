@@ -16,7 +16,7 @@
         - ./vikunja/files:/app/vikunja/files
         - ./vikunja/db:/db
       networks:
-        - proxy-network
+        - qnet
       restart: unless-stopped
 
 - name: Setup Vikunja directories

@@ -12,7 +12,7 @@ My home server runs a comprehensive media management and personal productivity s
 
 - **Tailscale**: The server is part of a private Tailscale tailnet for secure remote access
 - **Pi-hole**: Acts as the primary DNS server and provides local hostname resolution (replacing MagicDNS)
-- **Docker Network**: All containers communicate through a shared `proxy-network`
+- **Docker Network**: All containers communicate through a shared `qnet`
 - **Cross-machine Communication**: OpenWebUI can communicate with a self-hosted LLM API running on my home PC (`bestione:8000`)
 
 ### Infrastructure
@@ -98,7 +98,7 @@ flowchart LR
   PH -->|resolves service names| HS
 
   subgraph Docker[Docker Compose Stack]
-    NET[proxy-network]
+    NET[qnet]
     
     subgraph Management[Management & UI]
       HP[homepage :3000]

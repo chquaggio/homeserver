@@ -12,5 +12,5 @@
       ports:
           - "5001:5001"
       networks:
-        - proxy-network
+        - qnet
 

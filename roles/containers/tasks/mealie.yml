@@ -21,7 +21,7 @@
         - ALLOW_SIGNUP=false
         - BASE_URL=http://quoggioserver:9925/
       networks:
-        - proxy-network
+        - qnet
 
 - name: Setup Mealie directory
   ansible.builtin.file:

@@ -30,4 +30,4 @@
       ports:
         - "4096:4096"
       networks:
-        - proxy-network
+        - qnet

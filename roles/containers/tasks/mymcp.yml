@@ -12,4 +12,4 @@
       ports:
         - 7000:7000
       networks:
-        - proxy-network
+        - qnet

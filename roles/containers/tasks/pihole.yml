@@ -39,7 +39,7 @@
         # Optional, if Pi-hole should get some more processing time
         # - SYS_NICE
       networks:
-        - proxy-network
+        - qnet
       restart: unless-stopped
 
 - name: Setup Pihole directories
@@ -58,6 +58,14 @@
       [Resolve]
       DNSStubListener=no
   notify: Restart systemd-resolved
+
+- name: Symlink resolv.conf to avoid systemd-resolved interference
+  ansible.builtin.file:
+    src: /run/systemd/resolve/resolv.conf
+    dest: /etc/resolv.conf
+    state: link
+    force: yes
+  become: yes
 
 - name: Restart systemd-resolved
   ansible.builtin.systemd:

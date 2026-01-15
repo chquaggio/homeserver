@@ -10,5 +10,5 @@
       volumes:
         - ./actualbudget:/data
       networks:
-        - proxy-network
+        - qnet
       restart: unless-stopped

@@ -16,7 +16,7 @@
       ports:
         - "5050:8080"
       networks:
-        - proxy-network
+        - qnet
 
 - name: Setup Trilium directories
   ansible.builtin.file:

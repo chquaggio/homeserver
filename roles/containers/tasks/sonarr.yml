@@ -12,7 +12,7 @@
         - /media/Shows:/tv
         - /media/downloads:/downloads
       networks:
-        - proxy-network
+        - qnet
       restart: unless-stopped
       environment:
         - PUID=1000

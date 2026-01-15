@@ -17,7 +17,7 @@
         - TZ=Europe/Rome
         - OPENAI_API_BASE_URL=http://bestione:8000/v1
       networks:
-        - proxy-network
+        - qnet
 
 - name: Setup openwebui directory
   ansible.builtin.file:

@@ -11,7 +11,7 @@
 
     - Trilium:
         icon: trilium.png
-        href: http://quoggioserver:5050
+        href: https://trilium.fantaquoggio.bid
         description: Note taking app
         server: server-docker
         container: trilium
@@ -20,7 +20,8 @@
 
     - pihole:
         icon: pi-hole.png
-        href: https://pihole.fantaquoggio.bid/admin
+        # href: https://pihole.fantaquoggio.bid/admin
+        href: http://quoggioserver:8053/admin
         description: adblocker definitivo
         server: server-docker
         container: pihole
@@ -54,18 +55,19 @@
         statusStyle: "dot"
         showStats: true
 
-    - nginx-proxy-manager:
-        icon: nginx-proxy-manager.png
-        href: http://quoggioserver:81
-        description: nginx-proxy-manager
-        server: server-docker
-        container: proxy
-        statusStyle: "dot"
-        showStats: true
+    # - nginx-proxy-manager:
+    #     icon: nginx-proxy-manager.png
+    #     href: http://quoggioserver:81
+    #     description: nginx-proxy-manager
+    #     server: server-docker
+    #     container: proxy
+    #     statusStyle: "dot"
+    #     showStats: true
 
     - Mealie:
         icon: mealie.png
-        href: https://mealie.fantaquoggio.bid
+        # href: https://mealie.fantaquoggio.bid
+        href: http://quoggiosever:9925
         description: Pasta al salame?
         server: server-docker
         container: mealie

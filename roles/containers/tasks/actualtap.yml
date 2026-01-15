@@ -10,7 +10,7 @@
       volumes:
         - ./actualtap/config:/config
       networks:
-        - proxy-network
+        - qnet
       restart: unless-stopped
 
 - name: Setup Actualtap directory 

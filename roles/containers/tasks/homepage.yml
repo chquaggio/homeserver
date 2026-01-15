@@ -14,7 +14,7 @@
       environment:
         - HOMEPAGE_ALLOWED_HOSTS=quoggioserver:3000,homepage.fantaquoggio.bid
       networks:
-        - proxy-network
+        - qnet
       restart: unless-stopped
 
 - name: Setup Homepage directories
