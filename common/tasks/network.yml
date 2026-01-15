@@ -1,40 +1,42 @@
----
+
 - name: Ensure UFW is installed
   apt:
     name: ufw
     state: present
 
+- name: Reset UFW to deny all (Safety first)
+  ufw:
+    state: reset
+
 - name: Allow Tailscale traffic
   ufw:
     rule: allow
-    from_ip: 100.64.0.0/10
-    to_ip: any
+    src: 100.64.0.0/10
 
 - name: Allow traffic from local network
   ufw:
     rule: allow
-    from_ip: 192.168.0.0/24
-    to_ip: any
+    src: 192.168.1.0/24
+
+- name: Allow DNS traffic (Pi-hole)
+  ufw:
+    rule: allow
+    port: '53'
+    proto: "{{ item }}"
+  loop:
+    - tcp
+    - udp
 
 - name: Allow SSH
   ufw:
     rule: allow
-    port: 22
+    port: '22'
     proto: tcp
 
-- name: Allow HTTP
-  ufw:
-    rule: allow
-    port: 80
-    proto: tcp
-
-- name: Allow HTTPS
-  ufw:
-    rule: allow
-    port: 443
-    proto: tcp
+# RIMOSSE REGOLE 80 E 443: Il tunnel non ne ha bisogno.
+# Se le lasci, chiunque conosca il tuo IP entra bypassando Cloudflare.
 
 - name: Enable UFW
   ufw:
     state: enabled
-
+    policy: deny

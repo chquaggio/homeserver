@@ -9,21 +9,41 @@
   ansible.builtin.set_fact:
     latest_version: "{{ latest_release.json.tag_name }}"
 
-- name: Check the installed Neovim version
-  ansible.builtin.command: nvim -v | cut -f1 -d $'\n' | cut -f2 -d " "
+- name: Check if Neovim is installed in /opt (release tarball layout)
+  ansible.builtin.stat:
+    path: /opt/nvim-linux-x86_64/bin/nvim
+  register: nvim_bin
+
+- name: Check the installed Neovim version (/opt)
+  ansible.builtin.shell: "/opt/nvim-linux-x86_64/bin/nvim --version | head -n 1 | awk '{print $2}'"
   register: installed_version
   failed_when: false
   changed_when: false
+  when: nvim_bin.stat.exists
 
-- name: Compare versions and download/install if outdated
+- name: Download/install Neovim if missing or outdated
+  become: yes
   ansible.builtin.shell: |
-    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
-    sudo rm -rf /opt/nvim
-    sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
-  when: installed_version.stdout.strip() != latest_version
+    curl -fL -o nvim-linux-x86_64.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
+    rm -rf /opt/nvim-linux-x86_64
+    tar -C /opt -xzf nvim-linux-x86_64.tar.gz
   args:
     chdir: /tmp
+  when: not nvim_bin.stat.exists or (installed_version.stdout | default('') | trim) != latest_version
 
-- name: Install tree-sitter-cli
-  shell: |
-    . {{ ansible_env.HOME }}/.nvm/nvm.sh && npm install -g @tree-sitter/cli
+- name: Ensure nvim is on PATH (/usr/local/bin/nvim)
+  become: yes
+  ansible.builtin.file:
+    src: /opt/nvim-linux-x86_64/bin/nvim
+    dest: /usr/local/bin/nvim
+    state: link
+
+- name: Check if tree-sitter-cli is installed (Homebrew)
+  ansible.builtin.stat:
+    path: /home/linuxbrew/.linuxbrew/bin/tree-sitter
+  register: treesitter_cli
+
+- name: Install tree-sitter-cli with brew
+  become: no
+  ansible.builtin.shell: /home/linuxbrew/.linuxbrew/bin/brew install tree-sitter-cli
+  when: not treesitter_cli.stat.exists

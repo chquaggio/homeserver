@@ -3,4 +3,5 @@
 - include_tasks: node.yml
 # - include_tasks: user.yml
 - include_tasks: dotfiles.yml
-# - include_tasks: network.yml
+- include_tasks: brew.yml
+- include_tasks: network.yml
