@@ -27,13 +27,11 @@
     - "images"
     - "config"
 
-- name: Copy homepage configuration
-  ansible.builtin.copy:
-    src: "{{ item }}"
-    dest: "{{ docker_compose_dir }}/homepage/config"
+- name: Render homepage configuration
+  ansible.builtin.template:
+    src: "templates/services.yaml.j2"
+    dest: "{{ docker_compose_dir }}/homepage/config/services.yaml"
   become: true
-  with_fileglob:
-    - "files/homepage_config/*"
 
 - name: Copy homepage images
   ansible.builtin.copy:

@@ -17,6 +17,10 @@
         container: trilium
         statusStyle: "dot"
         showStats: true
+        widget:
+          type: trilium
+          url: http://trilium:8080
+          key: "{{ trilium_token }}"
 
     - pihole:
         icon: pi-hole.png
@@ -27,6 +31,11 @@
         container: pihole
         statusStyle: "dot"
         showStats: true
+        widget:
+          type: pihole
+          url: http://pihole:80
+          version: 6
+          key: "{{ pihole_password }}"
 
     - zerobyte:
         icon: zerobyte.png
@@ -45,6 +54,13 @@
         container: beszel
         statusStyle: "dot"
         showStats: true
+        widget:
+          type: beszel
+          url: http://beszel:8090
+          username: "{{ beszel_user }}"
+          password: "{{ beszel_password }}"
+          systemId: "{{ beszel_sid }}"
+          version: 2
 
     - qBitTorrent:
         icon: qbittorrent.png
@@ -54,6 +70,13 @@
         container: qbittorrent
         statusStyle: "dot"
         showStats: true
+        widget:
+          type: qbittorrent
+          url: http://qbittorrent:8585
+          username: "{{ qb_user }}"
+          password: "{{ qb_password }}"
+          enableLeechProgress: true
+          enableLeechSize: true
 
     # - nginx-proxy-manager:
     #     icon: nginx-proxy-manager.png
@@ -73,6 +96,11 @@
         container: mealie
         statusStyle: "dot"
         showStats: true
+        #widget:
+        #  type: mealie
+        #  url: http://quoggiosever:9925
+        #  key: 
+        #  version: 2
 
     - Docling:
         icon: sh-docling.png
@@ -109,6 +137,11 @@
         container: sonarr
         statusStyle: "dot"
         showStats: true
+        widget:
+          type: sonarr
+          url: http://sonarr:8989
+          key: "{{ sonarr_key }}"
+          enableQueue: true
 
     - Radarr:
         icon: radarr.png
@@ -118,6 +151,11 @@
         container: radarr
         statusStyle: "dot"
         showStats: true
+        widget:
+          type: radarr
+          url: http://radarr:7878
+          key: "{{ radarr_key }}"
+          enableQueue: true
 
     - Bazarr:
         icon: bazarr.png
@@ -127,6 +165,10 @@
         container: bazarr
         statusStyle: "dot"
         showStats: true
+        widget:
+          type: bazarr
+          url: http://bazarr:6767
+          key: "{{ bazarr_key }}"
 
     - Jellyseerr:
         icon: jellyseerr.png
@@ -136,6 +178,10 @@
         container: jellyseerr
         statusStyle: "dot"
         showStats: true
+        widget:
+          type: jellyseerr
+          url: http://jellyseerr:5055
+          key: "{{ jellyseerr_key }}"
 
     - Prowlarr:
         icon: prowlarr.png
@@ -145,6 +191,10 @@
         container: prowlarr
         statusStyle: "dot"
         showStats: true
+        widget:
+          type: prowlarr
+          url: http://prowlarr:9696
+          key: "{{ prowlarr_key }}"
 
 - Media:
     - Jellyfin:
@@ -155,6 +205,16 @@
         container: jellyfin
         statusStyle: "dot"
         showStats: true
+        widget:
+          type: jellyfin
+          url: http://jellyfin:8096
+          key: "{{ jellyfin_key }}"
+          enableBlocks: true
+          enableNowPlaying: true
+          enableUser: true
+          enableMediaControl: false
+          showEpisodeNumber: true
+          expandOneStreamToTwoRows: false
 
     - Audiobookshelf:
         icon: audiobookshelf.png
