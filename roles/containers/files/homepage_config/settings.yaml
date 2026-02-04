@@ -1,10 +1,11 @@
 title: Home is where Quoggio is
 # startUrl: https://custom.url
 background:
-  image: /images/background.jpeg
-  blur: sm
-  opacity: 20
-color: indigo
+  image: /images/bg.png
+  blur: xs
+  opacity: 40
+color: zinc
+useEqualHeights: true
 theme: dark # or light
 # statusStyle: "dot"
 quicklaunch:
