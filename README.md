@@ -29,7 +29,6 @@ The setup uses Ansible to:
 ### 🏠 Dashboard & Management
 
 - **Homepage** (`:3000`) - Service dashboard and homepage
-- **Nginx Proxy Manager** (`:80/:443/:81`) - Reverse proxy (legacy, Pi-hole now handles most routing)
 
 ### 🎬 Media Management Stack
 
@@ -57,6 +56,14 @@ The setup uses Ansible to:
 ### 🔧 Infrastructure Services
 
 - **Pi-hole** (`:53` DNS, `:8053` Web UI) - Network-wide ad blocking and DNS server
+- **cloudflared** - DNS-over-HTTPS / Cloudflare tunnel helper (as configured in this repo)
+
+### 🧰 Ops / Utilities
+
+- **GHCR login** - Auth helper for pulling images from GitHub Container Registry
+- **Beszel** - Utility container (see `roles/containers/tasks/beszel.yml`)
+- **Docling** - Utility container (see `roles/containers/tasks/docling.yml`)
+- **Zerobyte** - Utility container (see `roles/containers/tasks/zerobyte.yml`)
 
 ## Deployment
 
@@ -102,7 +109,6 @@ flowchart LR
     
     subgraph Management[Management & UI]
       HP[homepage :3000]
-      NPM[nginx-proxy-manager :80/:443/:81]
     end
     
     subgraph Media[Media Stack]
@@ -127,6 +133,7 @@ flowchart LR
     
     subgraph Infrastructure[Infrastructure]
       PH[pihole :53/:8053]
+      CF[cloudflared]
     end
   end
 
