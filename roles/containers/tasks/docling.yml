@@ -8,6 +8,7 @@
       environment:
         # Set Backend ENV Variables Here
         - DOCLING_SERVE_ENABLE_UI=1
+        - DOCLING_SERVE_MAX_SYNC_WAIT=600
       restart: unless-stopped
       ports:
           - "5001:5001"
