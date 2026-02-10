@@ -213,11 +213,3 @@ Services are configured through environment variables and volume mounts defined 
 | **Media Storage** | `/media/` | Shared media directory |
 | **Service Data** | `./service-name/` | Per-service data directories |
 | **AI Integration** | `http://bestione:8000/v1` | LLM API endpoint for OpenWebUI and Mealie |
-
----
-
-<div align="center">
-
-**Built with ❤️ using Ansible and Docker**
-
-</div>
