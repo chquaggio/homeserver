@@ -119,7 +119,7 @@ The setup uses Ansible to:
 | **Radarr** | `:7878` | Movie management and automation |
 | **Prowlarr** | `:9696` | Indexer management for *arr stack |
 | **Bazarr** | `:6767` | Subtitle management |
-| **qBittorrent** | `:8585` + `:6881` | Torrent client |
+| **qBittorrent** | `:8585`, `:6881` | Torrent client |
 | **Audiobookshelf** | `:13378→80` | Audiobook and podcast server |
 
 </details>
