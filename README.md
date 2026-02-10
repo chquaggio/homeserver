@@ -1,12 +1,85 @@
-# HomeServer (Ansible)
+<div align="center">
 
-This repository contains Ansible playbooks and roles to provision and manage my personal home server. The entire setup runs as Docker containers via a single Docker Compose file generated from Ansible templates.
+# 🏠 HomeServer
 
-## Overview
+### Ansible-powered Docker Compose Infrastructure
 
-My home server runs a comprehensive media management and personal productivity stack, with all services containerized and orchestrated through Docker Compose. The server integrates with Tailscale for secure networking and uses Pi-hole for DNS management and local service resolution.
+[![Ansible](https://img.shields.io/badge/Ansible-EE0000?style=for-the-badge&logo=ansible&logoColor=white)](https://www.ansible.com/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![Tailscale](https://img.shields.io/badge/Tailscale-1C1C1C?style=for-the-badge&logo=tailscale&logoColor=white)](https://tailscale.com/)
 
-## Architecture
+*Automated deployment and management of a comprehensive home server stack*
+
+</div>
+
+---
+
+## 📖 Overview
+
+This repository contains Ansible playbooks and roles to provision and manage a personal home server. The entire setup runs as Docker containers via a single Docker Compose file generated from Ansible templates.
+
+The home server runs a comprehensive media management and personal productivity stack, with all services containerized and orchestrated through Docker Compose. The server integrates with Tailscale for secure networking and uses Pi-hole for DNS management and local service resolution.
+
+## ✨ Key Features
+
+<table>
+<tr>
+<td width="50%">
+
+### 🎬 Media Hub
+Complete *arr stack with Jellyfin, automated downloads, and subtitle management
+
+### 🤖 AI-Powered
+OpenWebUI and Mealie integrated with self-hosted LLM API
+
+### 🔒 Secure Access
+Tailscale VPN for encrypted remote access
+
+</td>
+<td width="50%">
+
+### 📊 Self-Hosted Apps
+Finance tracking, task management, notes, and recipes
+
+### 🐳 Infrastructure as Code
+Fully automated deployment with Ansible + Docker Compose
+
+### 🌐 Smart DNS
+Pi-hole for ad-blocking and local service resolution
+
+</td>
+</tr>
+</table>
+
+## 🏗️ Architecture
+
+### System Overview
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                         🌐 Tailscale Network                         │
+│                                                                      │
+│  ┌─────────────────┐              ┌──────────────────────────────┐  │
+│  │   Home PC       │              │      Home Server             │  │
+│  │  (bestione)     │◄────────────►│   (quoggioserver)            │  │
+│  │  LLM API :8000  │   Secure     │                              │  │
+│  └─────────────────┘   Network    │  ┌────────────────────────┐  │  │
+│                                    │  │   Pi-hole DNS :53      │  │  │
+│                                    │  │   Web UI :8053         │  │  │
+│                                    │  └────────────────────────┘  │  │
+│                                    │                              │  │
+│                                    │  ┌────────────────────────┐  │  │
+│                                    │  │  Docker Compose Stack  │  │  │
+│                                    │  │  (qnet network)        │  │  │
+│                                    │  │                        │  │  │
+│                                    │  │  📺 Media Services     │  │  │
+│                                    │  │  🤖 AI & Productivity  │  │  │
+│                                    │  │  🏡 Personal Apps      │  │  │
+│                                    │  │  🔧 Infrastructure     │  │  │
+│                                    │  └────────────────────────┘  │  │
+│                                    └──────────────────────────────┘  │
+└──────────────────────────────────────────────────────────────────────┘
+```
 
 ### Networking
 
@@ -24,54 +97,89 @@ The setup uses Ansible to:
 3. Render a Docker Compose file from the `compose.yml.j2` template
 4. Deploy everything with `docker compose up`
 
-## Services
+---
 
-### 🏠 Dashboard & Management
+## 📦 Services
+
+<details>
+<summary><b>🏠 Dashboard & Management</b></summary>
 
 - **Homepage** (`:3000`) - Service dashboard and homepage
 
-### 🎬 Media Management Stack
+</details>
 
-- **Jellyfin** (`:8096`) - Media server for movies and TV shows
-- **Jellyseerr** (`:5055`) - Media request management
-- **Sonarr** (`:8989`) - TV show management and automation
-- **Radarr** (`:7878`) - Movie management and automation  
-- **Prowlarr** (`:9696`) - Indexer management for *arr stack
-- **Bazarr** (`:6767`) - Subtitle management
-- **qBittorrent** (`:8585` + `:6881`) - Torrent client
-- **Audiobookshelf** (`:13378->80`) - Audiobook and podcast server
+<details open>
+<summary><b>🎬 Media Management Stack</b></summary>
 
-### 🤖 AI & Productivity
+| Service | Port | Description |
+|---------|------|-------------|
+| **Jellyfin** | `:8096` | Media server for movies and TV shows |
+| **Jellyseerr** | `:5055` | Media request management |
+| **Sonarr** | `:8989` | TV show management and automation |
+| **Radarr** | `:7878` | Movie management and automation |
+| **Prowlarr** | `:9696` | Indexer management for *arr stack |
+| **Bazarr** | `:6767` | Subtitle management |
+| **qBittorrent** | `:8585`, `:6881` | Torrent client |
+| **Audiobookshelf** | `:13378→80` | Audiobook and podcast server |
 
-- **OpenWebUI** (`:3333->8080`) - Web interface for LLM interaction (connects to home PC LLM API)
-- **MyMCP** (`:7000`) - Personal MCP (Model Context Protocol) server
-- **Trilium** (`:5050->8080`) - Note-taking and knowledge management
+</details>
 
-### 🏡 Personal Applications  
+<details open>
+<summary><b>🤖 AI & Productivity</b></summary>
 
-- **Actual Budget** (`:5006`) - Personal finance management
-- **Vikunja** (`:3456`) - Task and project management
-- **Mealie** (`:9925->9000`) - Recipe management with AI integration
+| Service | Port | Description |
+|---------|------|-------------|
+| **OpenWebUI** | `:3333→8080` | Web interface for LLM interaction (connects to home PC LLM API) |
+| **MyMCP** | `:7000` | Personal MCP (Model Context Protocol) server |
+| **Trilium** | `:5050→8080` | Note-taking and knowledge management |
 
-### 🔧 Infrastructure Services
+</details>
+
+<details open>
+<summary><b>🏡 Personal Applications</b></summary>
+
+| Service | Port | Description |
+|---------|------|-------------|
+| **Actual Budget** | `:5006` | Personal finance management |
+| **Vikunja** | `:3456` | Task and project management |
+| **Mealie** | `:9925→9000` | Recipe management with AI integration |
+
+</details>
+
+<details>
+<summary><b>🔧 Infrastructure Services</b></summary>
 
 - **Pi-hole** (`:53` DNS, `:8053` Web UI) - Network-wide ad blocking and DNS server
-- **cloudflared** - DNS-over-HTTPS / Cloudflare tunnel helper (as configured in this repo)
+- **cloudflared** - DNS-over-HTTPS / Cloudflare tunnel helper
 
-### 🧰 Ops / Utilities
+</details>
+
+<details>
+<summary><b>🧰 Ops / Utilities</b></summary>
 
 - **GHCR login** - Auth helper for pulling images from GitHub Container Registry
 - **Beszel** - Utility container (see `roles/containers/tasks/beszel.yml`)
 - **Docling** - Utility container (see `roles/containers/tasks/docling.yml`)
 - **Zerobyte** - Utility container (see `roles/containers/tasks/zerobyte.yml`)
 
-## Deployment
+</details>
+
+---
+
+## 🚀 Deployment
 
 The deployment follows this workflow:
 
-1. **Service Definition**: Each service is defined in `roles/containers/tasks/<service>.yml`
-2. **Template Rendering**: The `compose.yml.j2` template iterates over all services to generate the final Docker Compose file
-3. **Deployment**: Ansible runs `docker compose up -d` to deploy all services
+```
+1️⃣ Service Definition
+   ↓ Each service defined in roles/containers/tasks/<service>.yml
+   
+2️⃣ Template Rendering  
+   ↓ compose.yml.j2 combines all services
+   
+3️⃣ Deployment
+   ↓ docker compose up -d deploys the stack
+```
 
 ### Key Files
 
@@ -90,62 +198,18 @@ ansible-playbook site.yml
 ansible-playbook site.yml --tags containers
 ```
 
-## Network Diagram
+---
 
-```mermaid
-flowchart LR
-  subgraph Tailnet[Tailscale Tailnet]
-    PC[Home PC\n(bestione)\nLLM API :8000]
-    HS[Homeserver\n(quoggioserver)]
-  end
+## ⚙️ Configuration
 
-  Client[Client devices] -->|Tailscale| Tailnet
+Services are configured through environment variables and volume mounts defined in their respective Ansible tasks.
 
-  HS -->|DNS queries| PH[Pi-hole\nDNS + local records]
-  PH -->|resolves service names| HS
+### Default Settings
 
-  subgraph Docker[Docker Compose Stack]
-    NET[qnet]
-    
-    subgraph Management[Management & UI]
-      HP[homepage :3000]
-    end
-    
-    subgraph Media[Media Stack]
-      JF[jellyfin :8096]
-      JS[jellyseerr :5055]
-      SR[sonarr :8989]
-      RR[radarr :7878]
-      PR[prowlarr :9696]
-      BZ[bazarr :6767]
-      QB[qbittorrent :8585]
-      AB[audiobookshelf :13378]
-    end
-    
-    subgraph Productivity[Productivity & AI]
-      OW[openwebui :3333]
-      TR[trilium :5050]
-      VK[vikunja :3456]
-      ML[mealie :9925]
-      MCP[mymcp :7000]
-      AC[actualbudget :5006]
-    end
-    
-    subgraph Infrastructure[Infrastructure]
-      PH[pihole :53/:8053]
-      CF[cloudflared]
-    end
-  end
-
-  NET --- Management & Media & Productivity & Infrastructure
-  OW -->|HTTP over Tailscale| PC
-```
-
-## Configuration
-
-Services are configured through environment variables and volume mounts defined in their respective Ansible tasks. Key configuration points:
-
-- **Timezone**: Most services use `Europe/Rome`
-- **User/Group IDs**: Services run as `PUID=1000` and `PGID=1000`
-- **Storage**: Media stored in `/media/`, service data in `./service-name/` directories
-- **AI Integration**: OpenWebUI and Mealie connect to LLM API at `http://bestione:8000/v1`
+| Setting | Value | Description |
+|---------|-------|-------------|
+| **Timezone** | `Europe/Rome` | Used by most services |
+| **User/Group** | `PUID=1000`, `PGID=1000` | Service execution context |
+| **Media Storage** | `/media/` | Shared media directory |
+| **Service Data** | `./service-name/` | Per-service data directories |
+| **AI Integration** | `http://bestione:8000/v1` | LLM API endpoint for OpenWebUI and Mealie |
