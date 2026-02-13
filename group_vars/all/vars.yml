@@ -21,6 +21,7 @@ radarr_key: "{{ RADARR_KEY }}"
 sonarr_key: "{{ SONARR_KEY }}"
 trilium_token: "{{ TRILIUM_TOKEN }}"
 trilium_url: "{{ TRILIUM_BASE_URL_PROD }}"
+zerobyte_secret: "{{ ZEROBYTE_SECRET }}"
 
 cf_token: "{{ CF_TOKEN }}"
 

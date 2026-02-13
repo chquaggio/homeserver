@@ -8,6 +8,8 @@
       environment:
         # Set Backend ENV Variables Here
         - TZ=Europe/Rome
+        - BASE_URL=http://quoggioserver:4096
+        - APP_SECRET={{ zerobyte_secret }}
       volumes:
         - /etc/timezone:/etc/timezone:ro
         - /etc/localtime:/etc/localtime:ro
