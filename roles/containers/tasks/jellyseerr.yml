@@ -2,9 +2,9 @@
 - name: Configure Jellyseerr service
   set_fact:
     jellyseerr_service:
-      name: jellyseerr
-      image: fallenbagel/jellyseerr:latest
-      container_name: jellyseerr
+      name: seerr
+      image: ghcr.io/seerr-team/seerr:latest
+      container_name: seerr
       ports:
         - "5055:5055"
       volumes:
