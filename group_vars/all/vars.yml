@@ -6,6 +6,7 @@ ssh_public_key: "{{ SSH_PUBLIC_KEY }}"
 ghcr_username: "chquaggio"
 ghcr_token: "{{ GH_TOKEN }}"
 
+audiobookshelf_key: "{{ AUDIOBOOKSHELF_KEY }}"
 bazarr_key: "{{ BAZARR_KEY }}"
 beszel_user: "{{ BESZEL_USER }}"
 beszel_password: "{{ BESZEL_PASSWORD }}"
