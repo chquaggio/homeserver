@@ -9,6 +9,9 @@
       environment:
         - TRILIUM_TOKEN={{ trilium_token }}
         - TRILIUM_BASE_URL_PROD={{ trilium_url }}
+        - ACTUAL_URL={{ actual_url }}
+        - ACTUAL_PASSWORD={{ actual_password }}
+        - ACTUAL_BUDGET={{ actual_budget }}
       ports:
         - 7000:7000
       networks:
