@@ -1,0 +1,20 @@
+---
+- name: Configure spesatracker service
+  set_fact:
+    spesatracker_service:
+      name: spesatracker
+      image: ghcr.io/chquaggio/spesatracker:latest
+      container_name: spesatracker
+      restart: unless-stopped
+      environment:
+        - TZ=Europe/Rome
+        - DATABASE_URL=postgresql+asyncpg://spesatracker:{{ spesatracker_db_password }}@spesatracker-db:5432/spesatracker
+        - DOCLING_URL=http://docling:5001
+        - TELEGRAM_BOT_TOKEN={{ telegram_token | default('') }}
+        - IPER_EMAIL={{ spesatracker_iper_email | default('') }}
+        - IPER_PSW={{ spesatracker_iper_psw | default('') }}
+        - IPER_STORE_ID={{ spesatracker_iper_store_id | default('') }}
+      ports:
+        - 8400:8400
+      networks:
+        - qnet

@@ -40,7 +40,8 @@
                    actual_service,
                    audiobookshelf_service,
                    beszel_service,
-                   beszel_agent_service] }}"
+                   beszel_agent_service,
+                   spesatracker_service] }}"
 
 - name: Render Docker Compose file
   template:
