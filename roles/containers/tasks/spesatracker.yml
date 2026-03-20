@@ -8,7 +8,10 @@
       restart: unless-stopped
       environment:
         - TZ=Europe/Rome
-        - DATABASE_URL=postgresql+asyncpg://spesatracker:{{ spesatracker_db_password }}@spesatracker-db:5432/spesatracker
+        - DB_USER={{ db_user | default('spesatracker') }}
+        - DB_PASSWORD={{ db_password }}
+        - DB_NAME={{ db_name | default('spesatracker') }}
+        - DB_HOST=postgres
         - DOCLING_URL=http://docling:5001
         - TELEGRAM_BOT_TOKEN={{ telegram_token | default('') }}
         - IPER_EMAIL={{ spesatracker_iper_email | default('') }}
@@ -16,5 +19,7 @@
         - IPER_STORE_ID={{ spesatracker_iper_store_id | default('') }}
       ports:
         - 8400:8400
+      depends_on:
+        - postgres
       networks:
         - qnet

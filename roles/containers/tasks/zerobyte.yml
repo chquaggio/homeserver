@@ -23,6 +23,7 @@
         - ./mealie-data:/containers/mealie
         - ./open-webui:/containers/open-webui
         - ./pihole/etc:/containers/pihole
+        - ./postgres-data:/containers/postgres
         - ./prowlarr/config:/containers/prowlarr
         - ./qbittorrent/config:/containers/qbittorrent
         - ./radarr/config:/containers/radarr

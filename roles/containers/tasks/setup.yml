@@ -27,6 +27,7 @@
                    jellyseerr_service,
                    cloudflared_service,
                    sonarr_service,
+                   db_service,
                    prowlarr_service,
                    bazarr_service,
                    radarr_service,
