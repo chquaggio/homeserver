@@ -35,6 +35,7 @@
                    trilium_service,
                    mymcp_service,
                    zerobyte_service,
+                   wishlist_service,
                    qbittorrent_service,
                    mealie_service,
                    docling_service,

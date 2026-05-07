@@ -1,0 +1,25 @@
+---
+- name: Configure wishlist service
+  set_fact:
+    wishlist_service:
+      name: wishlist
+      image: ghcr.io/chquaggio/wishlist:latest
+      container_name: wishlist
+      restart: unless-stopped
+      environment:
+        - ADMIN_PASSWORD=2UCgDL8KmkNrj0uDXC36C+vDYI2BFTuy
+        - SESSION_SECRET=djfdjhfdsjfiasdjfaiosfjaodsifjdasifj
+      ports:
+        - 7100:7100
+      volumes:
+        - ./wishlist/data:/app/data
+      networks:
+        - qnet
+
+- name: Setup wishlist data dir
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/wishlist/data"
+    owner: "1000"
+    group: "1000"
+    state: directory
+    mode: "0755"
