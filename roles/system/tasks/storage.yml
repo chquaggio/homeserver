@@ -1,0 +1,20 @@
+---
+- name: Ensure DAS mountpoint exists
+  ansible.builtin.file:
+    path: "{{ media_dir }}"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: '0755'
+
+- name: Ensure DAS is mounted
+  ansible.posix.mount:
+    path: "{{ media_dir }}"
+    src: "{{ das_device }}"
+    fstype: "{{ das_fstype }}"
+    opts: defaults,nofail,x-systemd.device-timeout=10
+    state: mounted
+
+- name: Assert DAS is actually a mountpoint
+  ansible.builtin.command: mountpoint -q {{ media_dir }}
+  changed_when: false

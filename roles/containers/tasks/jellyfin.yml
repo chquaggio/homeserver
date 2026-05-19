@@ -11,8 +11,8 @@
         - ./jellyfin/config:/config
         - ./jellyfin/cache:/cache
         - type: bind
-          source: /media
-          target: /media
+          source: "{{ media_dir }}"
+          target: "{{ media_dir }}"
       networks:
         - qnet
       restart: unless-stopped

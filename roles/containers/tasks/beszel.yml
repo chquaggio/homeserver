@@ -25,14 +25,14 @@
       user: "0:6"  # root user with disk group
       devices:
         - /dev/sda:/dev/sda
+        - "{{ das_device }}:{{ das_device }}"
       cap_add:
         - SYS_RAWIO # required for S.M.A.R.T. data
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
         - ./beszel/beszel_socket:/beszel_socket
         - ./beszel/beszel_agent_data:/var/lib/beszel-agent
-        # monitor other disks / partitions by mounting a folder in /extra-filesystems
-        # - /mnt/disk/.beszel:/extra-filesystems/sda1:ro
+        - "{{ media_dir }}:/extra-filesystems/das-01:ro"
       networks:
         - qnet
       environment:

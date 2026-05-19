@@ -8,8 +8,8 @@
       ports:
         - 13378:80
       volumes:
-        - /media/books:/audiobooks
-        - /media/pdfs:/pdfs
+        - "{{ media_dir }}/books:/audiobooks"
+        - "{{ media_dir }}/pdfs:/pdfs"
         - ./audiobookshelf/podcasts:/podcasts
         - ./audiobookshelf/config:/config
         - ./audiobookshelf/metadata:/metadata

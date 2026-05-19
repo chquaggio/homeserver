@@ -9,8 +9,8 @@
         - "6767:6767"
       volumes:
         - ./bazarr/config:/config
-        - /media/Shows:/tv
-        - /media/Movies:/movies
+        - "{{ media_dir }}/Shows:/tv"
+        - "{{ media_dir }}/Movies:/movies"
       environment:
         - PUID=1000
         - PGID=1000

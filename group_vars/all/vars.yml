@@ -46,6 +46,10 @@ docker_dir: /opt/docker/data
 
 docker_compose_dir: /opt/docker/compose
 
+media_dir: /mnt/das
+das_device: /dev/disk/by-label/das-01
+das_fstype: ext4
+
 extra_packages:
   - curl
   - wget

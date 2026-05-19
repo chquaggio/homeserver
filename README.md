@@ -76,6 +76,12 @@ Pi-hole for ad-blocking and local service resolution
 │                                    │  │  🤖 AI & Productivity  │  │  │
 │                                    │  │  🏡 Personal Apps      │  │  │
 │                                    │  │  🔧 Infrastructure     │  │  │
+│                                    │  └───────────┬────────────┘  │  │
+│                                    │              │ bind mount    │  │
+│                                    │  ┌───────────▼────────────┐  │  │
+│                                    │  │  💾 /mnt/das (12TB)    │  │  │
+│                                    │  │  TerraMaster D4-320    │  │  │
+│                                    │  │  ext4, label das-01    │  │  │
 │                                    │  └────────────────────────┘  │  │
 │                                    └──────────────────────────────┘  │
 └──────────────────────────────────────────────────────────────────────┘
@@ -87,6 +93,12 @@ Pi-hole for ad-blocking and local service resolution
 - **Pi-hole**: Acts as the primary DNS server and provides local hostname resolution (replacing MagicDNS)
 - **Docker Network**: All containers communicate through a shared `qnet`
 - **Cross-machine Communication**: OpenWebUI can communicate with a self-hosted LLM API running on my home PC (`bestione:8000`)
+
+### Storage
+
+- **TerraMaster D4-320 DAS**: USB-attached enclosure exposing a 12TB ext4 disk (label `das-01`) mounted at `/mnt/das` via fstab
+- **Media path**: Centralized under the `media_dir` ansible variable (default `/mnt/das`); all media services (Jellyfin, *arr stack, qBittorrent, Audiobookshelf) bind-mount from here
+- **Health monitoring**: Beszel-agent passes the DAS block device through for S.M.A.R.T. and mounts `/mnt/das` read-only at `/extra-filesystems/das-01` for capacity reporting
 
 ### Infrastructure
 
@@ -210,6 +222,6 @@ Services are configured through environment variables and volume mounts defined 
 |---------|-------|-------------|
 | **Timezone** | `Europe/Rome` | Used by most services |
 | **User/Group** | `PUID=1000`, `PGID=1000` | Service execution context |
-| **Media Storage** | `/media/` | Shared media directory |
+| **Media Storage** | `/mnt/das/` | Shared media directory on TerraMaster D4-320 DAS (`media_dir` var) |
 | **Service Data** | `./service-name/` | Per-service data directories |
 | **AI Integration** | `http://bestione:8000/v1` | LLM API endpoint for OpenWebUI and Mealie |

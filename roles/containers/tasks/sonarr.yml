@@ -9,8 +9,8 @@
         - 8989:8989
       volumes:
         - ./sonarr/config:/config
-        - /media/Shows:/tv
-        - /media/downloads:/downloads
+        - "{{ media_dir }}/Shows:/tv"
+        - "{{ media_dir }}/downloads:/downloads"
       networks:
         - qnet
       restart: unless-stopped

@@ -8,8 +8,8 @@
         - "7878:7878"
       volumes:
         - ./radarr/config:/config
-        - /media/Movies:/movies
-        - /media/downloads:/downloads
+        - "{{ media_dir }}/Movies:/movies"
+        - "{{ media_dir }}/downloads:/downloads"
       environment:
         - PUID=1000
         - PGID=1000

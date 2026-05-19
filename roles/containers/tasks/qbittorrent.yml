@@ -11,7 +11,7 @@
         - 6881:6881/udp
       volumes:
         - ./qbittorrent/config:/config
-        - /media/downloads:/downloads
+        - "{{ media_dir }}/downloads:/downloads"
       networks:
         - qnet
       restart: unless-stopped
