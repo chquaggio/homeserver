@@ -16,9 +16,9 @@
         - qnet
       restart: unless-stopped
       environment:
-        - PUID=1000
-        - PGID=1000
-        - TZ=Europe/Rome
+        - "PUID={{ puid }}"
+        - "PGID={{ pgid }}"
+        - "TZ={{ tz }}"
         - WEBUI_PORT=8585
 
 - name: Setup qBittorrent directories

@@ -14,7 +14,7 @@
         - ./audiobookshelf/config:/config
         - ./audiobookshelf/metadata:/metadata
       environment:
-        - TZ=Europe/Amsterdam
+        - "TZ={{ tz }}"
       networks:
         - qnet
       restart: unless-stopped

@@ -12,9 +12,9 @@
         - ./open-webui:/app/backend/data
       environment:
         # Set Backend ENV Variables Here
-        - PUID=1000
-        - PGID=1000
-        - TZ=Europe/Rome
+        - "PUID={{ puid }}"
+        - "PGID={{ pgid }}"
+        - "TZ={{ tz }}"
         - OPENAI_API_BASE_URL=http://bestione:8000/v1
       networks:
         - qnet

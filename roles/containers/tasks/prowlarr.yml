@@ -10,9 +10,9 @@
       volumes:
         - ./prowlarr/config:/config
       environment:
-        - PUID=1000
-        - PGID=1000
-        - TZ=Europe/Rome
+        - "PUID={{ puid }}"
+        - "PGID={{ pgid }}"
+        - "TZ={{ tz }}"
       networks:
         - qnet
       restart: unless-stopped

@@ -1,0 +1,26 @@
+---
+# Host / user
+username: quoghs
+password: "{{ VAULT_PASSWORD }}"
+ssh_public_key: "{{ SSH_PUBLIC_KEY }}"
+
+# Container runtime defaults
+tz: Europe/Rome
+puid: 1000
+pgid: 1000
+
+# Docker layout
+docker_dir: /opt/docker/data
+docker_compose_dir: /opt/docker/compose
+
+# Storage (TerraMaster D4-320 DAS)
+media_dir: /mnt/das
+das_device: /dev/disk/by-label/das-01
+das_fstype: ext4
+
+# Container registry
+ghcr_username: "chquaggio"
+ghcr_token: "{{ GH_TOKEN }}"
+
+# Networking
+cf_token: "{{ CF_TOKEN }}"

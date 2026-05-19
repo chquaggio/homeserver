@@ -1,3 +1,24 @@
+## [2026-05-19 16:27] Push Summary
+
+### Conversation Context
+After landing the DAS refactor, the user asked for a broader assessment of the repository and its structure. I produced a prioritized list of suggestions across security, structural, and hygiene categories; the user chose seven items to fix (TZ/PUID/PGID extraction, containers-role DRY, group_vars split, lint CI, host-key-checking, scripts README) plus the security item (beszel KEY/TOKEN leaking in plaintext), explicitly skipped the dead-code cleanup because the disabled services may be reactivated, and confirmed that the DAS should not be added to the inventory — it has no OS to connect to, so it is correctly modeled as block storage attached to `quoggioserver`. Two design choices needed clarification: for the containers-role DRY refactor we picked auto-discovery via `query('varnames', '_service$')` over per-file appending because it avoids touching every task file and lets disabled services automatically drop out of the rendered compose; for the `group_vars/all/` split we picked a three-way infrastructure / services / system layout over a binary infra/secrets split because it keeps host-level wiring separate from per-service refs and from user-environment knobs. For host key checking we replaced the blanket `False` with `StrictHostKeyChecking=accept-new` plus `ControlMaster=auto` — preserves trust-on-first-use convenience while restoring tamper detection after the initial connect, and adds connection reuse for speed. The user pre-created the `BA_KEY` and `BA_TOKEN` vault variables; the literal beszel hub token is now removed from source but remains in git history, so it must be rotated in the Beszel hub UI.
+
+### Changes
+- `group_vars/all/vars.yml`: Deleted. Contents redistributed across three new files.
+- `group_vars/all/infrastructure.yml`: New file. Host/user identity, container runtime defaults (new `tz`, `puid`, `pgid`), docker layout, DAS storage vars, container registry and Cloudflare token.
+- `group_vars/all/services.yml`: New file. All `*_key` / `*_password` / `*_token` / `*_user` service-level secret references, including new `ba_key` and `ba_token` for beszel-agent.
+- `group_vars/all/system.yml`: New file. Shell, dotfiles repo, and extra packages list.
+- `roles/containers/tasks/beszel.yml`: Replaced hardcoded `KEY=ssh-ed25519 ...` and `TOKEN=0d90d715-...` literals with `{{ ba_key }}` / `{{ ba_token }}`. **The old token value is in git history and must be rotated in Beszel hub.**
+- `roles/containers/tasks/setup.yml`: Replaced manual 23-entry services list with `query('varnames', '_service$') | map('extract', vars) | list`. Adding a service now only requires creating a task file and importing it in `main.yml`.
+- `roles/containers/tasks/{audiobookshelf,bazarr,mealie,openwebui,prowlarr,qbittorrent,radarr,sonarr,spesatracker,zerobyte}.yml`: `PUID=1000` / `PGID=1000` / `TZ=Europe/Rome` (and the inconsistent `TZ=Europe/Amsterdam` in audiobookshelf) replaced with `{{ puid }}` / `{{ pgid }}` / `{{ tz }}`.
+- `ansible.cfg`: Removed `host_key_checking = False`. Added `[ssh_connection]` section with `StrictHostKeyChecking=accept-new` and `ControlMaster=auto` for trust-on-first-use plus SSH connection reuse.
+- `.yamllint`: New file. Permissive yaml linting config (200-char line limit, document-start disabled, files-folder ignored).
+- `.ansible-lint`: New file. Basic profile, excludes container files dir and scripts dir.
+- `.github/workflows/lint.yml`: New file. CI workflow running `yamllint` and `ansible-lint` on push to main and on PRs.
+- `scripts/README.md`: New file. One-row-per-script table documenting purpose and whether an ansible-managed equivalent exists.
+
+---
+
 ## [2026-05-19 13:35] Push Summary
 
 ### Conversation Context

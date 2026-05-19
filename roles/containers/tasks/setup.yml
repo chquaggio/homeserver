@@ -21,29 +21,7 @@
 
 - name: Combine services
   set_fact:
-    services: "{{ [homepage_service,
-                   openwebui_service,
-                   jellyfin_service,
-                   jellyseerr_service,
-                   cloudflared_service,
-                   sonarr_service,
-                   db_service,
-                   prowlarr_service,
-                   bazarr_service,
-                   radarr_service,
-                   pihole_service,
-                   trilium_service,
-                   mymcp_service,
-                   zerobyte_service,
-                   wishlist_service,
-                   qbittorrent_service,
-                   mealie_service,
-                   docling_service,
-                   actual_service,
-                   audiobookshelf_service,
-                   beszel_service,
-                   beszel_agent_service,
-                   spesatracker_service] }}"
+    services: "{{ query('varnames', '_service$') | map('extract', vars) | list }}"
 
 - name: Render Docker Compose file
   template:

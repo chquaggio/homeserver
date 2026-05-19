@@ -37,8 +37,8 @@
         - qnet
       environment:
         - LISTEN=/beszel_socket/beszel.sock
-        - KEY=ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKucyzGDcDcrtW3Dz1Fey9HrX9EbsQLotBTaKsjMhrMH
-        - TOKEN=0d90d715-e839-4226-a517-fda8ae5836ed
+        - "KEY={{ ba_key }}"
+        - "TOKEN={{ ba_token }}"
         - HUB_URL=http://beszel:8090
 
 - name: Setup Beszel directories

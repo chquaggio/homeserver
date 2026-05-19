@@ -7,7 +7,7 @@
       container_name: spesatracker
       restart: unless-stopped
       environment:
-        - TZ=Europe/Rome
+        - "TZ={{ tz }}"
         - DB_USER={{ db_user | default('spesatracker') }}
         - DB_PASSWORD={{ db_password }}
         - DB_NAME={{ db_name | default('spesatracker') }}

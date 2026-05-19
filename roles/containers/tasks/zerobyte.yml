@@ -7,7 +7,7 @@
       container_name: zerobyte
       environment:
         # Set Backend ENV Variables Here
-        - TZ=Europe/Rome
+        - "TZ={{ tz }}"
         - BASE_URL=http://quoggioserver:4096
         - APP_SECRET={{ zerobyte_secret }}
       volumes:

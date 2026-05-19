@@ -1,0 +1,17 @@
+---
+shell: /usr/bin/zsh
+
+dotfiles_repo: https://github.com/chquaggio/dotfiles
+
+extra_packages:
+  - curl
+  - wget
+  - ca-certificates
+  - software-properties-common
+  - apt-transport-https
+  - gnupg
+  - bat
+  - fzf
+  - ripgrep
+  - fd-find
+  - smartmontools

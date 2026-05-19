@@ -1,64 +1,63 @@
+---
+# Service credentials and config (values resolved from vault.yml)
 
-username: quoghs
-password: "{{ VAULT_PASSWORD }}"
-ssh_public_key: "{{ SSH_PUBLIC_KEY }}"
-
-ghcr_username: "chquaggio"
-ghcr_token: "{{ GH_TOKEN }}"
-
+# Actual Budget
 actual_budget: "{{ ACTUAL_BUDGET }}"
 actual_password: "{{ ACTUAL_PASSWORD }}"
 actual_url: "{{ ACTUAL_URL }}"
+
+# Audiobookshelf
 audiobookshelf_key: "{{ AUDIOBOOKSHELF_KEY }}"
-bazarr_key: "{{ BAZARR_KEY }}"
+
+# Beszel-agent
+ba_key: "{{ BA_KEY }}"
+ba_token: "{{ BA_TOKEN }}"
 beszel_user: "{{ BESZEL_USER }}"
 beszel_password: "{{ BESZEL_PASSWORD }}"
 beszel_sid: "{{ BESZEL_SID }}"
+
+# Bazarr
+bazarr_key: "{{ BAZARR_KEY }}"
+
+# Postgres
 db_password: "{{ DB_PASSWORD }}"
 db_name: "{{ DB_NAME }}"
 db_user: "{{ DB_USER }}"
+
+# Jellyfin / Jellyseerr
 jellyfin_key: "{{ JELLYFIN_KEY }}"
 jellyseerr_key: "{{ JELLYSEERR_KEY }}"
+
+# Mealie
 mealie_key: "{{ MEALIE_KEY }}"
+
+# OpenWebUI / OpenAI
 oai_key: "{{ OAI_KEY }}"
+
+# Pi-hole
 pihole_password: "{{ PIHOLE_PASSWORD }}"
+
+# *arr
 prowlarr_key: "{{ PROWLARR_KEY }}"
-qb_user: "{{ QB_USER }}"
-qb_password: "{{ QB_PASSWORD }}"
 radarr_key: "{{ RADARR_KEY }}"
 sonarr_key: "{{ SONARR_KEY }}"
+
+# qBittorrent
+qb_user: "{{ QB_USER }}"
+qb_password: "{{ QB_PASSWORD }}"
+
+# Spesatracker
 spesatracker_iper_email: "{{ SPESATRACKER_IPER_EMAIL }}"
 spesatracker_iper_psw: "{{ SPESATRACKER_IPER_PSW }}"
 spesatracker_iper_store_id: "{{ SPESATRACKER_IPER_STORE_ID }}"
+
+# Telegram notifications
 telegram_token: "{{ TELEGRAM_TOKEN }}"
 telegram_chat_id: "{{ TELEGRAM_CHAT_ID }}"
+
+# Trilium
 trilium_token: "{{ TRILIUM_TOKEN }}"
 trilium_url: "{{ TRILIUM_BASE_URL_PROD }}"
+
+# Zerobyte
 zerobyte_secret: "{{ ZEROBYTE_SECRET }}"
-
-cf_token: "{{ CF_TOKEN }}"
-
-shell: /usr/bin/zsh
-
-dotfiles_repo: https://github.com/chquaggio/dotfiles
-
-docker_dir: /opt/docker/data
-
-docker_compose_dir: /opt/docker/compose
-
-media_dir: /mnt/das
-das_device: /dev/disk/by-label/das-01
-das_fstype: ext4
-
-extra_packages:
-  - curl
-  - wget
-  - ca-certificates
-  - software-properties-common
-  - apt-transport-https
-  - gnupg
-  - bat
-  - fzf
-  - ripgrep
-  - fd-find
-  - smartmontools
