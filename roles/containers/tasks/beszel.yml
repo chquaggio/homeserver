@@ -25,7 +25,7 @@
       user: "0:6"  # root user with disk group
       devices:
         - /dev/sda:/dev/sda
-        - "{{ das_device }}:{{ das_device }}"
+        - "{{ das_device }}:/dev/sdb"
       cap_add:
         - SYS_RAWIO # required for S.M.A.R.T. data
       volumes:
