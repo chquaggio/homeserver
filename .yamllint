@@ -12,6 +12,10 @@ rules:
   indentation:
     indent-sequences: consistent
   document-start: disable
+  braces:
+    max-spaces-inside: 1
+  brackets:
+    max-spaces-inside: 1
 
 ignore: |
   .github/
