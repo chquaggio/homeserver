@@ -37,6 +37,9 @@ services:
       - {{ volume }}
       {%- endfor %}
     {%- endif %}
+    {%- if service.shm_size is defined %}
+    shm_size: {{ service.shm_size }}
+    {%- endif %}
     {%- if service.environment | default([]) %}
     environment:
       {%- for env in service.environment %}

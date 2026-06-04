@@ -1,3 +1,19 @@
+## [2026-06-04 19:08] Push Summary
+
+### Conversation Context
+The user invoked the `/add-service` skill to add Immich (self-hosted photo/video management) to the homeserver stack, asking that the current documentation be researched online rather than recalled. The official docker-compose.yml for the latest release (v2.7.5) was fetched from the Immich GitHub releases page, which revealed that Immich is a four-container deployment: the server, an optional machine-learning sidecar, a Redis-compatible cache (valkey), and — crucially — a *custom* Postgres image (`ghcr.io/immich-app/postgres:14-vectorchord`) that bundles the vectorchord extension, meaning the stack's existing shared `postgres:17` from `db.yml` cannot be reused and Immich gets a dedicated database container. The user chose to store the photo library on the DAS (`{{ media_dir }}/immich`, consistent with the Jellyfin media layout) while keeping postgres data and the ML model cache on local disk, to include the ML container in CPU mode (face recognition + smart search, no hardware acceleration), to vault the DB password, and to add a homepage tile under the Media group. Two template gaps surfaced along the way: `compose.yml.j2` did not support `shm_size` (Immich's postgres wants 128mb vs Docker's 64MB default), so support was added; and named volumes aren't supported, so the ML model cache uses a bind mount instead. The homepage widget block is committed commented-out with the Jinja reference escaped (`{{ '{{ immich_key }}' }}`) because even YAML comments get templated and `immich_key` doesn't exist until the user generates an API key after first login — uncommenting requires both vaulting `IMMICH_KEY` and un-escaping the reference. No icon file was needed: homepage resolves `immich.png` from the dashboard-icons CDN like every other tile in this repo. The vault secret was added non-interactively (generated 32-char alphanumeric password, per Immich's character restriction) via a scripted `EDITOR` with `ansible-vault edit`, and the stack was deployed with `ansible-playbook -t containers site.yml`. A known pre-existing gap was noted but not fixed: `compose.yml.j2` silently drops `healthcheck` keys (affects `db.yml` too).
+
+### Changes
+- `roles/containers/tasks/immich.yml`: New. Four service facts — `immich-server` (port 2283, photos on `{{ media_dir }}/immich`, depends on redis+postgres), `immich-machine-learning` (CPU, bind-mounted model cache), `immich-redis` (valkey:9), `immich-postgres` (Immich's vectorchord image, dedicated DB, `shm_size: 128mb`) — plus directory setup for the upload and model-cache dirs.
+- `roles/containers/tasks/main.yml`: Added `import_tasks: immich.yml` in alphabetical order.
+- `group_vars/all/services.yml`: Added `immich_db_password` reference to the vaulted `IMMICH_DB_PASSWORD`.
+- `roles/containers/templates/compose.yml.j2`: Added optional `shm_size` rendering for services that define it.
+- `roles/containers/templates/services.yaml.j2`: Added Immich tile to the Media group; widget block commented out until an API key exists.
+- `.gitignore`: Added `.claude/settings.local.json` (machine-local Claude Code permissions).
+- `.claude/skills/add-service/SKILL.md`: New. Project skill documenting the end-to-end workflow for adding a containerized service to this ansible stack.
+
+---
+
 ## [2026-05-19 16:27] Push Summary
 
 ### Conversation Context

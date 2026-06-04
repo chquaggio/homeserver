@@ -248,6 +248,22 @@
           url: http://audiobookshelf:80
           key: "{{ audiobookshelf_key }}"
 
+    - Immich:
+        icon: immich.png
+        href: http://quoggioserver:2283
+        description: Foto e ricordi
+        server: server-docker
+        container: immich-server
+        statusStyle: "dot"
+        showStats: true
+        # widget: generate an API key in Immich (Account Settings → API Keys),
+        # vault it as IMMICH_KEY + add immich_key to services.yml, then uncomment
+        # widget:
+        #   type: immich
+        #   url: http://immich-server:2283
+        #   key: "{{ '{{ immich_key }}' }}"  # un-escape when enabling
+        #   version: 2
+
 - AI:
     - Open-webui:
         icon: open-webui.png

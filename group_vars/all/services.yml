@@ -24,6 +24,9 @@ db_password: "{{ DB_PASSWORD }}"
 db_name: "{{ DB_NAME }}"
 db_user: "{{ DB_USER }}"
 
+# Immich
+immich_db_password: "{{ IMMICH_DB_PASSWORD }}"
+
 # Jellyfin / Jellyseerr
 jellyfin_key: "{{ JELLYFIN_KEY }}"
 jellyseerr_key: "{{ JELLYSEERR_KEY }}"
