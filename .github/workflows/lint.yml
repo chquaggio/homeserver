@@ -21,6 +21,14 @@ jobs:
           pip install ansible-core ansible-lint yamllint
           ansible-galaxy collection install -r requirements.yml
 
+      # ansible.cfg sets vault_password_file=./.vault_pass; both it and the encrypted
+      # group_vars/all/vault.yml are gitignored, so neither exists in CI. ansible-lint's
+      # internal `ansible-playbook --syntax-check` aborts if the configured password file
+      # is missing. There's no vaulted content to decrypt here, so a throwaway file is
+      # enough to let syntax-check run.
+      - name: Provide throwaway vault password (no vaulted files in CI)
+        run: echo "ci-dummy" > .vault_pass
+
       - name: yamllint
         run: yamllint .
 

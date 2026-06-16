@@ -1,3 +1,13 @@
+## [2026-06-16 23:16] Push Summary
+
+### Conversation Context
+The previous push made `yamllint` and `ansible-lint` pass locally, but CI still failed: ansible-lint's internal `ansible-playbook --syntax-check` aborted with "vault password file not found". Root cause is an environment difference — `ansible.cfg` sets `vault_password_file = ./.vault_pass`, and both that file and the encrypted `group_vars/all/vault.yml` are gitignored, so CI has neither; ansible aborts at startup when the configured password file is absent. It passed locally only because both files exist on disk. Since there is no vaulted content to decrypt in CI, the fix is to give CI a throwaway `.vault_pass`. This was verified by faithfully simulating CI locally (temporarily moving both real files aside, with a guaranteed restore): the failure reproduced exactly (4 internal-errors), and a dummy `.vault_pass` made ansible-lint pass with 0 failures. The real vault files were confirmed intact afterward.
+
+### Changes
+- `.github/workflows/lint.yml`: Added a step to write a throwaway `.vault_pass` before the lint steps, so ansible-lint's syntax-check can run in CI (no vaulted files exist there to decrypt).
+
+---
+
 ## [2026-06-16 23:12] Push Summary
 
 ### Conversation Context
