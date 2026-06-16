@@ -2,3 +2,7 @@
 collections:
   - name: ansible.posix
     version: ">=1.5.0"
+  # docker_login (roles/containers/tasks/ghcr_login.yml) and docker_container
+  # (roles/docker/tasks/main.yml) come from here.
+  - name: community.docker
+    version: ">=3.0.0"

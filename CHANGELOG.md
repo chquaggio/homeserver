@@ -1,3 +1,13 @@
+## [2026-06-16 23:24] Push Summary
+
+### Conversation Context
+After the vault-password CI fix, ansible-lint advanced past the vault error and surfaced the next failure: `syntax-check[unknown-module]` (an unskippable rule) for `community.docker.docker_login` (`roles/containers/tasks/ghcr_login.yml`) and `docker_container` (`roles/docker/tasks/main.yml`). Both modules live only in the `community.docker` collection, which `requirements.yml` did not list — so CI, which installs collections solely from that file, lacked them. It had passed locally because `community.docker` is installed globally. Fix: add `community.docker` (`>=3.0.0`) to `requirements.yml`. Faithful local isolation was hampered by ansible-compat caching its own collection copy (moving the user-path collection aside didn't reproduce the failure), so verification was done at the exact step CI runs: `ansible-galaxy collection install -r requirements.yml` into an empty target installed `community.docker:5.2.1` containing `docker_login` and `docker_container` — the modules CI couldn't resolve.
+
+### Changes
+- `requirements.yml`: Added the `community.docker` collection (`>=3.0.0`) so CI installs the `docker_login`/`docker_container` modules the playbooks use.
+
+---
+
 ## [2026-06-16 23:16] Push Summary
 
 ### Conversation Context
