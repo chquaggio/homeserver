@@ -1,3 +1,20 @@
+## [2026-06-16 22:40] Push Summary
+
+### Conversation Context
+The user asked to review and apply the handoff doc in `docs/` (`architecture-review-2026-06.md`) — a prioritized list of homeserver concerns raised during a separate mymcp session — and to surface any additional findings. Investigating the repo against the doc turned up two gaps the doc itself didn't list: Immich was entirely absent from Zerobyte's backup set (neither its Postgres nor the photo library was captured, and Zerobyte has no `/mnt/das` mount so it couldn't reach the library at all), and the shared-Postgres backup used a mismatched path (`./postgres-data` hyphen vs the real `./postgres_data` underscore), meaning the shared DB was never backed up. After clarifying scope with the user, we applied backups (#1/#2), image-update visibility (#5), and documented alerting (#6). Key decisions: the user confirmed the Google Cloud photo copy still exists, so a restore drill remains safe to do before deleting it; photo *files* are deliberately left out of S3 for now (DB dumps only — GCloud stays the photo copy) to avoid a large/expensive upload; image pinning is deferred to incremental work with Watchtower in notify-only mode chosen over Renovate (the user accepted that Watchtower reports only image digests, not release notes); and #6 alerting needs no repo change since Beszel already supports SMART/disk/container alerts and the agent is wired for them — only dashboard rules remain. DB backups were implemented as `prodrigestivill/postgres-backup-local` sidecars (majors pinned 17/14 to match each server) writing daily dumps into Zerobyte-backed directories, with the exact Immich vectorchord Postgres tag recorded in-comment for restore compatibility. A follow-up question led to confirming (via Watchtower docs) that its notifications contain no changelogs, and to adding `scripts/dump_image_versions.sh` to capture running image digests on the host ahead of pinning.
+
+### Changes
+- `roles/containers/tasks/db.yml`: Added `db-backup` sidecar (`postgres-backup-local:17`) producing daily logical dumps of the shared Postgres into `./db-backups`, plus its backup directory.
+- `roles/containers/tasks/immich.yml`: Added `immich-db-backup` sidecar (`postgres-backup-local:14`) dumping the Immich Postgres into `./immich/db-backups`; recorded the exact vectorchord image tag for restore compatibility.
+- `roles/containers/tasks/zerobyte.yml`: Replaced the broken `./postgres-data` mount with the two dump directories; added previously-uncaptured app data (audiobookshelf, homepage, wishlist).
+- `roles/containers/tasks/watchtower.yml`: New Watchtower service in notify-only mode (`WATCHTOWER_MONITOR_ONLY`), daily check reporting to Telegram via existing vault credentials.
+- `roles/containers/tasks/main.yml`: Wired `watchtower.yml` into the import list.
+- `scripts/dump_image_versions.sh`: New helper dumping running containers' image, version label, and repo digest to a text file for incremental image pinning.
+- `scripts/README.md`: Documented the new script.
+- `docs/architecture-review-2026-06.md`: Added an "Applied 2026-06-16" section, ticked completed action items, and annotated the remaining runtime/dashboard steps.
+
+---
+
 ## [2026-06-04 19:08] Push Summary
 
 ### Conversation Context

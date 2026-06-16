@@ -67,6 +67,36 @@
         - qnet
       restart: unless-stopped
 
+# Logical dump sidecar for Immich's Postgres (faces, albums, metadata — NOT the photo
+# files, which live at {{ media_dir }}/immich). Restoring requires a compatible
+# vectorchord/pgvecto.rs extension version, so the dump must be restored into the same
+# image tag used above: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
+# The backup image major version (14) is pinned to match that server.
+- name: Configure Immich Postgres backup sidecar
+  set_fact:
+    immich_db_backup_service:
+      name: immich-db-backup
+      image: prodrigestivill/postgres-backup-local:14
+      container_name: immich-db-backup
+      depends_on:
+        - immich-postgres
+      environment:
+        - POSTGRES_HOST=immich-postgres
+        - POSTGRES_DB=immich
+        - POSTGRES_USER=postgres
+        - "POSTGRES_PASSWORD={{ immich_db_password }}"
+        - POSTGRES_EXTRA_OPTS=--clean --if-exists
+        - SCHEDULE=@daily
+        - BACKUP_KEEP_DAYS=14
+        - BACKUP_KEEP_WEEKS=8
+        - BACKUP_KEEP_MONTHS=12
+        - "TZ={{ tz }}"
+      volumes:
+        - ./immich/db-backups:/backups
+      networks:
+        - qnet
+      restart: unless-stopped
+
 - name: Setup Immich directories
   ansible.builtin.file:
     path: "{{ item }}"
@@ -76,3 +106,4 @@
   loop:
     - "{{ media_dir }}/immich"
     - "{{ docker_compose_dir }}/immich/model-cache"
+    - "{{ docker_compose_dir }}/immich/db-backups"

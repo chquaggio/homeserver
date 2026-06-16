@@ -9,3 +9,4 @@ Ad-hoc helpers that live outside the ansible playbook. Most are bootstrap or one
 | `install_cuda_129.sh` | Same as above but pinned to CUDA 12.9. | No — workstation-specific. |
 | `upgrade_nvim.sh` | Pulls the latest Neovim release tarball into `/opt/nvim`. Useful when you don't want to wait for the role to run. | **Partially** — `roles/system/tasks/neovim.yml` handles installs; this script is a fast manual upgrade path. |
 | `add_transactions.py` | Imports an Italian-bank CSV (semicolon-delimited) into the Actual Budget server. Standalone utility, run on demand. | No — runtime tool, not infrastructure. |
+| `dump_image_versions.sh` | Dumps running containers' image, version label, and repo digest to a text file. Run on the host before pinning images in the task files. | No — diagnostic helper for the image-pinning work (#5). |

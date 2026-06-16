@@ -21,3 +21,41 @@
         - ./postgres_data:/var/lib/postgresql/data
       networks:
         - qnet
+
+# Logical dump sidecar: writes consistent pg_dump snapshots into a directory that
+# Zerobyte backs up. File-level backup of the live data dir is unsafe for a running
+# DB (can capture a torn state); these dumps are restorable. Image major version is
+# pinned to match the server (postgres:17).
+- name: Configure shared Postgres backup sidecar
+  set_fact:
+    db_backup_service:
+      name: db-backup
+      image: prodrigestivill/postgres-backup-local:17
+      container_name: db-backup
+      depends_on:
+        - postgres
+      environment:
+        - POSTGRES_HOST=postgres
+        # Dumps the {{ db_name }} database (currently used by spesatracker). If more
+        # apps start using the shared Postgres, add their DBs here space-separated.
+        - "POSTGRES_DB={{ db_name }}"
+        - "POSTGRES_USER={{ db_user }}"
+        - "POSTGRES_PASSWORD={{ db_password }}"
+        - POSTGRES_EXTRA_OPTS=--clean --if-exists
+        - SCHEDULE=@daily
+        - BACKUP_KEEP_DAYS=14
+        - BACKUP_KEEP_WEEKS=8
+        - BACKUP_KEEP_MONTHS=12
+        - "TZ={{ tz }}"
+      volumes:
+        - ./db-backups:/backups
+      networks:
+        - qnet
+      restart: unless-stopped
+
+- name: Setup shared Postgres backup directory
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/db-backups"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory

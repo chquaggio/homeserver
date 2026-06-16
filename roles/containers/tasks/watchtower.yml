@@ -1,0 +1,26 @@
+---
+# Watchtower in NOTIFY-ONLY mode: it checks for newer images on a schedule and sends a
+# Telegram report, but never pulls or restarts anything (WATCHTOWER_MONITOR_ONLY). This
+# gives a controlled update feed while images are pinned incrementally. Reuses the
+# existing Telegram vault credentials (shoutrrr URL format).
+- name: Configure Watchtower (notify-only update monitor)
+  set_fact:
+    watchtower_service:
+      name: watchtower
+      image: containrrr/watchtower:1.7.1
+      container_name: watchtower
+      environment:
+        - "TZ={{ tz }}"
+        - WATCHTOWER_MONITOR_ONLY=true
+        - WATCHTOWER_NO_STARTUP_MESSAGE=false
+        # Daily at 06:00 (Watchtower uses 6-field cron: sec min hour dom mon dow)
+        - WATCHTOWER_SCHEDULE=0 0 6 * * *
+        - WATCHTOWER_NOTIFICATIONS=shoutrrr
+        - WATCHTOWER_NOTIFICATION_REPORT=true
+        - "WATCHTOWER_NOTIFICATION_URL=telegram://{{ telegram_token }}@telegram?chats={{ telegram_chat_id }}"
+        - WATCHTOWER_NOTIFICATIONS_HOSTNAME=quoggioserver
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      networks:
+        - qnet
+      restart: unless-stopped
