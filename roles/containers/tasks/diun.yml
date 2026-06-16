@@ -1,0 +1,43 @@
+---
+# Diun — Docker Image Update Notifier. Replaces the archived containrrr/watchtower
+# (read-only since 2025-12-17). Diun is purpose-built for NOTIFY-ONLY: it watches the
+# running containers via the Docker provider and sends a Telegram message when a newer
+# image is available. It never pulls or restarts anything.
+#
+# Image is pinned (not :latest) per the #5 maintenance rule — bump it deliberately and
+# re-check the project is still maintained before each bump.
+- name: Configure Diun (image update notifier, notify-only)
+  set_fact:
+    diun_service:
+      name: diun
+      image: crazymax/diun:4.33.0
+      container_name: diun
+      command: serve
+      environment:
+        - "TZ={{ tz }}"
+        - LOG_LEVEL=info
+        # Daily at 06:00 (Diun uses 5-field cron)
+        - DIUN_WATCH_SCHEDULE=0 6 * * *
+        - DIUN_WATCH_JITTER=30s
+        - DIUN_WATCH_RUNONSTARTUP=true
+        # Don't fire a notification for every image on the very first scan
+        - DIUN_WATCH_FIRSTCHECKNOTIF=false
+        # Watch every running container without needing per-container labels
+        - DIUN_PROVIDERS_DOCKER=true
+        - DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT=true
+        # Telegram notifier — reuses the existing vault credentials
+        - "DIUN_NOTIF_TELEGRAM_TOKEN={{ telegram_token }}"
+        - "DIUN_NOTIF_TELEGRAM_CHATIDS={{ telegram_chat_id }}"
+      volumes:
+        - ./diun/data:/data
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+      networks:
+        - qnet
+      restart: unless-stopped
+
+- name: Setup Diun directory
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/diun/data"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory

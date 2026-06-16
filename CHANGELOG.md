@@ -1,3 +1,20 @@
+## [2026-06-16 23:12] Push Summary
+
+### Conversation Context
+Follow-up to the backups/update-notifier work. First, the user flagged that `containrrr/watchtower` is archived (read-only since 2025-12-17, last release Nov 2023); after confirming via project pages that Diun (`crazy-max/diun`) is actively maintained and purpose-built for notify-only, Watchtower was replaced with Diun (pinned to `4.33.0`, watching all containers via the Docker provider, notifying on Telegram). A maintenance note was also added so future image adoption checks upstream project status. Then the user asked to delete the architecture-review doc and to fix the CI `lint` job, which was failing on `yamllint .` — and explicitly to find a general solution verified locally rather than push-and-retry. `yamllint` was installed locally via pipx to reproduce CI exactly. The errors fell into three mechanical classes (trailing whitespace, blank lines at file start/end) plus a handful of real sequence-indentation inconsistencies (list items indented +4 from their key instead of the repo-standard +2). The mechanical classes were fixed repo-wide with a single normalization sweep (strip trailing whitespace; trim leading/trailing blank lines to a single terminal newline); the indentation cases (mealie, docling, openwebui ports; user.yml loop; brew.yml block) were fixed by hand. Investigating further revealed the same lint job's second step, `ansible-lint`, was also failing (~94 pre-existing violations unrelated to this work, e.g. var-naming/no-role-prefix on the `_service` facts that auto-discovery relies on). The user chose to relax the `.ansible-lint` config (consistent with prior linter relaxations) rather than undertake a large refactor: the noisy structural rules were added to `skip_list`, `tailscale.yml` was excluded (its external role isn't installed in the lint env), and the three trivial `yaml[comments]` issues in `pihole.yml` were fixed directly. Both `yamllint` and `ansible-lint` were confirmed to exit 0 locally before pushing.
+
+### Changes
+- `roles/containers/tasks/diun.yml`: New — Diun image-update notifier (notify-only, Telegram), pinned `crazymax/diun:4.33.0`, replacing the archived Watchtower.
+- `roles/containers/tasks/watchtower.yml`: Removed (upstream archived).
+- `roles/containers/tasks/main.yml`: Swapped the Watchtower import for Diun.
+- `.ansible-lint`: Added pre-existing structural rules to `skip_list`; excluded `tailscale.yml`.
+- `roles/containers/tasks/{mealie,docling,openwebui}.yml`, `common/tasks/{brew,user}.yml`: Fixed sequence indentation to the repo-standard +2.
+- `roles/containers/tasks/pihole.yml`: Fixed comment spacing (`#-` → `# -`).
+- Repo-wide: stripped trailing whitespace and trimmed leading/trailing blank lines across task files to satisfy yamllint.
+- `docs/architecture-review-2026-06.md`: Removed at the user's request.
+
+---
+
 ## [2026-06-16 22:40] Push Summary
 
 ### Conversation Context

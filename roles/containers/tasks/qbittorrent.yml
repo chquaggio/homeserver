@@ -29,4 +29,3 @@
     state: directory
   loop:
     - "config"
-

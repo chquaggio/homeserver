@@ -8,14 +8,14 @@
     name: "{{ item }}"
     state: present
   loop:
-      - "{{ username }}"
-      - docker
-   
+    - "{{ username }}"
+    - docker
+
 - name: Create a login user
   user:
     name: "{{ username }}"
     password: "{{ password | password_hash('sha512') }}"
-    groups: 
+    groups:
       - "{{ sudo_group }}"
       - docker
       - users

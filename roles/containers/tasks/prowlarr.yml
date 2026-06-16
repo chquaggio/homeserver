@@ -23,4 +23,3 @@
     owner: "{{ username }}"
     group: "{{ username }}"
     state: directory
-
