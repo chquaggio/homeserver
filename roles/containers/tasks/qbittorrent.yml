@@ -3,7 +3,7 @@
   set_fact:
     qbittorrent_service:
       name: qbittorrent
-      image: lscr.io/linuxserver/qbittorrent:latest
+      image: lscr.io/linuxserver/qbittorrent:5.2.2
       container_name: qbittorrent
       ports:
         - 8585:8585

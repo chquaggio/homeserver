@@ -3,7 +3,7 @@
   set_fact:
     prowlarr_service:
       name: prowlarr
-      image: lscr.io/linuxserver/prowlarr:latest
+      image: lscr.io/linuxserver/prowlarr:2.4.0
       container_name: prowlarr
       ports:
         - "9696:9696"

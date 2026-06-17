@@ -3,7 +3,7 @@
   set_fact:
     docling_service:
       name: docling
-      image: ghcr.io/docling-project/docling-serve-cpu
+      image: ghcr.io/docling-project/docling-serve-cpu:v1.24.0
       container_name: docling
       environment:
         # Set Backend ENV Variables Here

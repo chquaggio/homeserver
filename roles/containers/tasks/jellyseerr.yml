@@ -3,7 +3,7 @@
   set_fact:
     jellyseerr_service:
       name: seerr
-      image: ghcr.io/seerr-team/seerr:latest
+      image: ghcr.io/seerr-team/seerr:v3.3.0
       container_name: seerr
       ports:
         - "5055:5055"

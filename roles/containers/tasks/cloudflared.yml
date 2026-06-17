@@ -3,7 +3,7 @@
   set_fact:
     cloudflared_service:
       name: cloudflared
-      image: cloudflare/cloudflared:latest
+      image: cloudflare/cloudflared:2026.6.0
       container_name: cloudflared
       command: tunnel --no-autoupdate run --token {{ cf_token }}
       networks:

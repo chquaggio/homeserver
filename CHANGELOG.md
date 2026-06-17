@@ -1,3 +1,15 @@
+## [2026-06-18 00:36] Push Summary
+
+### Conversation Context
+The user pinned ~20 service images from floating tags (`:latest`/`:release`/`:main`) to explicit versions (the #5 controlled-update work), now that Diun repo-watch surfaces newer versions. They also asked to remove `scripts/dump_image_versions.sh` because it didn't work, explicitly instructing not to attempt a fix — so it was deleted (and its row dropped from `scripts/README.md`) rather than repaired. Lint and syntax-check confirmed green before pushing.
+
+### Changes
+- `roles/containers/tasks/*.yml`: Pinned images to explicit versions (immich `v2.7.5`, mealie `v3.19.2`, openwebui `v0.9.6`, pihole `2026.06.0`, zerobyte `v0.39.0`, docling `v1.24.0`, the *arr/qbittorrent LinuxServer tags, jellyfin `10.11.11`, beszel `0.18.7`, cloudflared `2026.6.0`, actual `26.6.0`, audiobookshelf `2.35.1`, trilium `v0.103.0`, seerr `v3.3.0`, homepage `v1.13.2`).
+- `scripts/dump_image_versions.sh`: Removed (didn't work; deleted per request, not fixed).
+- `scripts/README.md`: Dropped the script's row.
+
+---
+
 ## [2026-06-17 22:48] Push Summary
 
 ### Conversation Context

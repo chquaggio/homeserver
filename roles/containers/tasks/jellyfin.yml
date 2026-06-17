@@ -3,7 +3,7 @@
   set_fact:
     jellyfin_service:
       name: jellyfin
-      image: jellyfin/jellyfin
+      image: jellyfin/jellyfin:10.11.11
       container_name: jellyfin
       ports:
         - 8096:8096
