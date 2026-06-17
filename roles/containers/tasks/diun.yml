@@ -28,6 +28,12 @@
         # Telegram notifier — reuses the existing vault credentials
         - "DIUN_NOTIF_TELEGRAM_TOKEN={{ telegram_token }}"
         - "DIUN_NOTIF_TELEGRAM_CHATIDS={{ telegram_chat_id }}"
+        # GHCR credentials so Diun can check the private ghcr.io/chquaggio/* images
+        # (wishlist, spesatracker, mymcp); reuses the same PAT as ghcr_login.yml.
+        - DIUN_REGOPTS_0_NAME=ghcr.io
+        - DIUN_REGOPTS_0_SELECTOR=image
+        - "DIUN_REGOPTS_0_USERNAME={{ ghcr_username }}"
+        - "DIUN_REGOPTS_0_PASSWORD={{ ghcr_token }}"
       volumes:
         - ./diun/data:/data
         - /var/run/docker.sock:/var/run/docker.sock:ro

@@ -1,3 +1,13 @@
+## [2026-06-17 22:41] Push Summary
+
+### Conversation Context
+After Diun went live, its logs showed `failed=3` every run: the private `ghcr.io/chquaggio/*` images (wishlist, spesatracker, mymcp) returned "unauthorized" because Diun had no GHCR credentials, so they were never checked for updates. (The single bazarr notification and otherwise-silent runs were confirmed correct: first sighting is a silent baseline via `DIUN_WATCH_FIRSTCHECKNOTIF=false`, and Diun notifies only on real digest changes — bazarr's `:latest` digest moved between runs.) Fix: add a `DIUN_REGOPTS` block pointing at `ghcr.io`, reusing the same `ghcr_username`/`ghcr_token` vault vars that `ghcr_login.yml` already uses. Also clarified that Diun watches each container's running tag by digest, so moving tags like `:latest`/`:release` already trigger update notifications without version pinning (pinned tags would need repo-watching to surface new versions). Both linters confirmed passing locally before push.
+
+### Changes
+- `roles/containers/tasks/diun.yml`: Added `DIUN_REGOPTS_0` (ghcr.io, selector image) with the GHCR vault credentials so Diun can check the private ghcr.io/chquaggio/* images.
+
+---
+
 ## [2026-06-16 23:24] Push Summary
 
 ### Conversation Context
