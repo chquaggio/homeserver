@@ -25,6 +25,14 @@
         # Watch every running container without needing per-container labels
         - DIUN_PROVIDERS_DOCKER=true
         - DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT=true
+        # Repo-watch: also watch the whole repo for newer TAGS (not just the running
+        # tag's digest), so pinned images surface "a newer version exists". Bounded to
+        # the 10 highest semver tags per repo to avoid rate limits / sha-tag noise
+        # (FIRSTCHECKNOTIF=false keeps the initial discovery silent). To tighten further,
+        # add includeTags like ^v?\d+\.\d+\.\d+$ to skip rc/beta/nightly tags.
+        - DIUN_DEFAULTS_WATCHREPO=true
+        - DIUN_DEFAULTS_MAXTAGS=10
+        - DIUN_DEFAULTS_SORTTAGS=semver
         # Telegram notifier — reuses the existing vault credentials
         - "DIUN_NOTIF_TELEGRAM_TOKEN={{ telegram_token }}"
         - "DIUN_NOTIF_TELEGRAM_CHATIDS={{ telegram_chat_id }}"

@@ -1,3 +1,13 @@
+## [2026-06-17 22:48] Push Summary
+
+### Conversation Context
+The user asked to enable Diun's repo-watch so pinned images would surface "a newer version exists" (digest-only watching on a fixed semver tag never changes). Enabled it globally but bounded to avoid the rate-limit/noise the Diun docs warn about: `DIUN_DEFAULTS_WATCHREPO=true`, `DIUN_DEFAULTS_MAXTAGS=10`, `DIUN_DEFAULTS_SORTTAGS=semver` (watch the 10 highest semver tags per repo; `FIRSTCHECKNOTIF=false` keeps initial discovery silent; `includeTags` regex noted as a further tightening). Also answered a version-lookup question: verified empirically that `ghcr.io/immich-app/immich-server:release` and `:v2.7.5` share the same digest, so the package tracks the GitHub release; and demonstrated that enumerating registry tags is unreliable (immich has 2000+ lexically-ordered tags dominated by per-commit sha tags).
+
+### Changes
+- `roles/containers/tasks/diun.yml`: Enabled bounded repo-watch (`WATCHREPO`, `MAXTAGS=10`, `SORTTAGS=semver`).
+
+---
+
 ## [2026-06-17 22:41] Push Summary
 
 ### Conversation Context
