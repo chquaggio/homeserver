@@ -1,3 +1,13 @@
+## [2026-06-19 14:35] Push Summary
+
+### Conversation Context
+After enabling Diun repo-watch, the LinuxServer *arr images flooded notifications with non-release tags (`development-…-beta.9-ls771`, `version-<buildid>`, `1.5.7-development`). The user wanted notifications only for real version releases. Chose `excludeTags` over `includeTags`: a strict semver `includeTags` allowlist would also stop watching the moving tags still in use (`postgres:17`, `valkey:9`, `:latest`/`:release`/`:main`, including the user's own images), whereas `excludeTags` drops only the junk and keeps everything else (clean semver + moving tags) watched. The regex strips pre-releases (alpha/beta/rc/dev/nightly/snapshot), numeric build tags (`version-…`), and `-ls<build>` variants. Verified lint passes; takes effect on next deploy.
+
+### Changes
+- `roles/containers/tasks/diun.yml`: Added `DIUN_DEFAULTS_EXCLUDETAGS` regex to suppress pre-release / build-id / LinuxServer `-ls` tag noise from repo-watch.
+
+---
+
 ## [2026-06-18 00:36] Push Summary
 
 ### Conversation Context
