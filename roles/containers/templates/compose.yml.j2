@@ -31,6 +31,12 @@ services:
       - "{{ cap_add }}"
       {%- endfor %}
     {%- endif %}
+    {%- if service.group_add | default([]) %}
+    group_add:
+      {%- for gid in service.group_add %}
+      - "{{ gid }}"
+      {%- endfor %}
+    {%- endif %}
     {%- if service.volumes | default([]) %}
     volumes:
       {%- for volume in service.volumes %}
