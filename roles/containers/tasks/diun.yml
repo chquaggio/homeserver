@@ -36,7 +36,7 @@
         # watching moving base tags like :17, :9, :latest, :release while dropping the
         # LinuxServer/dev noise: pre-releases (alpha/beta/rc/dev/nightly/snapshot),
         # numeric build tags (version-12345678), and -ls<build> variants.
-        - 'DIUN_DEFAULTS_EXCLUDETAGS=(?i)(alpha|beta|rc[0-9]|dev|sha|git|nightly|snapshot|^version-|-ls[0-9]+)'
+        - 'DIUN_DEFAULTS_EXCLUDETAGS=(?i)(alpha|beta|rc[0-9]|dev|sha|git|pr|nightly|snapshot|^version-|-ls[0-9]+)'
         # Telegram notifier — reuses the existing vault credentials
         - "DIUN_NOTIF_TELEGRAM_TOKEN={{ telegram_token }}"
         - "DIUN_NOTIF_TELEGRAM_CHATIDS={{ telegram_chat_id }}"
