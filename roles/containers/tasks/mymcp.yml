@@ -12,6 +12,9 @@
         - ACTUAL_URL={{ actual_url }}
         - ACTUAL_PASSWORD={{ actual_password }}
         - ACTUAL_BUDGET={{ actual_budget }}
+        # Mealie on qnet: container port 9000 (9925 is only the host mapping)
+        - MEALIE_URL=http://mealie:9000
+        - MEALIE_TOKEN={{ mealie_key }}
         # Expense inbox — Trilium note drained by process_expense_inbox + appended to by the Telegram listener
         - INBOX_NOTE_ID=01QOJvsxJbJU
         - EXPENSE_INBOX_ENABLED=true

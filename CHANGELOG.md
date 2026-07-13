@@ -1,3 +1,20 @@
+## [2026-07-13 09:58] Push Summary
+
+### Conversation Context
+mymcp v0.11.0 adds a Mealie service (four intent-level tools: find_recipe, meal_plan,
+import_recipe, save_recipe), and its config requires MEALIE_URL and MEALIE_TOKEN at container
+startup — without them the new image fails validation on boot. The vault's existing MEALIE_KEY
+is the same valid API token the integration was live-verified with (confirmed against
+/api/users/self), so it is reused via the existing `mealie_key` var rather than adding a new
+vault entry. The URL points at the qnet container port (http://mealie:9000) — 9925 is only the
+host mapping. Takes effect on the next deploy, which will also pull the :latest image containing
+the Mealie tools.
+
+### Changes
+- `roles/containers/tasks/mymcp.yml`: Added `MEALIE_URL=http://mealie:9000` and `MEALIE_TOKEN={{ mealie_key }}` to the mymcp container environment.
+
+---
+
 ## [2026-06-19 14:35] Push Summary
 
 ### Conversation Context
