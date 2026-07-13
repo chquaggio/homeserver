@@ -170,6 +170,7 @@ The setup uses Ansible to:
 <summary><b>🧰 Ops / Utilities</b></summary>
 
 - **GHCR login** - Auth helper for pulling images from GitHub Container Registry
+- **WUD** (`:3004`) - What's Up Docker: image-update dashboard with per-image changelog links, notify-only via Telegram
 - **Beszel** - Utility container (see `roles/containers/tasks/beszel.yml`)
 - **Docling** - Utility container (see `roles/containers/tasks/docling.yml`)
 - **Zerobyte** - Utility container (see `roles/containers/tasks/zerobyte.yml`)

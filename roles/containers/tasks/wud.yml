@@ -1,43 +1,27 @@
 ---
-# WUD — What's Up Docker. Image update tracker; replaces the previous Diun setup.
-# Unlike Diun (notify-only, no UI), WUD adds a web dashboard listing every container
-# with its current -> available version, plus a per-container changelog link (via the
-# wud.link.template label on each service). It is NOTIFY-ONLY here: no docker/
-# docker-compose trigger is configured, so WUD never pulls, updates, or prunes anything.
-# Telegram is still the heads-up channel; the dashboard is the source of truth.
-#
-# Image is pinned (not :latest) per the maintenance rule — bump deliberately and
-# re-check the project is still maintained before each bump. Config keys verified
-# against getwud/wud docs (v8.2.2).
-- name: Configure WUD (What's Up Docker — update dashboard + notifier, notify-only)
+# Image-update notifier with a web dashboard (:3004) and per-image changelog links
+# (wud.link.template label on each service). Notify-only: no update trigger is
+# configured, so it never pulls or restarts containers.
+- name: Configure WUD (What's Up Docker — update dashboard + notifier)
   set_fact:
     wud_service:
       name: wud
       image: getwud/wud:8.2.2
       container_name: wud
       ports:
-        # Web dashboard, LAN-only (WUD listens on 3000 internally)
         - "3004:3000"
       environment:
         - "TZ={{ tz }}"
         - WUD_LOG_LEVEL=info
-        # Docker watcher "local": watch every running container by default (no per-
-        # container wud.watch label needed), scan daily at 06:00 like Diun did.
+        # Watch every running container, scan daily at 06:00
         - WUD_WATCHER_LOCAL_WATCHBYDEFAULT=true
         - "WUD_WATCHER_LOCAL_CRON=0 6 * * *"
-        # Telegram trigger — reuses the existing vault credentials. ONCE defaults to
-        # true, so each new version is announced once (not on every scan); THRESHOLD
-        # defaults to "all", so any newer version surfaces. No auto-update trigger is
-        # configured, keeping WUD notify-only.
         - "WUD_TRIGGER_TELEGRAM_1_BOTTOKEN={{ telegram_token }}"
         - "WUD_TRIGGER_TELEGRAM_1_CHATID={{ telegram_chat_id }}"
-        # GHCR credentials so WUD can check the private ghcr.io/chquaggio/* images
-        # (mymcp, wishlist, spesatracker); reuses the same PAT as ghcr_login.yml
-        # (needs read:packages scope).
+        # Auth for the private ghcr.io/chquaggio/* images (needs read:packages)
         - "WUD_REGISTRY_GHCR_PRIVATE_USERNAME={{ ghcr_username }}"
         - "WUD_REGISTRY_GHCR_PRIVATE_TOKEN={{ ghcr_token }}"
       volumes:
-        # WUD persists its state (known versions, so it doesn't re-notify) under /store
         - ./wud/data:/store
         - /var/run/docker.sock:/var/run/docker.sock:ro
       networks:
