@@ -1,12 +1,10 @@
 ---
-# WUD — What's Up Docker. Persistent update tracker that complements/replaces Diun.
+# WUD — What's Up Docker. Image update tracker; replaces the previous Diun setup.
 # Unlike Diun (notify-only, no UI), WUD adds a web dashboard listing every container
 # with its current -> available version, plus a per-container changelog link (via the
-# wud.link.template label on each service). It stays NOTIFY-ONLY here: no docker/
+# wud.link.template label on each service). It is NOTIFY-ONLY here: no docker/
 # docker-compose trigger is configured, so WUD never pulls, updates, or prunes anything.
-#
-# Runs alongside Diun during the transition (both send Telegram); once WUD is confirmed
-# to catch everything, remove diun.yml and its main.yml entry.
+# Telegram is still the heads-up channel; the dashboard is the source of truth.
 #
 # Image is pinned (not :latest) per the maintenance rule — bump deliberately and
 # re-check the project is still maintained before each bump. Config keys verified
