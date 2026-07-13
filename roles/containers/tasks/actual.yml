@@ -9,6 +9,8 @@
         - '5006:5006'
       volumes:
         - ./actualbudget:/data
+      labels:
+        - "wud.link.template=https://github.com/actualbudget/actual/releases"
       networks:
         - qnet
       restart: unless-stopped

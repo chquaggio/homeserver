@@ -21,5 +21,7 @@
         - 8400:8400
       depends_on:
         - postgres
+      labels:
+        - "wud.link.template=https://github.com/chquaggio/spesatracker/releases"
       networks:
         - qnet

@@ -38,6 +38,8 @@
         # - SYS_TIME
         # Optional, if Pi-hole should get some more processing time
         # - SYS_NICE
+      labels:
+        - "wud.link.template=https://github.com/pi-hole/docker-pi-hole/releases"
       networks:
         - qnet
       restart: unless-stopped

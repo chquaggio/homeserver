@@ -12,6 +12,8 @@
       volumes:
         - ./qbittorrent/config:/config
         - "{{ media_dir }}/downloads:/downloads"
+      labels:
+        - "wud.link.template=https://github.com/qbittorrent/qBittorrent/releases"
       networks:
         - qnet
       restart: unless-stopped

@@ -11,6 +11,8 @@
       volumes:
         - ./beszel/beszel_data:/beszel_data
         - ./beszel/beszel_socket:/beszel_socket
+      labels:
+        - "wud.link.template=https://github.com/henrygd/beszel/releases"
       networks:
         - qnet
 
@@ -33,6 +35,8 @@
         - ./beszel/beszel_socket:/beszel_socket
         - ./beszel/beszel_agent_data:/var/lib/beszel-agent
         - "{{ media_dir }}:/extra-filesystems/das-01:ro"
+      labels:
+        - "wud.link.template=https://github.com/henrygd/beszel/releases"
       networks:
         - qnet
       environment:

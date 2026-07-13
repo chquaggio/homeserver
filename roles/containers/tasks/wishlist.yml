@@ -13,6 +13,8 @@
         - 7100:7100
       volumes:
         - ./wishlist/data:/app/data
+      labels:
+        - "wud.link.template=https://github.com/chquaggio/wishlist/releases"
       networks:
         - qnet
 

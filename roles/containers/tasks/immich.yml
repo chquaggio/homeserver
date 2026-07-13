@@ -23,6 +23,8 @@
         - DB_DATABASE_NAME=immich
         - REDIS_HOSTNAME=immich-redis
         - "TZ={{ tz }}"
+      labels:
+        - "wud.link.template=https://github.com/immich-app/immich/releases"
       networks:
         - qnet
       restart: unless-stopped
@@ -35,6 +37,8 @@
       container_name: immich-machine-learning
       volumes:
         - ./immich/model-cache:/cache
+      labels:
+        - "wud.link.template=https://github.com/immich-app/immich/releases"
       networks:
         - qnet
       restart: unless-stopped
@@ -45,6 +49,8 @@
       name: immich-redis
       image: docker.io/valkey/valkey:9.0.4
       container_name: immich-redis
+      labels:
+        - "wud.link.template=https://github.com/valkey-io/valkey/releases"
       networks:
         - qnet
       restart: unless-stopped
@@ -63,6 +69,8 @@
         - POSTGRES_INITDB_ARGS=--data-checksums
       volumes:
         - ./immich/postgres_data:/var/lib/postgresql/data
+      labels:
+        - "wud.link.template=https://github.com/immich-app/immich/releases"
       networks:
         - qnet
       restart: unless-stopped
@@ -93,6 +101,8 @@
         - "TZ={{ tz }}"
       volumes:
         - ./immich/db-backups:/backups
+      labels:
+        - "wud.link.template=https://github.com/prodrigestivill/docker-postgres-backup-local/releases"
       networks:
         - qnet
       restart: unless-stopped

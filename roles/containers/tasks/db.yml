@@ -19,6 +19,8 @@
         retries: 5
       volumes:
         - ./postgres_data:/var/lib/postgresql/data
+      labels:
+        - "wud.link.template=https://www.postgresql.org/docs/release/"
       networks:
         - qnet
 
@@ -49,6 +51,8 @@
         - "TZ={{ tz }}"
       volumes:
         - ./db-backups:/backups
+      labels:
+        - "wud.link.template=https://github.com/prodrigestivill/docker-postgres-backup-local/releases"
       networks:
         - qnet
       restart: unless-stopped

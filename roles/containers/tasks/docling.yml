@@ -12,5 +12,7 @@
       restart: unless-stopped
       ports:
         - "5001:5001"
+      labels:
+        - "wud.link.template=https://github.com/docling-project/docling-serve/releases"
       networks:
         - qnet

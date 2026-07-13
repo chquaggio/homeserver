@@ -20,5 +20,7 @@
         - TZ=Europe/Rome
       ports:
         - 7000:7000
+      labels:
+        - "wud.link.template=https://github.com/chquaggio/mymcp/releases"
       networks:
         - qnet

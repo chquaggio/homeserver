@@ -6,6 +6,8 @@
       image: cloudflare/cloudflared:2026.6.0
       container_name: cloudflared
       command: tunnel --no-autoupdate run --token {{ cf_token }}
+      labels:
+        - "wud.link.template=https://github.com/cloudflare/cloudflared/releases"
       networks:
         - qnet
       restart: unless-stopped

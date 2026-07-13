@@ -38,5 +38,7 @@
       restart: unless-stopped
       ports:
         - "4096:4096"
+      labels:
+        - "wud.link.template=https://github.com/nicotsx/zerobyte/releases"
       networks:
         - qnet

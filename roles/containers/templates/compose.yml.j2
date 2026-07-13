@@ -52,6 +52,12 @@ services:
       - {{ env }}
       {%- endfor %}
     {%- endif %}
+    {%- if service.labels | default([]) %}
+    labels:
+      {%- for label in service.labels %}
+      - {{ label }}
+      {%- endfor %}
+    {%- endif %}
     networks:
       {%- for network in service.networks %}
       - {{ network }}

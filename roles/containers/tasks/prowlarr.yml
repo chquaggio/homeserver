@@ -13,6 +13,8 @@
         - "PUID={{ puid }}"
         - "PGID={{ pgid }}"
         - "TZ={{ tz }}"
+      labels:
+        - "wud.link.template=https://github.com/Prowlarr/Prowlarr/releases"
       networks:
         - qnet
       restart: unless-stopped

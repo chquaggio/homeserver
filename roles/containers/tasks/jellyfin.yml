@@ -17,6 +17,8 @@
         - type: bind
           source: "{{ media_dir }}"
           target: "{{ media_dir }}"
+      labels:
+        - "wud.link.template=https://github.com/jellyfin/jellyfin/releases"
       networks:
         - qnet
       restart: unless-stopped

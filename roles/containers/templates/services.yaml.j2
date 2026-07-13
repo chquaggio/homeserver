@@ -62,6 +62,18 @@
           systemId: "{{ beszel_sid }}"
           version: 2
 
+    - WUD:
+        icon: sh-wud.png
+        href: http://quoggioserver:3004
+        description: Aggiornamenti immagini disponibili
+        server: server-docker
+        container: wud
+        statusStyle: "dot"
+        showStats: true
+        widget:
+          type: whatsupdocker
+          url: http://wud:3000
+
     - qBitTorrent:
         icon: qbittorrent.png
         href: http://quoggioserver:8585
