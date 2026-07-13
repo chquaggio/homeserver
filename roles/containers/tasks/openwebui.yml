@@ -3,7 +3,7 @@
   set_fact:
     openwebui_service:
       name: openwebui
-      image: ghcr.io/open-webui/open-webui:v0.9.6
+      image: ghcr.io/open-webui/open-webui:v0.10.2
       container_name: openwebui
       restart: unless-stopped
       ports:
