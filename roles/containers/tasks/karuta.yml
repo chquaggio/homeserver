@@ -108,6 +108,7 @@
         - "KARUTA_DATABASE_URL=postgresql+asyncpg://karuta:{{ karuta_db_password }}@karuta-postgres:5432/karuta"
         - KARUTA_CONFIG=/config/config.yaml
         - "DISCORD_TOKEN={{ karuta_discord_token }}"
+        - KARUTA_BASE_URL=https://karuta.fantaquoggio.bid
       depends_on:
         - karuta-web
         - karuta-postgres
