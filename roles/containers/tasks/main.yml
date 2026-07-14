@@ -12,7 +12,7 @@
 - import_tasks: immich.yml
 - import_tasks: jellyfin.yml
 - import_tasks: jellyseerr.yml
-- import_tasks: karuta.yml
+- import_tasks: karutuogg.yml
 - import_tasks: mealie.yml
 - import_tasks: mymcp.yml
 - import_tasks: openwebui.yml

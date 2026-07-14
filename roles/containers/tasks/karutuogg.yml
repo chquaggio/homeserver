@@ -1,7 +1,7 @@
 ---
-- name: Setup karuta directories
+- name: Setup karutuogg directories
   ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/karuta/{{ item }}"
+    path: "{{ docker_compose_dir }}/karutuogg/{{ item }}"
     owner: "{{ username }}"
     group: "{{ username }}"
     state: directory
@@ -10,44 +10,44 @@
     - data/render-cache
     - db-backups
 
-- name: Render karuta game config
+- name: Render karutuogg game config
   ansible.builtin.template:
-    src: karuta-config.yaml.j2
-    dest: "{{ docker_compose_dir }}/karuta/config.yaml"
+    src: karutuogg-config.yaml.j2
+    dest: "{{ docker_compose_dir }}/karutuogg/config.yaml"
     owner: "{{ username }}"
     group: "{{ username }}"
     mode: "0644"
 
 # Dedicated Postgres (Immich precedent): the shared `postgres` container is
 # single-tenant for spesatracker and has no multi-DB provisioning.
-- name: Configure karuta Postgres
+- name: Configure karutuogg Postgres
   set_fact:
-    karuta_postgres_service:
-      name: karuta-postgres
+    karutuogg_postgres_service:
+      name: karutuogg-postgres
       image: postgres:17
-      container_name: karuta-postgres
+      container_name: karutuogg-postgres
       environment:
         - POSTGRES_USER=karuta
         - "POSTGRES_PASSWORD={{ karuta_db_password }}"
         - POSTGRES_DB=karuta
       restart: unless-stopped
       volumes:
-        - ./karuta/postgres_data:/var/lib/postgresql/data
+        - ./karutuogg/postgres_data:/var/lib/postgresql/data
       labels:
         - "wud.link.template=https://www.postgresql.org/docs/release/"
       networks:
         - qnet
 
-- name: Configure karuta Postgres backup sidecar
+- name: Configure karutuogg Postgres backup sidecar
   set_fact:
-    karuta_db_backup_service:
-      name: karuta-db-backup
+    karutuogg_db_backup_service:
+      name: karutuogg-db-backup
       image: prodrigestivill/postgres-backup-local:17
-      container_name: karuta-db-backup
+      container_name: karutuogg-db-backup
       depends_on:
-        - karuta-postgres
+        - karutuogg-postgres
       environment:
-        - POSTGRES_HOST=karuta-postgres
+        - POSTGRES_HOST=karutuogg-postgres
         - POSTGRES_DB=karuta
         - POSTGRES_USER=karuta
         - "POSTGRES_PASSWORD={{ karuta_db_password }}"
@@ -58,7 +58,7 @@
         - BACKUP_KEEP_MONTHS=12
         - "TZ={{ tz }}"
       volumes:
-        - ./karuta/db-backups:/backups
+        - ./karutuogg/db-backups:/backups
       labels:
         - "wud.link.template=https://github.com/prodrigestivill/docker-postgres-backup-local/releases"
       networks:
@@ -67,54 +67,54 @@
 
 # Web owns migrations (single writer, idempotent); the bot just retries via
 # restart: unless-stopped if it wins the startup race before the schema exists.
-- name: Configure karuta web
+- name: Configure karutuogg web
   set_fact:
-    karuta_web_service:
-      name: karuta-web
-      image: ghcr.io/chquaggio/karuta:latest
-      container_name: karuta-web
+    karutuogg_web_service:
+      name: karutuogg-web
+      image: ghcr.io/chquaggio/karutuogg:latest
+      container_name: karutuogg-web
       command: sh -c "alembic upgrade head && exec python -m karuta.api"
       environment:
         - "TZ={{ tz }}"
-        - "KARUTA_DATABASE_URL=postgresql+asyncpg://karuta:{{ karuta_db_password }}@karuta-postgres:5432/karuta"
+        - "KARUTA_DATABASE_URL=postgresql+asyncpg://karuta:{{ karuta_db_password }}@karutuogg-postgres:5432/karuta"
         - KARUTA_CONFIG=/config/config.yaml
         - "DISCORD_TOKEN={{ karuta_discord_token }}"
         - "DISCORD_CLIENT_ID={{ karuta_discord_client_id }}"
         - "DISCORD_CLIENT_SECRET={{ karuta_discord_client_secret }}"
         - "KARUTA_SESSION_SECRET={{ karuta_session_secret }}"
-        - KARUTA_BASE_URL=https://karuta.fantaquoggio.bid
+        - KARUTA_BASE_URL=https://karutuogg.fantaquoggio.bid
       ports:
         - 8410:8000
       depends_on:
-        - karuta-postgres
+        - karutuogg-postgres
       volumes:
-        - ./karuta/data:/data
-        - ./karuta/config.yaml:/config/config.yaml:ro
+        - ./karutuogg/data:/data
+        - ./karutuogg/config.yaml:/config/config.yaml:ro
       labels:
         - "wud.link.template=https://github.com/chquaggio/karuta_tunnel/releases"
       networks:
         - qnet
       restart: unless-stopped
 
-- name: Configure karuta bot
+- name: Configure karutuogg bot
   set_fact:
-    karuta_bot_service:
-      name: karuta-bot
-      image: ghcr.io/chquaggio/karuta:latest
-      container_name: karuta-bot
+    karutuogg_bot_service:
+      name: karutuogg-bot
+      image: ghcr.io/chquaggio/karutuogg:latest
+      container_name: karutuogg-bot
       command: python -m karuta.bot
       environment:
         - "TZ={{ tz }}"
-        - "KARUTA_DATABASE_URL=postgresql+asyncpg://karuta:{{ karuta_db_password }}@karuta-postgres:5432/karuta"
+        - "KARUTA_DATABASE_URL=postgresql+asyncpg://karuta:{{ karuta_db_password }}@karutuogg-postgres:5432/karuta"
         - KARUTA_CONFIG=/config/config.yaml
         - "DISCORD_TOKEN={{ karuta_discord_token }}"
-        - KARUTA_BASE_URL=https://karuta.fantaquoggio.bid
+        - KARUTA_BASE_URL=https://karutuogg.fantaquoggio.bid
       depends_on:
-        - karuta-web
-        - karuta-postgres
+        - karutuogg-web
+        - karutuogg-postgres
       volumes:
-        - ./karuta/data:/data
-        - ./karuta/config.yaml:/config/config.yaml:ro
+        - ./karutuogg/data:/data
+        - ./karutuogg/config.yaml:/config/config.yaml:ro
       networks:
         - qnet
       restart: unless-stopped
