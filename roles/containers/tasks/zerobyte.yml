@@ -29,6 +29,8 @@
         # dir. Dumps are produced by the db-backup / immich-db-backup sidecars.
         - ./db-backups:/containers/postgres-dumps
         - ./immich/db-backups:/containers/immich-postgres-dumps
+        - ./karuta/data:/containers/karuta-data
+        - ./karuta/db-backups:/containers/karuta-postgres-dumps
         - ./prowlarr/config:/containers/prowlarr
         - ./qbittorrent/config:/containers/qbittorrent
         - ./radarr/config:/containers/radarr

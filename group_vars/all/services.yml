@@ -64,3 +64,16 @@ trilium_url: "{{ TRILIUM_BASE_URL_PROD }}"
 
 # Zerobyte
 zerobyte_secret: "{{ ZEROBYTE_SECRET }}"
+
+# --- karuta ---
+karuta_db_password: "{{ KARUTA_DB_PASSWORD }}"
+karuta_discord_token: "{{ KARUTA_DISCORD_TOKEN }}"
+karuta_discord_client_id: "{{ KARUTA_DISCORD_CLIENT_ID }}"
+karuta_discord_client_secret: "{{ KARUTA_DISCORD_CLIENT_SECRET }}"
+karuta_session_secret: "{{ KARUTA_SESSION_SECRET }}"
+# Discord ids for the karuta game (not secrets) — fill with the real guild values
+karuta_guild_id: 0
+karuta_drop_channel_id: 0
+karuta_announce_channel_id: 0
+karuta_notify_channel_id: 0
+karuta_ping_role_id: 0
