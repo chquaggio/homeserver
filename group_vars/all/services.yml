@@ -72,8 +72,13 @@ karuta_discord_client_id: "{{ KARUTA_DISCORD_CLIENT_ID }}"
 karuta_discord_client_secret: "{{ KARUTA_DISCORD_CLIENT_SECRET }}"
 karuta_session_secret: "{{ KARUTA_SESSION_SECRET }}"
 # Discord ids for the karuta game (not secrets) — fill with the real guild values
-karuta_guild_id: 0
-karuta_drop_channel_id: 0
-karuta_announce_channel_id: 0
-karuta_notify_channel_id: 0
-karuta_ping_role_id: 0
+# karuta_guild_id: 1417898085354569798
+# karuta_drop_channel_id: 1526605211894808657
+# karuta_announce_channel_id: 1526605211894808657
+# karuta_notify_channel_id: 1526605211894808657
+# karuta_ping_role_id: 1526316651782344999
+karuta_guild_id: 687343492636213374
+karuta_drop_channel_id: 1526871184396779560
+karuta_announce_channel_id: 1526871184396779560
+karuta_notify_channel_id: 1526871184396779560
+karuta_ping_role_id: 1526876875606196264
