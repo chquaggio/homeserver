@@ -236,6 +236,14 @@
           url: http://prowlarr:9696
           key: "{{ prowlarr_key }}"
 
+    - FlareSolverr:
+        icon: flaresolverr.png
+        description: Sblocca Cloudflare per Prowlarr
+        server: server-docker
+        container: flaresolverr
+        statusStyle: "dot"
+        showStats: true
+
 - Media:
     - Jellyfin:
         icon: jellyfin.png

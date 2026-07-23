@@ -8,6 +8,7 @@
 - import_tasks: db.yml
 - import_tasks: wud.yml
 - import_tasks: docling.yml
+- import_tasks: flaresolverr.yml
 - import_tasks: homepage.yml
 - import_tasks: immich.yml
 - import_tasks: jellyfin.yml

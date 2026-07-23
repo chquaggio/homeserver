@@ -1,0 +1,16 @@
+---
+- name: Configure FlareSolverr service
+  set_fact:
+    flaresolverr_service:
+      name: flaresolverr
+      image: ghcr.io/flaresolverr/flaresolverr:v3.5.0
+      container_name: flaresolverr
+      ports:
+        - "8191:8191"
+      environment:
+        - "TZ={{ tz }}"
+      labels:
+        - "wud.link.template=https://github.com/FlareSolverr/FlareSolverr/releases"
+      networks:
+        - qnet
+      restart: unless-stopped
