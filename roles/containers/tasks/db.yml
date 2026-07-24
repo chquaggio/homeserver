@@ -38,9 +38,9 @@
         - postgres
       environment:
         - POSTGRES_HOST=postgres
-        # Dumps the {{ db_name }} database (currently used by spesatracker). If more
-        # apps start using the shared Postgres, add their DBs here space-separated.
-        - "POSTGRES_DB={{ db_name }}"
+        # Dumps the databases on the shared Postgres, space-separated. Add each
+        # app's DB here when it starts using the shared Postgres.
+        - "POSTGRES_DB={{ db_name }} infisical"
         - "POSTGRES_USER={{ db_user }}"
         - "POSTGRES_PASSWORD={{ db_password }}"
         - POSTGRES_EXTRA_OPTS=--clean --if-exists

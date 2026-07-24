@@ -1,0 +1,57 @@
+---
+# Infisical reuses the shared Postgres (own `infisical` database) and its own
+# Redis. The database must exist before the backend runs its migrations; the
+# shared Postgres image only auto-creates its default DB, so create it here.
+- name: Ensure the infisical database exists on the shared Postgres
+  ansible.builtin.command: >-
+    docker exec -e PGPASSWORD={{ db_password }} postgres
+    psql -U {{ db_user }} -d {{ db_name }} -tAc
+    "SELECT 1 FROM pg_database WHERE datname='infisical'"
+  register: infisical_db_present
+  changed_when: false
+  retries: 10
+  delay: 3
+  until: infisical_db_present.rc == 0
+
+- name: Create the infisical database
+  ansible.builtin.command: >-
+    docker exec -e PGPASSWORD={{ db_password }} postgres
+    createdb -U {{ db_user }} -O {{ db_user }} infisical
+  when: infisical_db_present.stdout != "1"
+
+- name: Configure Infisical redis service
+  set_fact:
+    infisical_redis_service:
+      name: infisical-redis
+      image: docker.io/valkey/valkey:9.0.4
+      container_name: infisical-redis
+      labels:
+        - "wud.link.template=https://github.com/valkey-io/valkey/releases"
+      networks:
+        - qnet
+      restart: unless-stopped
+
+- name: Configure Infisical service
+  set_fact:
+    infisical_service:
+      name: infisical
+      image: infisical/infisical:v0.162.13
+      container_name: infisical
+      depends_on:
+        - postgres
+        - infisical-redis
+      ports:
+        - "8222:8080"
+      environment:
+        - NODE_ENV=production
+        - "ENCRYPTION_KEY={{ infisical_encryption_key }}"
+        - "AUTH_SECRET={{ infisical_auth_secret }}"
+        - "DB_CONNECTION_URI=postgres://{{ db_user }}:{{ db_password }}@postgres:5432/infisical"
+        - REDIS_URL=redis://infisical-redis:6379
+        - SITE_URL=http://quoggioserver:8222
+        - TELEMETRY_ENABLED=false
+      labels:
+        - "wud.link.template=https://github.com/Infisical/infisical/releases"
+      networks:
+        - qnet
+      restart: unless-stopped

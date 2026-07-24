@@ -27,6 +27,10 @@ db_user: "{{ DB_USER }}"
 # Immich
 immich_db_password: "{{ IMMICH_DB_PASSWORD }}"
 
+# Infisical
+infisical_encryption_key: "{{ INFISICAL_ENCRYPTION_KEY }}"
+infisical_auth_secret: "{{ INFISICAL_AUTH_SECRET }}"
+
 # Jellyfin / Jellyseerr
 jellyfin_key: "{{ JELLYFIN_KEY }}"
 jellyseerr_key: "{{ JELLYSEERR_KEY }}"
