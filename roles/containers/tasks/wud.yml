@@ -6,7 +6,7 @@
   set_fact:
     wud_service:
       name: wud
-      image: getwud/wud:8.2.2
+      image: getwud/wud:8.3.0
       container_name: wud
       ports:
         - "3004:3000"
