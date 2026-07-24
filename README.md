@@ -33,7 +33,7 @@ Complete *arr stack with Jellyfin, automated downloads, and subtitle management
 OpenWebUI and Mealie integrated with self-hosted LLM API
 
 ### 🔒 Secure Access
-Tailscale VPN for encrypted remote access
+Tailscale VPN for encrypted remote access, Infisical for secrets management
 
 </td>
 <td width="50%">
@@ -113,26 +113,32 @@ The setup uses Ansible to:
 
 ## 📦 Services
 
-<details>
-<summary><b>🏠 Dashboard & Management</b></summary>
+Each service is defined in `roles/containers/tasks/<service>.yml`. Ports shown as `host→container` when they differ.
 
-- **Homepage** (`:3000`) - Service dashboard and homepage
+<details>
+<summary><b>🏠 Dashboard</b></summary>
+
+| Service | Port | Description |
+|---------|------|-------------|
+| **Homepage** | `:3000` | Dashboard with tiles for every service |
 
 </details>
 
 <details open>
-<summary><b>🎬 Media Management Stack</b></summary>
+<summary><b>🎬 Media</b></summary>
 
 | Service | Port | Description |
 |---------|------|-------------|
 | **Jellyfin** | `:8096` | Media server for movies and TV shows |
 | **Jellyseerr** | `:5055` | Media request management |
-| **Sonarr** | `:8989` | TV show management and automation |
-| **Radarr** | `:7878` | Movie management and automation |
-| **Prowlarr** | `:9696` | Indexer management for *arr stack |
+| **Sonarr** | `:8989` | TV show automation |
+| **Radarr** | `:7878` | Movie automation |
+| **Prowlarr** | `:9696` | Indexer management for the *arr stack |
 | **Bazarr** | `:6767` | Subtitle management |
 | **qBittorrent** | `:8585`, `:6881` | Torrent client |
+| **FlareSolverr** | `:8191` | Cloudflare proxy for Prowlarr |
 | **Audiobookshelf** | `:13378→80` | Audiobook and podcast server |
+| **Immich** | `:2283` | Photo and video library |
 
 </details>
 
@@ -153,29 +159,62 @@ The setup uses Ansible to:
 | Service | Port | Description |
 |---------|------|-------------|
 | **Actual Budget** | `:5006` | Personal finance management |
-| **Vikunja** | `:3456` | Task and project management |
 | **Mealie** | `:9925→9000` | Recipe management with AI integration |
+| **Spesatracker** | `:8400` | Grocery receipt and expense tracker |
+| **Wishlist** | `:7100` | Wishlist app |
+| **Karutuogg** | `:8410→8000` | Discord card-game bot with companion web app |
+
+Disabled in `main.yml`: **Vikunja** (`:3456`), **Actualtap** (`:8000`), **Docling** (`:5001`).
 
 </details>
 
 <details>
-<summary><b>🔧 Infrastructure Services</b></summary>
+<summary><b>🔒 Infrastructure & Security</b></summary>
 
-- **Pi-hole** (`:53` DNS, `:8053` Web UI) - Network-wide ad blocking and DNS server
-- **cloudflared** - DNS-over-HTTPS / Cloudflare tunnel helper
+| Service | Port | Description |
+|---------|------|-------------|
+| **Pi-hole** | `:53` DNS, `:8053→80` | Ad blocking and DNS server |
+| **cloudflared** | — | DNS-over-HTTPS / Cloudflare tunnel helper |
+| **Infisical** | `:8222→8080` | Secrets manager for API keys, tokens, and Ansible secrets |
 
 </details>
 
 <details>
 <summary><b>🧰 Ops / Utilities</b></summary>
 
-- **GHCR login** - Auth helper for pulling images from GitHub Container Registry
-- **WUD** (`:3004`) - What's Up Docker: image-update dashboard with per-image changelog links, notify-only via Telegram
-- **Beszel** - Utility container (see `roles/containers/tasks/beszel.yml`)
-- **Docling** - Utility container (see `roles/containers/tasks/docling.yml`)
-- **Zerobyte** - Utility container (see `roles/containers/tasks/zerobyte.yml`)
+| Service | Port | Description |
+|---------|------|-------------|
+| **WUD** | `:3004→3000` | What's Up Docker: image-update dashboard, notify-only via Telegram |
+| **Beszel** | `:8090` | Server and container monitoring |
+| **Zerobyte** | `:4096` | Backup management |
+| **GHCR login** | — | Auth helper for pulling images from GitHub Container Registry |
 
 </details>
+
+---
+
+## 🗄️ Data layer
+
+Databases and caches are containers too. Some apps share the general Postgres; larger apps run their own.
+
+### PostgreSQL
+
+| Instance | Image | Used by |
+|----------|-------|---------|
+| **postgres** (`:5432`) | `postgres:17` | Spesatracker, Infisical |
+| **immich-postgres** | `immich-app/postgres` (vectorchord) | Immich |
+| **karutuogg-postgres** | `postgres:17` | Karutuogg |
+
+### Redis / Valkey
+
+| Instance | Image | Used by |
+|----------|-------|---------|
+| **immich-redis** | `valkey/valkey` | Immich |
+| **infisical-redis** | `valkey/valkey` | Infisical |
+
+### Backups
+
+Each Postgres instance has a `*-db-backup` sidecar (`prodrigestivill/postgres-backup-local`) writing daily dumps: **db-backup** (postgres), **immich-db-backup** (immich-postgres), **karutuogg-db-backup** (karutuogg-postgres). Photo and media files are stored on the DAS, not in Postgres.
 
 ---
 
