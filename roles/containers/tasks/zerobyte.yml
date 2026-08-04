@@ -19,6 +19,10 @@
         - ./audiobookshelf/config:/containers/audiobookshelf
         - ./bazarr/config:/containers/bazarr
         - ./beszel:/containers/beszel
+        # Config only. The Calibre library itself lives on the DAS and is bulk;
+        # metadata.db is a live SQLite file, so it needs a consistent snapshot
+        # rather than a file copy — not solved yet.
+        - ./calibre-web-automated/config:/containers/calibre-web-automated
         - ./homepage/config:/containers/homepage
         - ./jellyfin/config:/containers/jellyfin
         - ./jellyseerr/config:/containers/jellyseer

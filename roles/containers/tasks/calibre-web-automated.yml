@@ -1,0 +1,52 @@
+---
+# Ebook library served over OPDS to KOReader on the Kobo. LAN/Tailscale only —
+# deliberately no Cloudflare tunnel route, since the Kobo syncs at home.
+- name: Configure Calibre-Web Automated service
+  set_fact:
+    calibre_web_automated_service:
+      name: calibre-web-automated
+      image: crocodilestick/calibre-web-automated:v4.0.6
+      container_name: calibre-web-automated
+      ports:
+        - 8083:8083
+      volumes:
+        - ./calibre-web-automated/config:/config
+        # Ingest is consume-and-move: CWA deletes what it finds here after
+        # importing it into the library's own author/title layout. Must stay a
+        # dedicated directory — never point it at {{ media_dir }}/books.
+        # Kept on the DAS so imports are same-filesystem renames.
+        - "{{ media_dir }}/cwa-book-ingest:/cwa-book-ingest"
+        - "{{ media_dir }}/calibre-library:/calibre-library"
+      environment:
+        - "PUID={{ puid }}"
+        - "PGID={{ pgid }}"
+        - "TZ={{ tz }}"
+        # The DAS is local ext4, not a network share — inotify on the ingest
+        # directory works, so CWA needs no polling fallback.
+        - NETWORK_SHARE_MODE=false
+      labels:
+        - "wud.link.template=https://github.com/crocodilestick/Calibre-Web-Automated/releases"
+      networks:
+        - qnet
+      restart: unless-stopped
+
+- name: Setup Calibre-Web Automated directories
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/calibre-web-automated/{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+  loop:
+    - "config"
+
+# Created here rather than by hand: Docker would autocreate these root-owned on
+# first start, which breaks the container's PUID/PGID.
+- name: Setup Calibre-Web Automated library directories on the DAS
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+  loop:
+    - "{{ media_dir }}/cwa-book-ingest"
+    - "{{ media_dir }}/calibre-library"

@@ -286,6 +286,15 @@
           url: http://audiobookshelf:80
           key: "{{ audiobookshelf_key }}"
 
+    - Calibre-Web Automated:
+        icon: calibre-web-automated.png
+        href: http://quoggioserver:8083
+        description: Ebook e OPDS per il Kobo
+        server: server-docker
+        container: calibre-web-automated
+        statusStyle: "dot"
+        showStats: true
+
     - Immich:
         icon: immich.png
         href: http://quoggioserver:2283

@@ -1,3 +1,31 @@
+## [2026-08-04 11:00] Push Summary
+
+### Conversation Context
+The goal was reading ebooks on the Kobo through KOReader's OPDS client, which needs a
+server-side library. Calibre-Web Automated was chosen over plain Calibre-Web because it ingests
+and converts automatically instead of requiring the library to be curated by hand in desktop
+Calibre. The binding constraint was keeping it clear of the existing Audiobookshelf data: CWA's
+ingest folder is consume-and-move — it deletes source files once imported — so it gets a
+dedicated `cwa-book-ingest/` drop zone plus its own `calibre-library/`, and must never be
+pointed at `media_dir/books` (audiobooks) or `pdfs/`. Both directories live on the DAS so
+imports are same-filesystem renames rather than cross-device copies, and both are created by the
+Ansible task rather than by hand, because Docker would otherwise autocreate them root-owned and
+break the container's PUID/PGID. `NETWORK_SHARE_MODE=false` because the DAS is local ext4 where
+inotify works, so the polling fallback is unnecessary. No Cloudflare tunnel route was added
+deliberately: the Kobo syncs at home, so LAN/Tailscale reach is enough and the library stays off
+the public internet. Zerobyte backs up only the config directory — the library itself is bulk
+data and `metadata.db` is a live SQLite file needing a consistent snapshot rather than a file
+copy, which is left unsolved for now.
+
+### Changes
+- `roles/containers/tasks/calibre-web-automated.yml`: New service — CWA `v4.0.6` on `:8083`, config volume, DAS-backed `cwa-book-ingest`/`calibre-library` mounts, `NETWORK_SHARE_MODE=false`, wud release-link label; creates the config and DAS library directories with correct ownership.
+- `roles/containers/tasks/main.yml`: Imported the new task file.
+- `roles/containers/templates/services.yaml.j2`: Added the homepage tile (docker stats + dot status).
+- `roles/containers/tasks/zerobyte.yml`: Mounted the CWA config directory into the backup container, with a note on why the library and live `metadata.db` are excluded.
+- `README.md`: Documented the two DAS directories and the consume-and-move ingest behaviour, noted Audiobookshelf's `books/`/`pdfs/` are untouched, and added the service-table row.
+
+---
+
 ## [2026-07-13 09:58] Push Summary
 
 ### Conversation Context

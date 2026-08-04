@@ -100,6 +100,15 @@ Pi-hole for ad-blocking and local service resolution
 - **Media path**: Centralized under the `media_dir` ansible variable (default `/mnt/das`); all media services (Jellyfin, *arr stack, qBittorrent, Audiobookshelf) bind-mount from here
 - **Health monitoring**: Beszel-agent passes the DAS block device through for S.M.A.R.T. and mounts `/mnt/das` read-only at `/extra-filesystems/das-01` for capacity reporting
 
+#### Ebooks
+
+Calibre-Web Automated owns two DAS directories, both created by its Ansible task:
+
+- `calibre-library/` — the Calibre library, including `metadata.db`. CWA restructures everything it imports into its own author/title layout.
+- `cwa-book-ingest/` — drop zone. **CWA deletes files from here after importing them**, so it must never be pointed at `books/` or any other library directory.
+
+Audiobookshelf keeps serving `books/` (audiobooks) and `pdfs/` unchanged; the two libraries are independent. To add an ebook, copy it into `cwa-book-ingest/` and CWA imports it within a minute.
+
 ### Infrastructure
 
 The setup uses Ansible to:
@@ -138,6 +147,7 @@ Each service is defined in `roles/containers/tasks/<service>.yml`. Ports shown a
 | **qBittorrent** | `:8585`, `:6881` | Torrent client |
 | **FlareSolverr** | `:8191` | Cloudflare proxy for Prowlarr |
 | **Audiobookshelf** | `:13378→80` | Audiobook and podcast server |
+| **Calibre-Web Automated** | `:8083` | Ebook library and OPDS feed for KOReader — LAN/Tailscale only, no public route |
 | **Immich** | `:2283` | Photo and video library |
 
 </details>
