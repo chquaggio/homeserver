@@ -17,6 +17,10 @@
         - IPER_EMAIL={{ spesatracker_iper_email | default('') }}
         - IPER_PSW={{ spesatracker_iper_psw | default('') }}
         - IPER_STORE_ID={{ spesatracker_iper_store_id | default('') }}
+        # LLM receipt parsing / name expansion; empty base URL = regex parser only
+        - LLM_BASE_URL={{ spesatracker_llm_base_url | default('') }}
+        - LLM_MODEL={{ spesatracker_llm_model | default('') }}
+        - LLM_TIMEOUT={{ spesatracker_llm_timeout | default('300') }}
       ports:
         - 8400:8400
       depends_on:

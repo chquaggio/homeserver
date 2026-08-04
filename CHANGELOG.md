@@ -1,3 +1,21 @@
+## [2026-08-04 11:01] Push Summary
+
+### Conversation Context
+Spesatracker's receipt parsing gains an LLM path for expanding the abbreviated line-item names
+supermarket receipts use, which the regex parser can only partially recover. It points at the
+self-hosted vLLM endpoint already running on `bestione` (`qwen3.6-27b-batiai`) rather than a
+hosted API, so no key is involved and the three values live in `group_vars/all/services.yml` as
+plain config instead of the vault. The 300s timeout is deliberately generous: parsing happens at
+import time as a batch step, not in a user-facing request. All three vars pass through
+`| default('')`, so an unset or empty `LLM_BASE_URL` falls back to the regex parser — if
+`bestione` is down or the vars are missing, imports degrade instead of failing.
+
+### Changes
+- `group_vars/all/services.yml`: Added `spesatracker_llm_base_url`, `spesatracker_llm_model`, and `spesatracker_llm_timeout`.
+- `roles/containers/tasks/spesatracker.yml`: Passed `LLM_BASE_URL`, `LLM_MODEL`, and `LLM_TIMEOUT` into the container, all defaulted so an empty base URL keeps the regex-only parser.
+
+---
+
 ## [2026-08-04 11:00] Push Summary
 
 ### Conversation Context

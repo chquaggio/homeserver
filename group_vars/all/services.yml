@@ -57,6 +57,9 @@ qb_password: "{{ QB_PASSWORD }}"
 spesatracker_iper_email: "{{ SPESATRACKER_IPER_EMAIL }}"
 spesatracker_iper_psw: "{{ SPESATRACKER_IPER_PSW }}"
 spesatracker_iper_store_id: "{{ SPESATRACKER_IPER_STORE_ID }}"
+spesatracker_llm_base_url: "http://bestione:8000/v1"
+spesatracker_llm_model: "qwen3.6-27b-batiai"
+spesatracker_llm_timeout: "300"
 
 # Telegram notifications
 telegram_token: "{{ TELEGRAM_TOKEN }}"
