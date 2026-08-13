@@ -1,7 +1,7 @@
 ---
 - import_tasks: ghcr_login.yml
 - import_tasks: actual.yml
-- import_tasks: audiobookshelf.yml
+# - import_tasks: audiobookshelf.yml
 - import_tasks: bazarr.yml
 - import_tasks: beszel.yml
 - import_tasks: calibre-web-automated.yml
@@ -19,7 +19,7 @@
 - import_tasks: mealie.yml
 - import_tasks: mymcp.yml
 - import_tasks: openwebui.yml
-- import_tasks: pihole.yml
+# - import_tasks: pihole.yml
 - import_tasks: prowlarr.yml
 - import_tasks: qbittorrent.yml
 - import_tasks: radarr.yml

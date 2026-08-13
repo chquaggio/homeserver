@@ -31,20 +31,20 @@
           url: http://trilium:8080
           key: "{{ trilium_token }}"
 
-    - pihole:
-        icon: pi-hole.png
-        # href: https://pihole.fantaquoggio.bid/admin
-        href: http://quoggioserver:8053/admin
-        description: adblocker definitivo
-        server: server-docker
-        container: pihole
-        statusStyle: "dot"
-        showStats: true
-        widget:
-          type: pihole
-          url: http://pihole:80
-          version: 6
-          key: "{{ pihole_password }}"
+    # - pihole:
+    #     icon: pi-hole.png
+    #     # href: https://pihole.fantaquoggio.bid/admin
+    #     href: http://quoggioserver:8053/admin
+    #     description: adblocker definitivo
+    #     server: server-docker
+    #     container: pihole
+    #     statusStyle: "dot"
+    #     showStats: true
+    #     widget:
+    #       type: pihole
+    #       url: http://pihole:80
+    #       version: 6
+    #       key: "{{ pihole_password }}"
 
     - zerobyte:
         icon: zerobyte.png
@@ -150,14 +150,14 @@
         #  key: 
         #  version: 2
 
-    - Docling:
-        icon: sh-docling.png
-        href: http://quoggioserver:5001/ui
-        description: convertitore documenti
-        server: server-docker
-        container: docling
-        statusStyle: "dot"
-        showStats: true
+    # - Docling:
+    #     icon: sh-docling.png
+    #     href: http://quoggioserver:5001/ui
+    #     description: convertitore documenti
+    #     server: server-docker
+    #     container: docling
+    #     statusStyle: "dot"
+    #     showStats: true
 
     # - Vikunja:
     #     icon: vikunja.png
@@ -273,18 +273,18 @@
           showEpisodeNumber: true
           expandOneStreamToTwoRows: false
 
-    - Audiobookshelf:
-        icon: audiobookshelf.png
-        href: https://audiobookshelf.fantaquoggio.bid
-        description: Pezzotto per (audio)libri 
-        server: server-docker
-        container: audiobookshelf
-        statusStyle: "dot"
-        showStats: true
-        widget:
-          type: audiobookshelf
-          url: http://audiobookshelf:80
-          key: "{{ audiobookshelf_key }}"
+    # - Audiobookshelf:
+    #     icon: audiobookshelf.png
+    #     href: https://audiobookshelf.fantaquoggio.bid
+    #     description: Pezzotto per (audio)libri 
+    #     server: server-docker
+    #     container: audiobookshelf
+    #     statusStyle: "dot"
+    #     showStats: true
+    #     widget:
+    #       type: audiobookshelf
+    #       url: http://audiobookshelf:80
+    #       key: "{{ audiobookshelf_key }}"
 
     - Calibre-Web Automated:
         icon: calibre-web-automated.png
