@@ -23,6 +23,8 @@
         - LLM_TIMEOUT={{ spesatracker_llm_timeout | default('300') }}
       ports:
         - 8400:8400
+      volumes:
+        - ./spesatracker/data:/app/data
       depends_on:
         - postgres
       labels:
