@@ -1,0 +1,55 @@
+---
+- name: Configure VibraVid service
+  set_fact:
+    vibravid_service:
+      name: vibravid
+      image: ghcr.io/astraelabs/vibravid:latest
+      container_name: vibravid
+      ports:
+        - "8001:8000"
+      volumes:
+        - ./vibravid/conf:/app/Conf
+        - ./vibravid/data:/app/data
+        - ./vibravid/logs:/app/.cache/logs
+        - ./vibravid/binary:/home/appuser/.local/bin/binary
+        # Shared with Sonarr/Radarr (/downloads); translated via ARR.path_mapping in config.json
+        - "{{ media_dir }}/downloads:/app/Video"
+      environment:
+        - "PUID={{ puid }}"
+        - "PGID={{ pgid }}"
+        - "TZ={{ tz }}"
+        - DJANGO_DEBUG=false
+        - DJANGO_DB_DIR=/app/data
+        - "DJANGO_SECRET_KEY={{ vibravid_secret_key }}"
+        - PYTHONUNBUFFERED=1
+        - PYTHONPATH=/app
+        - "ALLOWED_HOSTS=localhost,127.0.0.1,vibravid,quoggioserver"
+        - "CSRF_TRUSTED_ORIGINS=http://localhost:8001,http://quoggioserver:8001"
+        - FLARESOLVERR_URL=http://flaresolverr:8191
+        # TMDB is env-only config; enables strict TMDB id matching for arr polling
+        - "TMDB_API_KEY={{ tmdb_key }}"
+      labels:
+        - "wud.link.template=https://github.com/AstraeLabs/VibraVid/releases"
+      networks:
+        - qnet
+      restart: unless-stopped
+
+- name: Setup VibraVid directories
+  ansible.builtin.file:
+    path: "{{ docker_compose_dir }}/vibravid/{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+  loop:
+    - "conf"
+    - "data"
+    - "logs"
+    - "binary"
+
+- name: Render VibraVid configuration
+  ansible.builtin.template:
+    src: "templates/vibravid_config.json.j2"
+    dest: "{{ docker_compose_dir }}/vibravid/conf/config.json"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: "0640"

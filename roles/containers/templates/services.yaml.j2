@@ -253,6 +253,15 @@
         statusStyle: "dot"
         showStats: true
 
+    - VibraVid:
+        icon: mdi-movie-open
+        href: http://quoggioserver:8001
+        description: Scarica dallo streaming per Sonarr/Radarr
+        server: server-docker
+        container: vibravid
+        statusStyle: "dot"
+        showStats: true
+
 - Media:
     - Jellyfin:
         icon: jellyfin.png
@@ -287,7 +296,7 @@
     #       key: "{{ audiobookshelf_key }}"
 
     - Calibre-Web Automated:
-        icon: calibre-web-automated.png
+        icon: calibre-web.png
         href: http://quoggioserver:8083
         description: Ebook e OPDS per il Kobo
         server: server-docker

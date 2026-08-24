@@ -26,6 +26,7 @@
 - import_tasks: sonarr.yml
 - import_tasks: spesatracker.yml
 - import_tasks: trilium.yml
+- import_tasks: vibravid.yml
 # - import_tasks: vikunja.yml
 - import_tasks: wishlist.yml
 - import_tasks: zerobyte.yml

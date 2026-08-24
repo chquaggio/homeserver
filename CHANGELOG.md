@@ -1,3 +1,34 @@
+## [2026-08-25 00:29] Push Summary
+
+### Conversation Context
+VibraVid (AstraeLabs' successor to the StreamingCommunity downloader) joins the stack as a
+download client for the arr services, deployed from `ghcr.io/astraelabs/vibravid:latest` on
+host port 8001 since 8000 is taken. The arr integration is polling-only rather than
+webhook-based, deliberately: polling is pure env/config on the VibraVid side and stays fully
+ansible-managed, while webhooks would require hand-configured connections and shared secrets
+inside the Sonarr/Radarr UIs for a marginal latency win at a 5-minute polling interval;
+`webhook_priority` support means webhooks can be layered on later without a migration.
+`config.json` is seeded from the tuned instance that was running bare on the server
+(`~/StreamingCommunity/Conf/config.json` — x265 re-encode, ita/eng track selection, provider
+fallback order) as an ansible-authoritative template, so GUI edits revert on deploy. Downloads
+mount the shared `{{ media_dir }}/downloads` at `/app/Video` with an `ARR.path_mapping` entry
+translating to the `/downloads` path Sonarr/Radarr already mount, instead of a dedicated
+directory that each arr app would need added by hand. The existing FlareSolverr container is
+reused; the bypasser and Telegram-bot sidecars, and the docker-socket mount for in-app updates
+(WUD already tracks updates here), were considered and skipped. Two new vault secrets back the
+deploy: `VIBRAVID_SECRET_KEY` (Django) and `TMDB_API_KEY`, which VibraVid accepts exclusively
+via environment. `login.json` and `domains.json` stay unmanaged — the former may hold provider
+credentials, the latter is refetched online by the app.
+
+### Changes
+- `roles/containers/tasks/vibravid.yml`: New service task — container definition, persistent conf/data/logs/binary dirs, and templated config deploy.
+- `roles/containers/templates/vibravid_config.json.j2`: Config seeded from the server's tuned instance, with arr polling enabled against sonarr/radarr via vault keys, `/app/Video → /downloads` path mapping, and FlareSolverr pointed at the stack container.
+- `roles/containers/tasks/main.yml`: Import `vibravid.yml`.
+- `group_vars/all/services.yml`: Added `vibravid_secret_key` and `tmdb_key` vault references.
+- `roles/containers/templates/services.yaml.j2`: VibraVid tile in the Arr group (built-in `mdi-movie-open` icon, no PNG needed); ride-along fix of the Calibre-Web tile icon filename.
+
+---
+
 ## [2026-08-04 11:01] Push Summary
 
 ### Conversation Context

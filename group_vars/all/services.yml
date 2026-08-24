@@ -69,6 +69,10 @@ telegram_chat_id: "{{ TELEGRAM_CHAT_ID }}"
 trilium_token: "{{ TRILIUM_TOKEN }}"
 trilium_url: "{{ TRILIUM_BASE_URL_PROD }}"
 
+# VibraVid
+vibravid_secret_key: "{{ VIBRAVID_SECRET_KEY }}"
+tmdb_key: "{{ TMDB_API_KEY }}"
+
 # Zerobyte
 zerobyte_secret: "{{ ZEROBYTE_SECRET }}"
 
