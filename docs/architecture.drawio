@@ -1,0 +1,166 @@
+<mxfile host="app.diagrams.net" modified="2026-08-25T00:00:00.000Z" agent="ansible-homeserver" version="24.0.0" type="device">
+  <diagram id="homeserver-arch" name="Architecture">
+    <mxGraphModel dx="2600" dy="1600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2700" pageHeight="2100" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ===== Host ===== -->
+        <mxCell id="host" value="quoggioserver — Ubuntu, Docker (4 cores / 15 GB)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=2;fontStyle=1;fontSize=26;verticalAlign=top;align=left;spacingLeft=20;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="560" y="60" width="2100" height="1980" as="geometry"/>
+        </mxCell>
+        <mxCell id="ufw" value="&lt;b&gt;UFW&lt;/b&gt;: only the tailnet (100.64.0.0/10) and the LAN (192.168.1.0/24) may reach host services such as sshd. It does &lt;b&gt;not&lt;/b&gt; filter published container ports: Docker inserts its own iptables rules ahead of UFW, so every &lt;b&gt;ports:&lt;/b&gt; line answers on all of the server's addresses (LAN IP, Tailscale IP, IPv6)." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=18;align=left;spacingLeft=16;spacingRight=16;" vertex="1" parent="1">
+          <mxGeometry x="600" y="130" width="2020" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="sshd" value="&lt;b&gt;sshd :22&lt;/b&gt;&lt;br&gt;key-only, no root login&lt;br&gt;+ Tailscale SSH" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="600" y="260" width="340" height="130" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== Networks (no fill so they can overlap) ===== -->
+        <mxCell id="qnet" value="Docker network &lt;b&gt;qnet&lt;/b&gt; (bridge) — every container reaches every other container by name" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#3b82f6;strokeWidth=3;dashed=1;fontSize=22;verticalAlign=top;align=left;spacingLeft=20;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="260" width="1620" height="900" as="geometry"/>
+        </mxCell>
+        <mxCell id="dockerapi" value="Docker network &lt;b&gt;docker-api&lt;/b&gt; — internal: true (no internet). Members: socket-proxy, homepage, wud" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#d79b00;strokeWidth=3;dashed=1;fontSize=22;verticalAlign=bottom;align=left;spacingLeft=20;spacingBottom=10;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="1040" width="1620" height="580" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== Containers on qnet ===== -->
+        <mxCell id="cloudflared" value="&lt;b&gt;cloudflared&lt;/b&gt;&lt;br&gt;outbound tunnel to Cloudflare&lt;br&gt;token via TUNNEL_TOKEN env" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="330" width="320" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="tunnelled_access" value="&lt;b&gt;Public, behind Cloudflare Access (email OTP)&lt;/b&gt;&lt;br&gt;&lt;br&gt;homepage :3000 — no login of its own (v1)&lt;br&gt;actualbudget :5006 — server password" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=18;align=left;spacingLeft=16;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="330" width="560" height="190" as="geometry"/>
+        </mxCell>
+        <mxCell id="tunnelled_open" value="&lt;b&gt;Public, app login only (no Access)&lt;/b&gt;&lt;br&gt;&lt;br&gt;jellyfin :8096 (TVs, apps) · openwebui :3333→8080&lt;br&gt;trilium :5050→8080 · mealie :9925→9000&lt;br&gt;karutuogg-web :8410→8000 (Discord OAuth)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=18;align=left;spacingLeft=16;" vertex="1" parent="1">
+          <mxGeometry x="1990" y="330" width="590" height="190" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr" value="&lt;b&gt;Download / arr stack&lt;/b&gt; — LAN + tailnet only&lt;br&gt;&lt;br&gt;sonarr · radarr · prowlarr · bazarr · seerr&lt;br&gt;qbittorrent · vibravid · flaresolverr" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=18;align=left;spacingLeft=16;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="580" width="740" height="170" as="geometry"/>
+        </mxCell>
+        <mxCell id="apps" value="&lt;b&gt;Other apps&lt;/b&gt; — LAN + tailnet only&lt;br&gt;&lt;br&gt;immich-server + immich-machine-learning · calibre-web-automated&lt;br&gt;spesatracker · mymcp · infisical · zerobyte · beszel (hub)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=18;align=left;spacingLeft=16;" vertex="1" parent="1">
+          <mxGeometry x="1820" y="580" width="760" height="170" as="geometry"/>
+        </mxCell>
+        <mxCell id="data" value="&lt;b&gt;Data layer&lt;/b&gt; — each on its own internal network, reachable only by its owner app; no published ports&lt;br&gt;&lt;br&gt;db-shared: postgres (quoggiodb, infisical) + db-backup ← spesatracker, infisical · infisical: infisical-redis&lt;br&gt;immich: immich-postgres + immich-redis + immich-db-backup ← immich-server, ML · karutuogg: postgres + backup ← web, bot" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=18;align=left;spacingLeft=16;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="810" width="1540" height="170" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== Straddling both networks ===== -->
+        <mxCell id="homepage" value="&lt;b&gt;homepage&lt;/b&gt; :3000&lt;br&gt;on qnet + docker-api&lt;br&gt;widgets hold API keys" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="1090" width="400" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="wud" value="&lt;b&gt;wud&lt;/b&gt; :3004→3000&lt;br&gt;on qnet + docker-api&lt;br&gt;checks registries for image updates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="1880" y="1090" width="400" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="proxy" value="&lt;b&gt;socket-proxy&lt;/b&gt; :2375&lt;br&gt;tecnativa/docker-socket-proxy&lt;br&gt;CONTAINERS=1 IMAGES=1 POST=0&lt;br&gt;&lt;br&gt;allows: list, inspect, stats, events&lt;br&gt;blocks: start/stop/exec/create (no root takeover)&lt;br&gt;note: inspect still shows container env vars" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="1340" width="880" height="220" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== Socket + agent ===== -->
+        <mxCell id="sock" value="&lt;b&gt;/var/run/docker.sock&lt;/b&gt;&lt;br&gt;&lt;br&gt;the full Docker API&lt;br&gt;= root on the host&lt;br&gt;(&quot;:ro&quot; on the mount does not limit it)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="600" y="1340" width="340" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="beszelagent" value="&lt;b&gt;beszel-agent&lt;/b&gt;&lt;br&gt;network_mode: host, user 0:6&lt;br&gt;S.M.A.R.T. + container stats&lt;br&gt;keeps the raw socket&lt;br&gt;(trusted, not exposed)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="600" y="1680" width="380" height="200" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== Storage ===== -->
+        <mxCell id="compose" value="&lt;b&gt;/opt/docker/compose&lt;/b&gt;&lt;br&gt;compose.yml rendered by Ansible&lt;br&gt;per-service config/data dirs&lt;br&gt;Postgres dumps (daily)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="1660" y="1680" width="440" height="200" as="geometry"/>
+        </mxCell>
+        <mxCell id="das" value="&lt;b&gt;/mnt/das&lt;/b&gt; — 11 TB ext4, single disk&lt;br&gt;TerraMaster D4-320 (USB)&lt;br&gt;Movies · Shows · downloads · immich&lt;br&gt;calibre-library · cwa-book-ingest&lt;br&gt;&lt;b&gt;not backed up&lt;/b&gt; (size)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="2160" y="1680" width="440" height="200" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== Outside world ===== -->
+        <mxCell id="internet" value="&lt;b&gt;Internet&lt;/b&gt;&lt;br&gt;browsers, Jellyfin TV apps,&lt;br&gt;Discord players" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="400" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="cf" value="&lt;b&gt;Cloudflare edge&lt;/b&gt;&lt;br&gt;*.fantaquoggio.bid, TLS&lt;br&gt;&lt;br&gt;Access (email OTP) only on&lt;br&gt;homepage + actual;&lt;br&gt;other hostnames pass straight through" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="40" y="480" width="400" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="lan" value="&lt;b&gt;LAN 192.168.1.0/24&lt;/b&gt;&lt;br&gt;TVs, phones, Kobo,&lt;br&gt;any guest or IoT device" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="40" y="900" width="400" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="tailnet" value="&lt;b&gt;Tailnet 100.64.0.0/10&lt;/b&gt;&lt;br&gt;dev box (WSL), laptop, phone&lt;br&gt;MagicDNS: quoggioserver" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1100" width="400" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="bestione" value="&lt;b&gt;bestione&lt;/b&gt; (home PC, tailnet)&lt;br&gt;vLLM API :8000&lt;br&gt;used by openwebui + spesatracker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1320" width="400" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="s3" value="&lt;b&gt;S3 bucket&lt;/b&gt;&lt;br&gt;restic repository (Zerobyte)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1560" width="400" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend" value="&lt;b&gt;Legend&lt;/b&gt;&lt;br&gt;&lt;br&gt;red — reachable from the internet, or root-equivalent&lt;br&gt;green — LAN + tailnet only&lt;br&gt;orange — Docker API path / Cloudflare&lt;br&gt;purple — data at rest&lt;br&gt;blue — trusted networks and host services" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=16;align=left;spacingLeft=16;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1760" width="400" height="220" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== Edges ===== -->
+        <mxCell id="e_inet_cf" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;" edge="1" parent="1" source="internet" target="cf">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_cfd_cf" value="outbound tunnel — no inbound port on the host" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;startArrow=classic;" edge="1" parent="1" source="cf" target="cloudflared">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="590"/>
+              <mxPoint x="760" y="405"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_cfd_acc" value="HTTP on qnet" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;" edge="1" parent="1" source="cloudflared" target="tunnelled_access">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_cfd_open" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="cloudflared" target="tunnelled_open">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1200" y="550"/>
+              <mxPoint x="2137" y="550"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_lan_qnet" value="published ports, no auth layer in between" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;strokeColor=#b85450;entryX=0;entryY=0.8;entryDx=0;entryDy=0;" edge="1" parent="1" source="lan" target="qnet">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ts_qnet" value="published ports (+ sshd on the host)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;entryX=0;entryY=0.95;entryDx=0;entryDy=0;" edge="1" parent="1" source="tailnet" target="qnet">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_llm" value="OpenAI-compatible API over the tailnet" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;startArrow=classic;dashed=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="bestione" target="dockerapi">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="1395"/>
+              <mxPoint x="760" y="1250"/>
+              <mxPoint x="1000" y="1250"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_sock_proxy" value="GET only: /containers, /images, /events" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=3;endArrow=classic;strokeColor=#d79b00;" edge="1" parent="1" source="sock" target="proxy">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_proxy_hp" value="tcp://socket-proxy:2375" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;strokeColor=#d79b00;" edge="1" parent="1" source="proxy" target="homepage">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_proxy_wud" value="tcp://socket-proxy:2375" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;strokeColor=#d79b00;" edge="1" parent="1" source="proxy" target="wud">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_sock_beszel" value="full API (bind mount)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;strokeColor=#b85450;" edge="1" parent="1" source="sock" target="beszelagent">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_arr_das" value="bind mounts (rw)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tunnelled_open" target="das">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2640" y="425"/>
+              <mxPoint x="2640" y="1780"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_compose_s3" value="Zerobyte → restic (config volumes + dumps, not media)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="compose" target="s3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1880" y="2010"/>
+              <mxPoint x="240" y="2010"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,3 +1,80 @@
+## [2026-08-28 12:22] Push Summary
+
+### Conversation Context
+The starting point was a full review of the homeserver configuration from the security,
+scalability, readability and maintainability angles, verified against the live server
+rather than the repo alone. The review found that the public GitHub repo carried plaintext
+credentials (wishlist, vikunja), that Homepage — reachable from the LAN without any auth and
+from the internet behind Cloudflare Access — held the raw Docker socket and therefore root
+on the host, that every published port bypasses UFW, and that the compose template was an
+allowlist silently dropping `network_mode`, `user` and `healthcheck` (beszel-agent and
+Postgres were not configured the way their task files claimed; trilium's `ro1` typo made a
+mount read-write). pihole and audiobookshelf were still running as orphans despite being
+disabled, `tailscale.yml` was not a valid playbook, and every deploy force-recreated all 36
+containers.
+
+Decisions: unused services were removed rather than secured (wishlist, vikunja, and the
+already-disabled pihole/audiobookshelf). The template now dumps each `*_service` dict as
+YAML so any Compose key works, and `setup.yml` derives bind-mount directories from the
+volumes instead of a copy-pasted task per service; `run.yml` uses `docker_compose_v2` with
+`remove_orphans` and without `--force-recreate`. For the socket, a read-only
+`docker-socket-proxy` on an internal network was chosen over removing Homepage's docker
+integration: it blocks the root-takeover path while keeping the status dots, with the known
+limitation that container `inspect` still exposes env vars. Databases and caches moved to
+per-stack `internal: true` networks so an app can reach only the database it owns; this
+forced the shared Postgres to drop its published port. Cloudflare Access stays the perimeter
+(it covers homepage and actual only; Jellyfin must stay Access-free for the TVs) — a
+self-hosted IdP was assessed and rejected as heavier and inside the perimeter. UFW rules are
+now edited in place instead of reset on every run, the world-open 22/53 rules are gone
+(Tailscale SSH and the LAN/tailnet allow rules cover every legitimate path), and root SSH
+login is disabled; these tasks got a `firewall` tag so they run without the rest of `common`
+(apt upgrade + reboot). VibraVid was pinned to v1.4.0 with resource limits, Immich ML got
+limits too, and Zerobyte gained the spesatracker and vibravid volumes that were persisted but
+never backed up. Finally the README was rewritten, a draw.io architecture diagram added, and
+a documentation contract (`CLAUDE.md` + `scripts/check_docs.py` in CI) requires docs to
+change in the same commit as the code they describe.
+
+### Commits
+1. `chore(containers): drop wishlist, pihole, audiobookshelf, vikunja and the tailscale playbook`
+   - `roles/containers/tasks/{wishlist,pihole,audiobookshelf,vikunja}.yml`, `tailscale.yml`: removed
+   - `roles/containers/tasks/main.yml`: imports removed
+   - `group_vars/all/services.yml`: dropped `oai_key`, `pihole_password`, `audiobookshelf_key`, stale karuta comments
+   - `roles/containers/templates/services.yaml.j2`: tiles removed, Mealie hostname typo fixed
+   - `roles/containers/tasks/zerobyte.yml`: removed mounts of deleted services
+   - `.ansible-lint`: no longer excludes `tailscale.yml`
+2. `refactor(containers): derive bind-mount dirs from volumes and deploy with docker_compose_v2`
+   - `roles/containers/tasks/setup.yml`: collects `./` and `media_dir` host paths from every service's volumes and creates the missing ones (`install -d`, owner `username`); NPM leftovers removed
+   - `roles/containers/tasks/run.yml`: `community.docker.docker_compose_v2`, `pull: always`, `remove_orphans`, optional `compose_services`
+   - `requirements.yml`: `community.docker >= 5.0.0`
+   - `roles/containers/tasks/ghcr_login.yml`: always-true `when` removed
+   - 10 service task files: "Setup directories" tasks removed; `actualtap.yml` config dir path fixed
+3. `fix(containers): render every compose key; repair beszel-agent and trilium mounts`
+   - `roles/containers/templates/compose.yml.j2`: dumps each service dict with `to_nice_yaml`
+   - `roles/containers/tasks/beszel.yml`: agent on host network for real (`networks` removed, `HUB_URL=http://localhost:8090`)
+   - `roles/containers/tasks/trilium.yml`: `ro1` → `ro`
+4. `security: socket proxy, per-stack internal networks, firewall and sshd hardening`
+   - `roles/containers/tasks/socket-proxy.yml`: `tecnativa/docker-socket-proxy:v0.5.0`, `CONTAINERS=1 IMAGES=1 POST=0`, on `docker-api`
+   - `roles/containers/tasks/homepage.yml`, `wud.yml`, `files/homepage_config/docker.yaml`: socket mount removed, API via `socket-proxy:2375`
+   - `roles/containers/templates/compose.yml.j2`: internal networks `docker-api`, `db-shared`, `infisical`, `immich`, `karutuogg`
+   - `roles/containers/tasks/db.yml`, `templates/postgres-initdb.sh.j2`: no published port, healthcheck with `start_period`, initdb script creating extra databases from `shared_postgres_databases`, on `db-shared`
+   - `roles/containers/tasks/infisical.yml`, `spesatracker.yml`: `depends_on` with `service_healthy`, joined `db-shared` (+ `infisical`); docker-exec DB provisioning removed
+   - `roles/containers/tasks/immich.yml`, `karutuogg.yml`: databases/caches on their stack network only; Immich ML CPU/memory limits
+   - `roles/containers/tasks/cloudflared.yml`: `TUNNEL_TOKEN` env instead of `--token`
+   - `roles/containers/tasks/jellyfin.yml`: media mount read-only
+   - `common/tasks/network.yml`, `common/handlers/main.yml`, `common/tasks/main.yml`: no `ufw reset`, world-open 22/53 rules deleted, `PermitRootLogin no` drop-in with restart handler, `firewall` tag
+5. `feat(containers): pin vibravid v1.4.0, cap encode resources, back up spesatracker and vibravid`
+   - `roles/containers/tasks/vibravid.yml`: `v1.4.0`, `deploy.resources.limits`, Movies/Shows mounts
+   - `roles/containers/templates/vibravid_config.json.j2`: daily arr polling, no path mapping, trimmed provider fallback
+   - `roles/containers/tasks/zerobyte.yml`: added `spesatracker/data`, `vibravid/conf`, `vibravid/data`
+6. `docs: rewrite README, add draw.io architecture, documentation contract and check`
+   - `README.md`: networking, storage, infrastructure, services, backups and deployment sections rewritten for the new pipeline and networks
+   - `docs/architecture.drawio`: trust-boundary diagram (tunnel vs LAN/tailnet, networks, Docker socket paths)
+   - `CLAUDE.md`: documentation contract and verification commands
+   - `scripts/check_docs.py`, `scripts/README.md`, `.github/workflows/lint.yml`: mechanical docs check in CI
+   - `.claude/skills/add-service/SKILL.md`: no directory tasks, networks rule, deploy commands
+
+---
+
 ## [2026-08-25 00:29] Push Summary
 
 ### Conversation Context

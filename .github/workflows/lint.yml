@@ -34,3 +34,6 @@ jobs:
 
       - name: ansible-lint
         run: ansible-lint
+
+      - name: docs mention every service and network
+        run: python3 scripts/check_docs.py

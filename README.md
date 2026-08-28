@@ -18,7 +18,7 @@
 
 This repository contains Ansible playbooks and roles to provision and manage a personal home server. The entire setup runs as Docker containers via a single Docker Compose file generated from Ansible templates.
 
-The home server runs a comprehensive media management and personal productivity stack, with all services containerized and orchestrated through Docker Compose. The server integrates with Tailscale for secure networking and uses Pi-hole for DNS management and local service resolution.
+The home server runs a comprehensive media management and personal productivity stack, with all services containerized and orchestrated through Docker Compose. The server is reached over Tailscale; a handful of apps are published on the internet through an outbound Cloudflare tunnel.
 
 ## ✨ Key Features
 
@@ -33,19 +33,19 @@ Complete *arr stack with Jellyfin, automated downloads, and subtitle management
 OpenWebUI and Mealie integrated with self-hosted LLM API
 
 ### 🔒 Secure Access
-Tailscale VPN for encrypted remote access, Infisical for secrets management
+Tailscale VPN for encrypted remote access, Infisical as a key-value store for secrets
 
 </td>
 <td width="50%">
 
 ### 📊 Self-Hosted Apps
-Finance tracking, task management, notes, and recipes
+Finance tracking, notes, recipes and photos
 
 ### 🐳 Infrastructure as Code
 Fully automated deployment with Ansible + Docker Compose
 
-### 🌐 Smart DNS
-Pi-hole for ad-blocking and local service resolution
+### 💾 Backups
+Daily Postgres dumps and Zerobyte (restic) shipping config volumes to S3
 
 </td>
 </tr>
@@ -54,6 +54,8 @@ Pi-hole for ad-blocking and local service resolution
 ## 🏗️ Architecture
 
 ### System Overview
+
+Editable diagram: [`docs/architecture.drawio`](docs/architecture.drawio) (open with [app.diagrams.net](https://app.diagrams.net) or the VS Code Draw.io extension). It shows the trust boundaries: Cloudflare tunnel vs LAN/tailnet paths, the `qnet` and `docker-api` networks, and who holds the Docker socket.
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
@@ -64,8 +66,8 @@ Pi-hole for ad-blocking and local service resolution
 │  │  (bestione)     │◄────────────► │   (quoggioserver)            │  │
 │  │  LLM API :8000  │   Secure      │                              │  │
 │  └─────────────────┘   Network     │  ┌────────────────────────┐  │  │
-│                                    │  │   Pi-hole DNS :53      │  │  │
-│                                    │  │   Web UI :8053         │  │  │
+│                                    │  │  cloudflared tunnel    │  │  │
+│                                    │  │  (outbound only)       │  │  │
 │                                    │  └────────────────────────┘  │  │
 │                                    │                              │  │
 │                                    │  ┌────────────────────────┐  │  │
@@ -89,15 +91,16 @@ Pi-hole for ad-blocking and local service resolution
 
 ### Networking
 
-- **Tailscale**: The server is part of a private Tailscale tailnet for secure remote access
-- **Pi-hole**: Acts as the primary DNS server and provides local hostname resolution (replacing MagicDNS)
-- **Docker Network**: All containers communicate through a shared `qnet`
+- **Tailscale**: The server is part of a private Tailscale tailnet for secure remote access; MagicDNS resolves `quoggioserver`
+- **Cloudflare tunnel**: `cloudflared` publishes selected apps on `*.fantaquoggio.bid` behind Cloudflare Access; no inbound port is opened
+- **Firewall**: UFW allows only the tailnet and the LAN to reach host services. Published container ports bypass UFW (Docker manages its own iptables rules), so a service that must stay internal should not declare `ports:` at all
+- **Docker Networks**: apps talk to each other on the shared `qnet`. Databases and caches live only on per-stack `internal: true` networks — `db-shared` (postgres + dump sidecar, joined by spesatracker and infisical), `infisical` (its Valkey), `immich`, `karutuogg` — so an app can reach the database it owns and nothing else; the shared Postgres has no published port (use `docker exec postgres psql …`). `docker-api` (internal) carries only the Docker socket proxy and its consumers; beszel-agent keeps the raw socket because it runs on the host network for accurate metrics
 - **Cross-machine Communication**: OpenWebUI can communicate with a self-hosted LLM API running on my home PC (`bestione:8000`)
 
 ### Storage
 
 - **TerraMaster D4-320 DAS**: USB-attached enclosure exposing a 12TB ext4 disk (label `das-01`) mounted at `/mnt/das` via fstab
-- **Media path**: Centralized under the `media_dir` ansible variable (default `/mnt/das`); all media services (Jellyfin, *arr stack, qBittorrent, Audiobookshelf) bind-mount from here
+- **Media path**: Centralized under the `media_dir` ansible variable (default `/mnt/das`); all media services (Jellyfin, *arr stack, qBittorrent, VibraVid, Calibre-Web) bind-mount from here
 - **Health monitoring**: Beszel-agent passes the DAS block device through for S.M.A.R.T. and mounts `/mnt/das` read-only at `/extra-filesystems/das-01` for capacity reporting
 
 #### Ebooks
@@ -107,16 +110,17 @@ Calibre-Web Automated owns two DAS directories, both created by its Ansible task
 - `calibre-library/` — the Calibre library, including `metadata.db`. CWA restructures everything it imports into its own author/title layout.
 - `cwa-book-ingest/` — drop zone. **CWA deletes files from here after importing them**, so it must never be pointed at `books/` or any other library directory.
 
-Audiobookshelf keeps serving `books/` (audiobooks) and `pdfs/` unchanged; the two libraries are independent. To add an ebook, copy it into `cwa-book-ingest/` and CWA imports it within a minute.
+The pre-existing `books/` and `pdfs/` directories are not touched by CWA. To add an ebook, copy it into `cwa-book-ingest/` and CWA imports it within a minute.
 
 ### Infrastructure
 
 The setup uses Ansible to:
 
-1. Define each service as an Ansible task that sets a `*_service` fact (image, ports, volumes, environment, networks)
-2. Combine all service definitions into a unified `services` list
-3. Render a Docker Compose file from the `compose.yml.j2` template
-4. Deploy everything with `docker compose up`
+1. Define each service as an Ansible task that sets a `*_service` fact — a plain Compose service definition plus a `name` key
+2. Combine all `*_service` facts into a `services` list
+3. Create every bind-mount host directory the services declare (Docker would otherwise create them root-owned)
+4. Render `compose.yml` by dumping each service dict as YAML — any Compose key works, there is no allowlist
+5. Run `docker compose up` through `community.docker.docker_compose_v2`: only containers whose definition changed are recreated, containers no longer defined are removed
 
 ---
 
@@ -146,7 +150,7 @@ Each service is defined in `roles/containers/tasks/<service>.yml`. Ports shown a
 | **Bazarr** | `:6767` | Subtitle management |
 | **qBittorrent** | `:8585`, `:6881` | Torrent client |
 | **FlareSolverr** | `:8191` | Cloudflare proxy for Prowlarr |
-| **Audiobookshelf** | `:13378→80` | Audiobook and podcast server |
+| **VibraVid** | `:8001→8000` | Streaming-site downloader, polled by Sonarr/Radarr as a download client |
 | **Calibre-Web Automated** | `:8083` | Ebook library and OPDS feed for KOReader — LAN/Tailscale only, no public route |
 | **Immich** | `:2283` | Photo and video library |
 
@@ -171,10 +175,9 @@ Each service is defined in `roles/containers/tasks/<service>.yml`. Ports shown a
 | **Actual Budget** | `:5006` | Personal finance management |
 | **Mealie** | `:9925→9000` | Recipe management with AI integration |
 | **Spesatracker** | `:8400` | Grocery receipt and expense tracker |
-| **Wishlist** | `:7100` | Wishlist app |
-| **Karutuogg** | `:8410→8000` | Discord card-game bot with companion web app |
+| **Karutuogg** | `:8410→8000` | Discord card-game bot with companion web app (`karutuogg-web` + `karutuogg-bot`, own Postgres) |
 
-Disabled in `main.yml`: **Vikunja** (`:3456`), **Actualtap** (`:8000`), **Docling** (`:5001`).
+Disabled in `main.yml`: **Actualtap** (`:8000`), **Docling** (`:5001`).
 
 </details>
 
@@ -183,9 +186,8 @@ Disabled in `main.yml`: **Vikunja** (`:3456`), **Actualtap** (`:8000`), **Doclin
 
 | Service | Port | Description |
 |---------|------|-------------|
-| **Pi-hole** | `:53` DNS, `:8053→80` | Ad blocking and DNS server |
-| **cloudflared** | — | DNS-over-HTTPS / Cloudflare tunnel helper |
-| **Infisical** | `:8222→8080` | Secrets manager for API keys, tokens, and Ansible secrets |
+| **cloudflared** | — | Outbound Cloudflare tunnel publishing selected apps on `*.fantaquoggio.bid` |
+| **Infisical** | `:8222→8080` | Key-value store for API keys and tokens (a browsable copy of the vault; Ansible does not read from it) |
 
 </details>
 
@@ -196,6 +198,7 @@ Disabled in `main.yml`: **Vikunja** (`:3456`), **Actualtap** (`:8000`), **Doclin
 |---------|------|-------------|
 | **WUD** | `:3004→3000` | What's Up Docker: image-update dashboard, notify-only via Telegram |
 | **Beszel** | `:8090` | Server and container monitoring |
+| **socket-proxy** | — | Read-only Docker API gateway for Homepage and WUD, on the internal `docker-api` network |
 | **Zerobyte** | `:4096` | Backup management |
 | **GHCR login** | — | Auth helper for pulling images from GitHub Container Registry |
 
@@ -224,7 +227,9 @@ Databases and caches are containers too. Some apps share the general Postgres; l
 
 ### Backups
 
-Each Postgres instance has a `*-db-backup` sidecar (`prodrigestivill/postgres-backup-local`) writing daily dumps: **db-backup** (postgres), **immich-db-backup** (immich-postgres), **karutuogg-db-backup** (karutuogg-postgres). Photo and media files are stored on the DAS, not in Postgres.
+Each Postgres instance has a `*-db-backup` sidecar (`prodrigestivill/postgres-backup-local`) writing daily dumps: **db-backup** (postgres), **immich-db-backup** (immich-postgres), **karutuogg-db-backup** (karutuogg-postgres).
+
+**Zerobyte** mounts every service's config/data directory and the dump directories under `/containers/…` and ships them with restic to S3. Adding a volume in `zerobyte.yml` only makes it visible — the backup plan itself is configured in the Zerobyte UI. Photos (`/mnt/das/immich`) and media are deliberately excluded because of their size; the DAS is a single disk with no redundancy.
 
 ---
 
@@ -237,16 +242,16 @@ The deployment follows this workflow:
    ↓ Each service defined in roles/containers/tasks/<service>.yml
    
 2️⃣ Template Rendering  
-   ↓ compose.yml.j2 combines all services
+   ↓ setup.yml creates bind-mount directories and dumps the services into compose.yml
    
 3️⃣ Deployment
-   ↓ docker compose up -d deploys the stack
+   ↓ docker compose up -d recreates only what changed and removes orphans
 ```
 
 ### Key Files
 
-- `roles/containers/templates/compose.yml.j2` - Docker Compose template
-- `roles/containers/tasks/setup.yml` - Combines all services and renders compose file
+- `roles/containers/templates/compose.yml.j2` - Docker Compose template (dumps each service dict as-is)
+- `roles/containers/tasks/setup.yml` - Combines all services, creates bind-mount directories, renders compose file
 - `roles/containers/tasks/run.yml` - Deploys the stack
 - `roles/containers/tasks/<service>.yml` - Individual service definitions
 
@@ -256,8 +261,14 @@ The deployment follows this workflow:
 # Deploy the entire stack
 ansible-playbook site.yml
 
-# Or run specific roles
+# Only the containers role
 ansible-playbook site.yml --tags containers
+
+# Only some services (comma-separated compose service names)
+ansible-playbook site.yml --tags containers -e compose_services=vibravid,sonarr
+
+# Preview: shows the compose.yml diff and which containers would be recreated
+ansible-playbook site.yml --tags containers --check --diff
 ```
 
 ---

@@ -37,9 +37,10 @@ Ask the user (one `AskUserQuestion` call, multiple questions):
 
 Read 1-2 existing task files that match the new service's shape:
 - linuxserver-style → `roles/containers/tasks/sonarr.yml`, `radarr.yml`
-- ghcr image with secrets → `roles/containers/tasks/wishlist.yml`, `trilium.yml`
+- ghcr image with secrets → `roles/containers/tasks/mymcp.yml`, `trilium.yml`
 - Simple stateful app → `roles/containers/tasks/mealie.yml`, `actual.yml`
-- Network device passthrough → `roles/containers/tasks/beszel.yml`, `pihole.yml`
+- Device passthrough / host networking → `roles/containers/tasks/beszel.yml`, `jellyfin.yml`
+- Service that renders a config file → `roles/containers/tasks/karutuogg.yml`, `vibravid.yml`
 
 Use whichever is closest as the template — don't reinvent the volume/env pattern.
 
@@ -67,24 +68,17 @@ Create `roles/containers/tasks/<name>.yml`. Standard skeleton:
       networks:
         - qnet
       restart: unless-stopped
-
-- name: Setup <Name> directories
-  ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/<name>/{{ item }}"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory
-  loop:
-    - "config"
 ```
 
 **Rules:**
 - Always set `name`, `container_name`, `image` at the top
+- Everything except `name` is passed to Compose verbatim (`compose.yml.j2` dumps the dict), so any Compose key works: `healthcheck`, `deploy.resources`, `network_mode`, long-form `depends_on`, …
 - Use `{{ media_dir }}/<subdir>` for media bindings (never hardcode `/media` or `/mnt/das`)
 - Use `{{ tz }}`, `{{ puid }}`, `{{ pgid }}` for those env vars — never hardcode
-- Always `networks: [qnet]` and `restart: unless-stopped`
+- Always `networks: [qnet]` and `restart: unless-stopped`. A service that needs the shared Postgres also joins `db-shared`; a service with its own database/cache gets a new `internal: true` network in `compose.yml.j2` and puts the database on that network only (see `immich.yml`, `karutuogg.yml`)
 - The fact name MUST end in `_service` (e.g. `foo_service`) — `setup.yml` auto-discovers via `query('varnames', '_service$')`. If you skip this convention, the service won't appear in the rendered compose.
-- For directory-creation tasks, loop over the subdirs the container expects (`config`, `cache`, `data`, etc.)
+- **No directory-creation task.** `setup.yml` creates every `./…` and `{{ media_dir }}/…` bind-mount directory (owned by `{{ username }}`) before rendering compose. A mount whose basename has an extension is treated as a file and skipped. Only add an `ansible.builtin.file` task when the service renders a config file into a directory before compose runs (see `karutuogg.yml`, `vibravid.yml`).
+- Don't add `ports:` for services only other containers talk to — published ports bypass UFW
 
 ### Step 4 — Wire into main.yml
 
@@ -116,10 +110,10 @@ Do NOT touch `vault.yml` content via the regular Edit tool — it's encrypted. U
 Ask: "Does this service have a UI worth surfacing on the homepage dashboard?"
 
 If yes, ask which group:
-- **Utilities** (line 2) — generic tools, dashboards
-- **Arr** (line 150) — *arr stack, downloaders
-- **Media** (line 218) — media playback/management
-- **AI** (line 251) — LLM-related tools
+- **Utilities** — generic tools, dashboards
+- **Arr** — *arr stack, downloaders
+- **Media** — media playback/management
+- **AI** — LLM-related tools
 
 Append a tile to `roles/containers/templates/services.yaml.j2` under the chosen group:
 
@@ -154,7 +148,7 @@ If it passes, you're done. Output to the user:
 - Files created / modified (list with paths)
 - Whether vault edit is needed (and the command)
 - Whether icon needs to be added (and the path)
-- Next command to run: `ansible-playbook -t containers site.yml`
+- Next commands to run: `ansible-playbook -t containers site.yml --check --diff` to preview, then `ansible-playbook -t containers site.yml -e compose_services=<name>` to deploy just this service
 
 ## Common mistakes
 
@@ -166,6 +160,8 @@ If it passes, you're done. Output to the user:
 | Edited vault.yml with Edit tool | It's encrypted — use `ansible-vault edit` instead |
 | Skipped quoting env vars with jinja (e.g. `- PUID={{ puid }}`) | Yamllint flags unquoted templates; wrap as `- "PUID={{ puid }}"` |
 | Missing `restart: unless-stopped` or `networks: [qnet]` | Standard for every service — add them |
+| Added a "Setup directories" task for plain bind mounts | Remove it — `setup.yml` derives directories from `volumes` |
+| `network_mode: host` together with `networks: [qnet]` | Compose rejects the combination — drop `networks` (see beszel-agent) |
 
 ## Quick reference: per-file checklist
 

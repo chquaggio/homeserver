@@ -8,4 +8,5 @@ Ad-hoc helpers that live outside the ansible playbook. Most are bootstrap or one
 | `install_cuda.sh` | Installs CUDA 13.0 toolkit on WSL Ubuntu. Used on the workstation, not the home server. | No — workstation-specific. |
 | `install_cuda_129.sh` | Same as above but pinned to CUDA 12.9. | No — workstation-specific. |
 | `upgrade_nvim.sh` | Pulls the latest Neovim release tarball into `/opt/nvim`. Useful when you don't want to wait for the role to run. | **Partially** — `roles/system/tasks/neovim.yml` handles installs; this script is a fast manual upgrade path. |
+| `check_docs.py` | Fails if a compose service or network is missing from README.md / docs/architecture.drawio. Run by CI and before every commit (see CLAUDE.md). | — |
 | `add_transactions.py` | Imports an Italian-bank CSV (semicolon-delimited) into the Actual Budget server. Standalone utility, run on demand. | No — runtime tool, not infrastructure. |
