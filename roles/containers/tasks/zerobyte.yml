@@ -16,7 +16,6 @@
         - /var/lib/zerobyte:/var/lib/zerobyte
         # containers volumes
         - ./actualbudget:/containers/actualbudget
-        - ./audiobookshelf/config:/containers/audiobookshelf
         - ./bazarr/config:/containers/bazarr
         - ./beszel:/containers/beszel
         # Config only. The Calibre library itself lives on the DAS and is bulk;
@@ -28,7 +27,6 @@
         - ./jellyseerr/config:/containers/jellyseer
         - ./mealie-data:/containers/mealie
         - ./open-webui:/containers/open-webui
-        - ./pihole/etc:/containers/pihole
         # Postgres: back up logical dumps (consistent/restorable), NOT the live data
         # dir. Dumps are produced by the db-backup / immich-db-backup sidecars.
         - ./db-backups:/containers/postgres-dumps
@@ -40,7 +38,6 @@
         - ./radarr/config:/containers/radarr
         - ./sonarr/config:/containers/sonarr
         - ./trilium/trilium-data:/containers/trilium
-        - ./wishlist/data:/containers/wishlist
       restart: unless-stopped
       ports:
         - "4096:4096"

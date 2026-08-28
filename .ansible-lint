@@ -5,9 +5,6 @@ exclude_paths:
   - .github/
   - roles/containers/files/
   - scripts/
-  # Standalone playbook using the external artis3n.tailscale role, which isn't
-  # installed in the lint environment (CI installs collections only, not roles).
-  - tailscale.yml
 
 skip_list:
   - yaml[line-length]

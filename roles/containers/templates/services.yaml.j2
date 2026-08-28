@@ -31,21 +31,6 @@
           url: http://trilium:8080
           key: "{{ trilium_token }}"
 
-    # - pihole:
-    #     icon: pi-hole.png
-    #     # href: https://pihole.fantaquoggio.bid/admin
-    #     href: http://quoggioserver:8053/admin
-    #     description: adblocker definitivo
-    #     server: server-docker
-    #     container: pihole
-    #     statusStyle: "dot"
-    #     showStats: true
-    #     widget:
-    #       type: pihole
-    #       url: http://pihole:80
-    #       version: 6
-    #       key: "{{ pihole_password }}"
-
     - zerobyte:
         icon: zerobyte.png
         href: http://quoggioserver:4096
@@ -108,15 +93,6 @@
         statusStyle: "dot"
         showStats: true
 
-    - Wishlist:
-        icon: amazon.png
-        href: https://wishlist.fantaquoggio.bid
-        description: La lista dei desideri
-        server: server-docker
-        container: wishlist
-        statusStyle: "dot"
-        showStats: true
-
     - karutuogg:
         icon: mdi-cards
         href: https://karutuogg.fantaquoggio.bid
@@ -126,29 +102,14 @@
         statusStyle: "dot"
         showStats: true
 
-    # - nginx-proxy-manager:
-    #     icon: nginx-proxy-manager.png
-    #     href: http://quoggioserver:81
-    #     description: nginx-proxy-manager
-    #     server: server-docker
-    #     container: proxy
-    #     statusStyle: "dot"
-    #     showStats: true
-
     - Mealie:
         icon: mealie.png
-        # href: https://mealie.fantaquoggio.bid
-        href: http://quoggiosever:9925
+        href: http://quoggioserver:9925
         description: Pasta al salame?
         server: server-docker
         container: mealie
         statusStyle: "dot"
         showStats: true
-        #widget:
-        #  type: mealie
-        #  url: http://quoggiosever:9925
-        #  key: 
-        #  version: 2
 
     # - Docling:
     #     icon: sh-docling.png
@@ -156,15 +117,6 @@
     #     description: convertitore documenti
     #     server: server-docker
     #     container: docling
-    #     statusStyle: "dot"
-    #     showStats: true
-
-    # - Vikunja:
-    #     icon: vikunja.png
-    #     href: https://vikunja.fantaquoggio.bid
-    #     description: Cos'è questa aria da PM?
-    #     server: server-docker
-    #     container: vikunja
     #     statusStyle: "dot"
     #     showStats: true
 
@@ -281,19 +233,6 @@
           enableMediaControl: false
           showEpisodeNumber: true
           expandOneStreamToTwoRows: false
-
-    # - Audiobookshelf:
-    #     icon: audiobookshelf.png
-    #     href: https://audiobookshelf.fantaquoggio.bid
-    #     description: Pezzotto per (audio)libri 
-    #     server: server-docker
-    #     container: audiobookshelf
-    #     statusStyle: "dot"
-    #     showStats: true
-    #     widget:
-    #       type: audiobookshelf
-    #       url: http://audiobookshelf:80
-    #       key: "{{ audiobookshelf_key }}"
 
     - Calibre-Web Automated:
         icon: calibre-web.png
