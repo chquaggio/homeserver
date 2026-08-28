@@ -14,21 +14,10 @@
       volumes:
         - ./jellyfin/config:/config
         - ./jellyfin/cache:/cache
-        - type: bind
-          source: "{{ media_dir }}"
-          target: "{{ media_dir }}"
+        # Read-only: the arrs and Bazarr write to the library, Jellyfin only serves it
+        - "{{ media_dir }}:{{ media_dir }}:ro"
       labels:
         - "wud.link.template=https://github.com/jellyfin/jellyfin/releases"
       networks:
         - qnet
       restart: unless-stopped
-
-- name: Setup Jellyfin directories
-  ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/jellyfin/{{ item }}"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory
-  loop:
-    - "config"
-    - "cache"

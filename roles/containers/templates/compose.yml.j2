@@ -6,5 +6,18 @@ services:
 {{ service | dict2items | rejectattr('key', 'eq', 'name') | items2dict | to_nice_yaml(indent=2, sort_keys=false) | indent(4, true) }}
 {%- endfor %}
 
+# Databases and caches live only on their stack's internal network, so an app
+# can reach the database it owns and nothing else. internal: true also means no
+# egress and no published ports, hence the app containers stay on qnet as well.
 networks:
   qnet:
+  docker-api:
+    internal: true
+  db-shared:
+    internal: true
+  infisical:
+    internal: true
+  immich:
+    internal: true
+  karutuogg:
+    internal: true

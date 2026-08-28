@@ -1,0 +1,8 @@
+#!/bin/bash
+# Extra databases on the shared Postgres. The image runs this only when the data
+# dir is empty (first start on a fresh host). To add a database to a running
+# instance: docker exec postgres createdb -U {{ db_user }} -O {{ db_user }} <name>
+set -e
+{% for db in shared_postgres_databases | reject('eq', db_name) %}
+createdb -U "$POSTGRES_USER" -O "$POSTGRES_USER" {{ db }}
+{% endfor %}

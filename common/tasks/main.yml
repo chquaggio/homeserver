@@ -4,4 +4,6 @@
 # - include_tasks: user.yml
 - include_tasks: dotfiles.yml
 - include_tasks: brew.yml
-- include_tasks: network.yml
+# Static import so the tag reaches the tasks: ansible-playbook site.yml -t firewall
+- import_tasks: network.yml
+  tags: [firewall]

@@ -18,8 +18,8 @@
     group: "{{ username }}"
     mode: "0644"
 
-# Dedicated Postgres (Immich precedent): the shared `postgres` container is
-# single-tenant for spesatracker and has no multi-DB provisioning.
+# Dedicated Postgres, like Immich: its dumps and restores stay independent of
+# the shared instance.
 - name: Configure karutuogg Postgres
   set_fact:
     karutuogg_postgres_service:
@@ -36,7 +36,7 @@
       labels:
         - "wud.link.template=https://www.postgresql.org/docs/release/"
       networks:
-        - qnet
+        - karutuogg
 
 - name: Configure karutuogg Postgres backup sidecar
   set_fact:
@@ -62,7 +62,7 @@
       labels:
         - "wud.link.template=https://github.com/prodrigestivill/docker-postgres-backup-local/releases"
       networks:
-        - qnet
+        - karutuogg
       restart: unless-stopped
 
 # Web owns migrations (single writer, idempotent); the bot just retries via
@@ -94,6 +94,7 @@
         - "wud.link.template=https://github.com/chquaggio/karuta_tunnel/releases"
       networks:
         - qnet
+        - karutuogg
       restart: unless-stopped
 
 - name: Configure karutuogg bot
@@ -117,4 +118,5 @@
         - ./karutuogg/config.yaml:/config/config.yaml:ro
       networks:
         - qnet
+        - karutuogg
       restart: unless-stopped

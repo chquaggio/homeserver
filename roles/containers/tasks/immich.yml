@@ -27,6 +27,7 @@
         - "wud.link.template=https://github.com/immich-app/immich/releases"
       networks:
         - qnet
+        - immich
       restart: unless-stopped
 
 - name: Configure Immich machine learning service
@@ -37,10 +38,17 @@
       container_name: immich-machine-learning
       volumes:
         - ./immich/model-cache:/cache
+      # Bounded so a smart-search/face job can't starve Jellyfin on the 4-core host
+      deploy:
+        resources:
+          limits:
+            cpus: "2"
+            memory: 4g
       labels:
         - "wud.link.template=https://github.com/immich-app/immich/releases"
       networks:
         - qnet
+        - immich
       restart: unless-stopped
 
 - name: Configure Immich redis service
@@ -52,7 +60,7 @@
       labels:
         - "wud.link.template=https://github.com/valkey-io/valkey/releases"
       networks:
-        - qnet
+        - immich
       restart: unless-stopped
 
 - name: Configure Immich postgres service
@@ -72,7 +80,7 @@
       labels:
         - "wud.link.template=https://github.com/immich-app/immich/releases"
       networks:
-        - qnet
+        - immich
       restart: unless-stopped
 
 # Logical dump sidecar for Immich's Postgres (faces, albums, metadata — NOT the photo
@@ -104,16 +112,5 @@
       labels:
         - "wud.link.template=https://github.com/prodrigestivill/docker-postgres-backup-local/releases"
       networks:
-        - qnet
+        - immich
       restart: unless-stopped
-
-- name: Setup Immich directories
-  ansible.builtin.file:
-    path: "{{ item }}"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory
-  loop:
-    - "{{ media_dir }}/immich"
-    - "{{ docker_compose_dir }}/immich/model-cache"
-    - "{{ docker_compose_dir }}/immich/db-backups"

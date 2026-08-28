@@ -13,6 +13,9 @@
       environment:
         - "TZ={{ tz }}"
         - WUD_LOG_LEVEL=info
+        # Docker API through the read-only socket proxy, not the socket itself
+        - WUD_WATCHER_LOCAL_HOST=socket-proxy
+        - WUD_WATCHER_LOCAL_PORT=2375
         # Watch every running container, scan daily at 06:00
         - WUD_WATCHER_LOCAL_WATCHBYDEFAULT=true
         - "WUD_WATCHER_LOCAL_CRON=0 6 * * *"
@@ -23,14 +26,7 @@
         - "WUD_REGISTRY_GHCR_PRIVATE_TOKEN={{ ghcr_token }}"
       volumes:
         - ./wud/data:/store
-        - /var/run/docker.sock:/var/run/docker.sock:ro
       networks:
         - qnet
+        - docker-api
       restart: unless-stopped
-
-- name: Setup WUD directory
-  ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/wud/data"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory

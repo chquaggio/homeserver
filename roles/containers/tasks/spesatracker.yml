@@ -26,8 +26,10 @@
       volumes:
         - ./spesatracker/data:/app/data
       depends_on:
-        - postgres
+        postgres:
+          condition: service_healthy
       labels:
         - "wud.link.template=https://github.com/chquaggio/spesatracker/releases"
       networks:
         - qnet
+        - db-shared

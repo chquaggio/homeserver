@@ -1,24 +1,6 @@
 ---
-# Infisical reuses the shared Postgres (own `infisical` database) and its own
-# Redis. The database must exist before the backend runs its migrations; the
-# shared Postgres image only auto-creates its default DB, so create it here.
-- name: Ensure the infisical database exists on the shared Postgres
-  ansible.builtin.command: >-
-    docker exec -e PGPASSWORD={{ db_password }} postgres
-    psql -U {{ db_user }} -d {{ db_name }} -tAc
-    "SELECT 1 FROM pg_database WHERE datname='infisical'"
-  register: infisical_db_present
-  changed_when: false
-  retries: 10
-  delay: 3
-  until: infisical_db_present.rc == 0
-
-- name: Create the infisical database
-  ansible.builtin.command: >-
-    docker exec -e PGPASSWORD={{ db_password }} postgres
-    createdb -U {{ db_user }} -O {{ db_user }} infisical
-  when: infisical_db_present.stdout != "1"
-
+# Infisical reuses the shared Postgres (its `infisical` database is listed in
+# db.yml and created by the initdb script) and has its own Redis.
 - name: Configure Infisical redis service
   set_fact:
     infisical_redis_service:
@@ -28,7 +10,7 @@
       labels:
         - "wud.link.template=https://github.com/valkey-io/valkey/releases"
       networks:
-        - qnet
+        - infisical
       restart: unless-stopped
 
 - name: Configure Infisical service
@@ -38,8 +20,10 @@
       image: infisical/infisical:v0.162.13
       container_name: infisical
       depends_on:
-        - postgres
-        - infisical-redis
+        postgres:
+          condition: service_healthy
+        infisical-redis:
+          condition: service_started
       ports:
         - "8222:8080"
       environment:
@@ -54,4 +38,6 @@
         - "wud.link.template=https://github.com/Infisical/infisical/releases"
       networks:
         - qnet
+        - db-shared
+        - infisical
       restart: unless-stopped

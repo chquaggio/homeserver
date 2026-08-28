@@ -1,4 +1,12 @@
 ---
+# Every database on the shared instance: the first is the image's default DB, the
+# rest are created by the initdb script; all of them are dumped by the sidecar.
+- name: List the shared Postgres databases
+  set_fact:
+    shared_postgres_databases:
+      - "{{ db_name }}"
+      - infisical
+
 - name: Configure db
   set_fact:
     db_service:
@@ -10,19 +18,19 @@
         - POSTGRES_PASSWORD={{ db_password }}
         - POSTGRES_DB={{ db_name }}
       restart: unless-stopped
-      ports:
-        - 5432:5432
       healthcheck:
         test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
         interval: 5s
         timeout: 5s
         retries: 5
+        start_period: 10s
       volumes:
         - ./postgres_data:/var/lib/postgresql/data
+        - ./postgres/initdb:/docker-entrypoint-initdb.d:ro
       labels:
         - "wud.link.template=https://www.postgresql.org/docs/release/"
       networks:
-        - qnet
+        - db-shared
 
 # Logical dump sidecar: writes consistent pg_dump snapshots into a directory that
 # Zerobyte backs up. File-level backup of the live data dir is unsafe for a running
@@ -38,9 +46,7 @@
         - postgres
       environment:
         - POSTGRES_HOST=postgres
-        # Dumps the databases on the shared Postgres, space-separated. Add each
-        # app's DB here when it starts using the shared Postgres.
-        - "POSTGRES_DB={{ db_name }} infisical"
+        - "POSTGRES_DB={{ shared_postgres_databases | join(' ') }}"
         - "POSTGRES_USER={{ db_user }}"
         - "POSTGRES_PASSWORD={{ db_password }}"
         - POSTGRES_EXTRA_OPTS=--clean --if-exists
@@ -54,12 +60,20 @@
       labels:
         - "wud.link.template=https://github.com/prodrigestivill/docker-postgres-backup-local/releases"
       networks:
-        - qnet
+        - db-shared
       restart: unless-stopped
 
-- name: Setup shared Postgres backup directory
+- name: Setup shared Postgres initdb directory
   ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/db-backups"
+    path: "{{ docker_compose_dir }}/postgres/initdb"
     owner: "{{ username }}"
     group: "{{ username }}"
     state: directory
+
+- name: Render shared Postgres initdb script
+  ansible.builtin.template:
+    src: postgres-initdb.sh.j2
+    dest: "{{ docker_compose_dir }}/postgres/initdb/create-databases.sh"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: "0755"

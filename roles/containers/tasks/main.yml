@@ -21,6 +21,7 @@
 - import_tasks: prowlarr.yml
 - import_tasks: qbittorrent.yml
 - import_tasks: radarr.yml
+- import_tasks: socket-proxy.yml
 - import_tasks: sonarr.yml
 - import_tasks: spesatracker.yml
 - import_tasks: trilium.yml

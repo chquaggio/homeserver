@@ -1,0 +1,23 @@
+---
+# Read-only gateway to the Docker API for containers that only need to list and
+# inspect containers (homepage, WUD). The socket itself is the full daemon API —
+# `:ro` on the mount does not restrict it — so anything holding it is root on
+# the host. Only reachable on the internal `docker-api` network.
+- name: Configure Docker socket proxy service
+  set_fact:
+    socket_proxy_service:
+      name: socket-proxy
+      image: tecnativa/docker-socket-proxy:v0.5.0
+      container_name: socket-proxy
+      environment:
+        - CONTAINERS=1
+        - IMAGES=1
+        - POST=0
+        - LOG_LEVEL=warning
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+      labels:
+        - "wud.link.template=https://github.com/Tecnativa/docker-socket-proxy/releases"
+      networks:
+        - docker-api
+      restart: unless-stopped

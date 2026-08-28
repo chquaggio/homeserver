@@ -3,39 +3,40 @@
     name: ufw
     state: present
 
-- name: Reset UFW to deny all (Safety first)
-  ufw:
-    state: reset
-
-- name: Allow Tailscale traffic
+# Only the tailnet and the LAN may reach host services (sshd included); the
+# Cloudflare tunnel is outbound-only, so no inbound 80/443. Published container
+# ports are NOT filtered by these rules: Docker inserts its own iptables rules
+# ahead of UFW, so a container's `ports:` is reachable on every interface.
+- name: Allow all traffic from the tailnet
   ufw:
     rule: allow
     src: 100.64.0.0/10
 
-- name: Allow traffic from local network
+- name: Allow all traffic from the LAN
   ufw:
     rule: allow
     src: 192.168.1.0/24
 
-- name: Allow DNS traffic (Pi-hole)
+- name: Remove world-open rules
   ufw:
     rule: allow
-    port: '53'
-    proto: "{{ item }}"
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+    delete: true
   loop:
-    - tcp
-    - udp
+    - { port: '22', proto: tcp }
+    - { port: '53', proto: tcp }
+    - { port: '53', proto: udp }
 
-- name: Allow SSH
-  ufw:
-    rule: allow
-    port: '22'
-    proto: tcp
-
-# RIMOSSE REGOLE 80 E 443: Il tunnel non ne ha bisogno.
-# Se le lasci, chiunque conosca il tuo IP entra bypassando Cloudflare.
-
-- name: Enable UFW
+- name: Enable UFW with default deny
   ufw:
     state: enabled
     policy: deny
+
+- name: Disable root SSH login
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/50-no-root-login.conf
+    content: "PermitRootLogin no\n"
+    mode: "0644"
+    validate: /usr/sbin/sshd -t -f %s
+  notify: Restart ssh

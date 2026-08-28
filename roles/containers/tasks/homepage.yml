@@ -10,18 +10,18 @@
       volumes:
         - ./homepage/config:/app/config
         - ./homepage/images:/app/public/images
-        - /var/run/docker.sock:/var/run/docker.sock:ro
       environment:
         - HOMEPAGE_ALLOWED_HOSTS=quoggioserver:3000,homepage.fantaquoggio.bid
       labels:
         - "wud.link.template=https://github.com/gethomepage/homepage/releases"
       networks:
         - qnet
+        - docker-api
       restart: unless-stopped
 
 - name: Setup Homepage directories
   ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/homepage_files/{{ item }}"
+    path: "{{ docker_compose_dir }}/homepage/{{ item }}"
     owner: "{{ username }}"
     group: "{{ username }}"
     state: directory

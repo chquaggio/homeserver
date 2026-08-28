@@ -5,16 +5,12 @@
       name: cloudflared
       image: cloudflare/cloudflared:2026.7.3
       container_name: cloudflared
-      command: tunnel --no-autoupdate run --token {{ cf_token }}
+      command: tunnel --no-autoupdate run
+      environment:
+        # Env rather than --token so the credential stays out of `ps` on the host
+        - "TUNNEL_TOKEN={{ cf_token }}"
       labels:
         - "wud.link.template=https://github.com/cloudflare/cloudflared/releases"
       networks:
         - qnet
       restart: unless-stopped
-
-- name: Setup Cloudflared directory
-  ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/cloudflared"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory
