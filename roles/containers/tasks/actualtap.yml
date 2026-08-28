@@ -13,9 +13,9 @@
         - qnet
       restart: unless-stopped
 
-- name: Setup Actualtap directory
+- name: Setup Actualtap config directory
   ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/actualtap"
+    path: "{{ docker_compose_dir }}/actualtap/config"
     owner: "{{ username }}"
     group: "{{ username }}"
     state: directory

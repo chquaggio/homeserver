@@ -20,10 +20,3 @@
       networks:
         - qnet
       restart: unless-stopped
-
-- name: Setup Bazarr directories
-  ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/bazarr/config"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory

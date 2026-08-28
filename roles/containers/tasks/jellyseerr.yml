@@ -14,10 +14,3 @@
       networks:
         - qnet
       restart: unless-stopped
-
-- name: Setup Jellyseerr directories
-  ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/jellyseerr/config"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory

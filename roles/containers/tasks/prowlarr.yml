@@ -18,10 +18,3 @@
       networks:
         - qnet
       restart: unless-stopped
-
-- name: Setup Prowlarr directories
-  ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/prowlarr/config"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory

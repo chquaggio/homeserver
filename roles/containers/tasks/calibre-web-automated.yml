@@ -29,24 +29,3 @@
       networks:
         - qnet
       restart: unless-stopped
-
-- name: Setup Calibre-Web Automated directories
-  ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/calibre-web-automated/{{ item }}"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory
-  loop:
-    - "config"
-
-# Created here rather than by hand: Docker would autocreate these root-owned on
-# first start, which breaks the container's PUID/PGID.
-- name: Setup Calibre-Web Automated library directories on the DAS
-  ansible.builtin.file:
-    path: "{{ item }}"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory
-  loop:
-    - "{{ media_dir }}/cwa-book-ingest"
-    - "{{ media_dir }}/calibre-library"

@@ -1,3 +1,4 @@
+---
 - name: Configure Radarr service
   set_fact:
     radarr_service:
@@ -19,10 +20,3 @@
       networks:
         - qnet
       restart: unless-stopped
-
-- name: Setup Radarr directories
-  ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/radarr/config"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory

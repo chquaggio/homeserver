@@ -1,5 +1,5 @@
 ---
-- name: Make sure that the docker folders exists
+- name: Make sure that the docker folders exist
   ansible.builtin.file:
     path: "{{ item }}"
     owner: "{{ username }}"
@@ -9,21 +9,31 @@
     - "{{ docker_compose_dir }}"
     - "{{ docker_dir }}"
 
-- name: Create Nginx proxy manager volume folders
-  ansible.builtin.file:
-    path: "{{ item }}"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory
-  loop:
-    - "{{ docker_compose_dir }}/npmdata"
-    - "{{ docker_compose_dir }}/letsencrypt"
-
 - name: Combine services
-  set_fact:
+  ansible.builtin.set_fact:
     services: "{{ query('varnames', '_service$') | map('extract', vars) | list }}"
 
+# Docker autocreates a missing bind-mount source as a root-owned directory, which
+# breaks containers that run as PUID/PGID. Every host path under the compose dir
+# or the DAS is created up front, owned by the service user. Only directories: a
+# mount whose basename has an extension is a file, rendered by its service task.
+- name: Collect bind-mount host directories
+  ansible.builtin.set_fact:
+    bind_mount_dirs: >-
+      {{ services | map(attribute='volumes', default=[]) | flatten
+         | map('regex_replace', ':.*$', '')
+         | select('match', '^(\./|' ~ media_dir ~ '/)')
+         | reject('search', '\.[A-Za-z0-9]+$')
+         | map('regex_replace', '^\./', docker_compose_dir ~ '/')
+         | unique | sort }}
+
+- name: Create missing bind-mount host directories
+  ansible.builtin.command:
+    cmd: install -d -o {{ username }} -g {{ username }} {{ item }}
+    creates: "{{ item }}"
+  loop: "{{ bind_mount_dirs }}"
+
 - name: Render Docker Compose file
-  template:
+  ansible.builtin.template:
     src: compose.yml.j2
     dest: "{{ docker_compose_dir }}/compose.yml"

@@ -20,10 +20,3 @@
         - "wud.link.template=https://github.com/open-webui/open-webui/releases"
       networks:
         - qnet
-
-- name: Setup openwebui directory
-  ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/open-webui"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory

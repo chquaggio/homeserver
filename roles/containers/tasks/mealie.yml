@@ -21,10 +21,3 @@
         - "wud.link.template=https://github.com/mealie-recipes/mealie/releases"
       networks:
         - qnet
-
-- name: Setup Mealie directory
-  ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/mealie-data"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory

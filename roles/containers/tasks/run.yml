@@ -1,9 +1,10 @@
 ---
-- name: Docker compose pull
-  ansible.builtin.shell:
-    cmd: "docker compose pull"
-    chdir: "{{ docker_compose_dir }}"
+# Only containers whose configuration changed are recreated. To deploy a subset:
+#   ansible-playbook site.yml -t containers -e compose_services=vibravid,sonarr
 - name: Docker compose up
-  ansible.builtin.shell:
-    cmd: "docker compose up -d --build --force-recreate"
-    chdir: "{{ docker_compose_dir }}"
+  community.docker.docker_compose_v2:
+    project_src: "{{ docker_compose_dir }}"
+    state: present
+    pull: always
+    remove_orphans: true
+    services: "{{ compose_services.split(',') if compose_services is defined else omit }}"
