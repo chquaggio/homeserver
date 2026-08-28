@@ -1,71 +1,10 @@
-#jinja2: trim_blocks: False
+# Rendered by Ansible from the *_service facts in roles/containers/tasks/.
+# Edit those, not this file.
 services:
-  {% for service in services %}
+{% for service in services %}
   {{ service.name }}:
-    image: {{ service.image }}
-    container_name: {{ service.container_name }}
-    {%- if service.depends_on | default([]) %}
-    depends_on:
-      {%- for dependency in service.depends_on %}
-      - {{ dependency }}
-      {%- endfor %}
-    {%- endif %}
-    {%- if service.command is defined %}
-    command: {{ service.command }}
-    {%- endif %}
-    {%- if service.ports | default([]) %}
-    ports:
-      {%- for port in service.ports %}
-      - "{{ port }}"
-      {%- endfor %}
-    {%- endif %}
-    {%- if service.devices | default([]) %}
-    devices:
-      {%- for device in service.devices %}
-      - "{{ device }}"
-      {%- endfor %}
-    {%- endif %}
-    {%- if service.cap_add | default([]) %}
-    cap_add:
-      {%- for cap_add in service.cap_add %}
-      - "{{ cap_add }}"
-      {%- endfor %}
-    {%- endif %}
-    {%- if service.group_add | default([]) %}
-    group_add:
-      {%- for gid in service.group_add %}
-      - "{{ gid }}"
-      {%- endfor %}
-    {%- endif %}
-    {%- if service.volumes | default([]) %}
-    volumes:
-      {%- for volume in service.volumes %}
-      - {{ volume }}
-      {%- endfor %}
-    {%- endif %}
-    {%- if service.shm_size is defined %}
-    shm_size: {{ service.shm_size }}
-    {%- endif %}
-    {%- if service.environment | default([]) %}
-    environment:
-      {%- for env in service.environment %}
-      - {{ env }}
-      {%- endfor %}
-    {%- endif %}
-    {%- if service.labels | default([]) %}
-    labels:
-      {%- for label in service.labels %}
-      - {{ label }}
-      {%- endfor %}
-    {%- endif %}
-    networks:
-      {%- for network in service.networks %}
-      - {{ network }}
-      {%- endfor %}
-    {%- if service.restart %}
-    restart: {{ service.restart }}
-    {%- endif %}
-  {% endfor %}
+{{ service | dict2items | rejectattr('key', 'eq', 'name') | items2dict | to_nice_yaml(indent=2, sort_keys=false) | indent(4, true) }}
+{%- endfor %}
 
 networks:
   qnet:

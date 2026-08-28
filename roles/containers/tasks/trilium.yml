@@ -11,7 +11,7 @@
       volumes:
         - ./trilium/trilium-data:/home/node/trilium-data
         - /etc/timezone:/etc/timezone:ro
-        - /etc/localtime:/etc/localtime:ro1
+        - /etc/localtime:/etc/localtime:ro
       restart: unless-stopped
       ports:
         - "5050:8080"
@@ -19,12 +19,3 @@
         - "wud.link.template=https://github.com/TriliumNext/Trilium/releases"
       networks:
         - qnet
-
-- name: Setup Trilium directories
-  ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/trilium/{{ item }}"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory
-  loop:
-    - "trilium-data"

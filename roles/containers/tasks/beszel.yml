@@ -23,8 +23,9 @@
       image: henrygd/beszel-agent:alpine
       container_name: beszel-agent
       restart: unless-stopped
+      # Host networking so network stats are the host's, not the bridge's
       network_mode: host
-      user: "0:6"  # root user with disk group
+      user: "0:6"  # root plus the host 'disk' group, for S.M.A.R.T. reads
       devices:
         - /dev/sda:/dev/sda
         - "{{ das_device }}:/dev/sdb"
@@ -37,21 +38,9 @@
         - "{{ media_dir }}:/extra-filesystems/das-01:ro"
       labels:
         - "wud.link.template=https://github.com/henrygd/beszel/releases"
-      networks:
-        - qnet
       environment:
         - LISTEN=/beszel_socket/beszel.sock
         - "KEY={{ ba_key }}"
         - "TOKEN={{ ba_token }}"
-        - HUB_URL=http://beszel:8090
-
-- name: Setup Beszel directories
-  ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/beszel/{{ item }}"
-    owner: "{{ username }}"
-    group: "{{ username }}"
-    state: directory
-  loop:
-    - "beszel_data"
-    - "beszel_agent_data"
-    - "beszel_socket"
+        # On the host network the hub is reached through its published port
+        - HUB_URL=http://localhost:8090
