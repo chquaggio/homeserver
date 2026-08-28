@@ -3,17 +3,25 @@
   set_fact:
     vibravid_service:
       name: vibravid
-      image: ghcr.io/astraelabs/vibravid:latest
+      image: ghcr.io/astraelabs/vibravid:v1.4.0
       container_name: vibravid
       ports:
         - "8001:8000"
+      # x265 re-encodes would otherwise take all 4 cores from Jellyfin transcodes
+      deploy:
+        resources:
+          limits:
+            cpus: "2.5"
+            memory: 3g
       volumes:
         - ./vibravid/conf:/app/Conf
         - ./vibravid/data:/app/data
         - ./vibravid/logs:/app/.cache/logs
         - ./vibravid/binary:/home/appuser/.local/bin/binary
-        # Shared with Sonarr/Radarr (/downloads); translated via ARR.path_mapping in config.json
+        # Manual GUI downloads land here, visible to the arrs at /downloads
         - "{{ media_dir }}/downloads:/app/Video"
+        - "{{ media_dir }}/Movies:/movies"
+        - "{{ media_dir }}/Shows:/tv"
       environment:
         - "PUID={{ puid }}"
         - "PGID={{ pgid }}"
@@ -34,17 +42,12 @@
         - qnet
       restart: unless-stopped
 
-- name: Setup VibraVid directories
+- name: Setup VibraVid config directory
   ansible.builtin.file:
-    path: "{{ docker_compose_dir }}/vibravid/{{ item }}"
+    path: "{{ docker_compose_dir }}/vibravid/conf"
     owner: "{{ username }}"
     group: "{{ username }}"
     state: directory
-  loop:
-    - "conf"
-    - "data"
-    - "logs"
-    - "binary"
 
 - name: Render VibraVid configuration
   ansible.builtin.template:

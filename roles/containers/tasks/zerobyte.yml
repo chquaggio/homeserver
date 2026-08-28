@@ -37,7 +37,11 @@
         - ./qbittorrent/config:/containers/qbittorrent
         - ./radarr/config:/containers/radarr
         - ./sonarr/config:/containers/sonarr
+        - ./spesatracker/data:/containers/spesatracker
         - ./trilium/trilium-data:/containers/trilium
+        # conf holds config.json + unmanaged login.json; data holds the Django DB
+        - ./vibravid/conf:/containers/vibravid-conf
+        - ./vibravid/data:/containers/vibravid-data
       restart: unless-stopped
       ports:
         - "4096:4096"
