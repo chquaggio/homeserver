@@ -1,0 +1,59 @@
+---
+- name: Configure Vaultwarden service
+  set_fact:
+    vaultwarden_service:
+      name: vaultwarden
+      image: vaultwarden/server:1.37.2-alpine
+      container_name: vaultwarden
+      ports:
+        - "8222:80"
+      environment:
+        # Tailscale Serve terminates TLS in front of the container, so the app
+        # never sees HTTPS itself and needs the real origin to build links and
+        # to scope WebAuthn credentials. The Bitwarden web vault only works in a
+        # secure context, so the plain :8222 URL is not usable.
+        - "DOMAIN={{ vaultwarden_url }}"
+        # No open-registration window: invite the first account from /admin.
+        - SIGNUPS_ALLOWED=false
+        # Argon2 PHC string, not a plaintext token. Compose interpolates `$…`,
+        # hence the doubling.
+        - "ADMIN_TOKEN={{ vaultwarden_admin_token | replace('$', '$$') }}"
+        - "TZ={{ tz }}"
+      volumes:
+        - ./vaultwarden/data:/data
+      labels:
+        - "wud.link.template=https://github.com/dani-garcia/vaultwarden/releases"
+      networks:
+        - qnet
+      restart: unless-stopped
+
+# A file copy of a live SQLite database can capture a torn state, so the vault is
+# snapshotted with `sqlite3 .backup` into a directory Zerobyte picks up — same
+# reasoning as the Postgres dump sidecars. The archive is not GPG-encrypted: vault
+# items are already end-to-end encrypted under the user's master key.
+- name: Configure Vaultwarden backup sidecar
+  set_fact:
+    vaultwarden_backup_service:
+      name: vaultwarden-backup
+      image: bruceforce/vaultwarden-backup:2.1.6
+      container_name: vaultwarden-backup
+      depends_on:
+        - vaultwarden
+      init: true
+      environment:
+        - CRON_TIME=0 4 * * *
+        - TIMESTAMP=true
+        - DELETE_AFTER=14
+        - BACKUP_ADD_SENDS=true
+        - BACKUP_ON_STARTUP=true
+        - "UID={{ puid }}"
+        - "GID={{ pgid }}"
+        - "TZ={{ tz }}"
+      volumes:
+        - ./vaultwarden/data:/data
+        - ./vaultwarden/backups:/backup
+      labels:
+        - "wud.link.template=https://github.com/Bruceforce/vaultwarden-backup/releases"
+      networks:
+        - qnet
+      restart: unless-stopped

@@ -33,7 +33,7 @@ Complete *arr stack with Jellyfin, automated downloads, and subtitle management
 OpenWebUI and Mealie integrated with self-hosted LLM API
 
 ### 🔒 Secure Access
-Tailscale VPN for encrypted remote access, Infisical as a key-value store for secrets
+Tailscale VPN for encrypted remote access, Vaultwarden as the password and secret store
 
 </td>
 <td width="50%">
@@ -94,7 +94,7 @@ Editable diagram: [`docs/architecture.drawio`](docs/architecture.drawio) (open w
 - **Tailscale**: The server is part of a private Tailscale tailnet for secure remote access; MagicDNS resolves `quoggioserver`
 - **Cloudflare tunnel**: `cloudflared` publishes selected apps on `*.fantaquoggio.bid` behind Cloudflare Access; no inbound port is opened
 - **Firewall**: UFW allows only the tailnet and the LAN to reach host services. Published container ports bypass UFW (Docker manages its own iptables rules), so a service that must stay internal should not declare `ports:` at all
-- **Docker Networks**: apps talk to each other on the shared `qnet`. Databases and caches live only on per-stack `internal: true` networks — `db-shared` (postgres + dump sidecar, joined by spesatracker and infisical), `infisical` (its Valkey), `immich`, `karutuogg` — so an app can reach the database it owns and nothing else; the shared Postgres has no published port (use `docker exec postgres psql …`). `docker-api` (internal) carries only the Docker socket proxy and its consumers; beszel-agent keeps the raw socket because it runs on the host network for accurate metrics
+- **Docker Networks**: apps talk to each other on the shared `qnet`. Databases and caches live only on per-stack `internal: true` networks — `db-shared` (postgres + dump sidecar, joined by spesatracker), `immich`, `karutuogg` — so an app can reach the database it owns and nothing else; the shared Postgres has no published port (use `docker exec postgres psql …`). `docker-api` (internal) carries only the Docker socket proxy and its consumers; beszel-agent keeps the raw socket because it runs on the host network for accurate metrics
 - **Cross-machine Communication**: OpenWebUI can communicate with a self-hosted LLM API running on my home PC (`bestione:8000`)
 
 ### Storage
@@ -187,7 +187,8 @@ Disabled in `main.yml`: **Actualtap** (`:8000`), **Docling** (`:5001`).
 | Service | Port | Description |
 |---------|------|-------------|
 | **cloudflared** | — | Outbound Cloudflare tunnel publishing selected apps on `*.fantaquoggio.bid` |
-| **Infisical** | `:8222→8080` | Key-value store for API keys and tokens (a browsable copy of the vault; Ansible does not read from it) |
+| **Vaultwarden** | `:8222→80` | Password and secret store (Bitwarden-compatible). Reached over HTTPS at `quoggioserver.tailf385d.ts.net` via Tailscale Serve — the web vault needs a secure context and does not work on the plain `:8222` URL. Registration is closed; invite accounts from `/admin` |
+| **vaultwarden-backup** | — | Nightly `sqlite3 .backup` snapshot of the vault into `vaultwarden/backups`, kept 14 days |
 
 </details>
 
@@ -214,7 +215,7 @@ Databases and caches are containers too. Some apps share the general Postgres; l
 
 | Instance | Image | Used by |
 |----------|-------|---------|
-| **postgres** (`:5432`) | `postgres:17` | Spesatracker, Infisical |
+| **postgres** (`:5432`) | `postgres:17` | Spesatracker |
 | **immich-postgres** | `immich-app/postgres` (vectorchord) | Immich |
 | **karutuogg-postgres** | `postgres:17` | Karutuogg |
 
@@ -223,11 +224,12 @@ Databases and caches are containers too. Some apps share the general Postgres; l
 | Instance | Image | Used by |
 |----------|-------|---------|
 | **immich-redis** | `valkey/valkey` | Immich |
-| **infisical-redis** | `valkey/valkey` | Infisical |
 
 ### Backups
 
 Each Postgres instance has a `*-db-backup` sidecar (`prodrigestivill/postgres-backup-local`) writing daily dumps: **db-backup** (postgres), **immich-db-backup** (immich-postgres), **karutuogg-db-backup** (karutuogg-postgres).
+
+Vaultwarden's SQLite vault gets the same treatment from **vaultwarden-backup**: a file copy of a live SQLite database can capture a torn state, so the sidecar writes `sqlite3 .backup` snapshots (plus attachments, sends, `config.json` and the RSA keys) into `vaultwarden/backups`.
 
 **Zerobyte** mounts every service's config/data directory and the dump directories under `/containers/…` and ships them with restic to S3. Adding a volume in `zerobyte.yml` only makes it visible — the backup plan itself is configured in the Zerobyte UI. Photos (`/mnt/das/immich`) and media are deliberately excluded because of their size; the DAS is a single disk with no redundancy.
 

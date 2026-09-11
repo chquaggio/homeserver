@@ -24,10 +24,6 @@ db_user: "{{ DB_USER }}"
 # Immich
 immich_db_password: "{{ IMMICH_DB_PASSWORD }}"
 
-# Infisical
-infisical_encryption_key: "{{ INFISICAL_ENCRYPTION_KEY }}"
-infisical_auth_secret: "{{ INFISICAL_AUTH_SECRET }}"
-
 # Jellyfin / Jellyseerr
 jellyfin_key: "{{ JELLYFIN_KEY }}"
 jellyseerr_key: "{{ JELLYSEERR_KEY }}"
@@ -59,6 +55,11 @@ telegram_chat_id: "{{ TELEGRAM_CHAT_ID }}"
 # Trilium
 trilium_token: "{{ TRILIUM_TOKEN }}"
 trilium_url: "{{ TRILIUM_BASE_URL_PROD }}"
+
+# Vaultwarden
+vaultwarden_admin_token: "{{ VAULTWARDEN_ADMIN_TOKEN }}"
+# Origin served by Tailscale Serve, not a public hostname
+vaultwarden_url: "https://vaultwarden.fantaquoggio.bid"
 
 # VibraVid
 vibravid_secret_key: "{{ VIBRAVID_SECRET_KEY }}"

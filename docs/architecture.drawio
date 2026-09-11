@@ -37,10 +37,10 @@
         <mxCell id="arr" value="&lt;b&gt;Download / arr stack&lt;/b&gt; — LAN + tailnet only&lt;br&gt;&lt;br&gt;sonarr · radarr · prowlarr · bazarr · seerr&lt;br&gt;qbittorrent · vibravid · flaresolverr" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=18;align=left;spacingLeft=16;" vertex="1" parent="1">
           <mxGeometry x="1040" y="580" width="740" height="170" as="geometry"/>
         </mxCell>
-        <mxCell id="apps" value="&lt;b&gt;Other apps&lt;/b&gt; — LAN + tailnet only&lt;br&gt;&lt;br&gt;immich-server + immich-machine-learning · calibre-web-automated&lt;br&gt;spesatracker · mymcp · infisical · zerobyte · beszel (hub)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=18;align=left;spacingLeft=16;" vertex="1" parent="1">
+        <mxCell id="apps" value="&lt;b&gt;Other apps&lt;/b&gt; — LAN + tailnet only&lt;br&gt;&lt;br&gt;immich-server + immich-machine-learning · calibre-web-automated&lt;br&gt;spesatracker · mymcp · vaultwarden (HTTPS via tailscale serve) · zerobyte · beszel (hub)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=18;align=left;spacingLeft=16;" vertex="1" parent="1">
           <mxGeometry x="1820" y="580" width="760" height="170" as="geometry"/>
         </mxCell>
-        <mxCell id="data" value="&lt;b&gt;Data layer&lt;/b&gt; — each on its own internal network, reachable only by its owner app; no published ports&lt;br&gt;&lt;br&gt;db-shared: postgres (quoggiodb, infisical) + db-backup ← spesatracker, infisical · infisical: infisical-redis&lt;br&gt;immich: immich-postgres + immich-redis + immich-db-backup ← immich-server, ML · karutuogg: postgres + backup ← web, bot" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=18;align=left;spacingLeft=16;" vertex="1" parent="1">
+        <mxCell id="data" value="&lt;b&gt;Data layer&lt;/b&gt; — each on its own internal network, reachable only by its owner app; no published ports&lt;br&gt;&lt;br&gt;db-shared: postgres (quoggiodb) + db-backup ← spesatracker&lt;br&gt;immich: immich-postgres + immich-redis + immich-db-backup ← immich-server, ML · karutuogg: postgres + backup ← web, bot" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=18;align=left;spacingLeft=16;" vertex="1" parent="1">
           <mxGeometry x="1040" y="810" width="1540" height="170" as="geometry"/>
         </mxCell>
 
@@ -64,7 +64,7 @@
         </mxCell>
 
         <!-- ===== Storage ===== -->
-        <mxCell id="compose" value="&lt;b&gt;/opt/docker/compose&lt;/b&gt;&lt;br&gt;compose.yml rendered by Ansible&lt;br&gt;per-service config/data dirs&lt;br&gt;Postgres dumps (daily)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=18;" vertex="1" parent="1">
+        <mxCell id="compose" value="&lt;b&gt;/opt/docker/compose&lt;/b&gt;&lt;br&gt;compose.yml rendered by Ansible&lt;br&gt;per-service config/data dirs&lt;br&gt;Postgres dumps + vault snapshots (daily)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=18;" vertex="1" parent="1">
           <mxGeometry x="1660" y="1680" width="440" height="200" as="geometry"/>
         </mxCell>
         <mxCell id="das" value="&lt;b&gt;/mnt/das&lt;/b&gt; — 11 TB ext4, single disk&lt;br&gt;TerraMaster D4-320 (USB)&lt;br&gt;Movies · Shows · downloads · immich&lt;br&gt;calibre-library · cwa-book-ingest&lt;br&gt;&lt;b&gt;not backed up&lt;/b&gt; (size)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=18;" vertex="1" parent="1">
@@ -120,7 +120,7 @@
         <mxCell id="e_lan_qnet" value="published ports, no auth layer in between" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;strokeColor=#b85450;entryX=0;entryY=0.8;entryDx=0;entryDy=0;" edge="1" parent="1" source="lan" target="qnet">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="e_ts_qnet" value="published ports (+ sshd on the host)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;entryX=0;entryY=0.95;entryDx=0;entryDy=0;" edge="1" parent="1" source="tailnet" target="qnet">
+        <mxCell id="e_ts_qnet" value="published ports (+ sshd on the host) · tailscale serve terminates TLS for vaultwarden" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;entryX=0;entryY=0.95;entryDx=0;entryDy=0;" edge="1" parent="1" source="tailnet" target="qnet">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
         <mxCell id="e_llm" value="OpenAI-compatible API over the tailnet" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;startArrow=classic;dashed=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="bestione" target="dockerapi">

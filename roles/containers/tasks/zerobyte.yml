@@ -39,6 +39,9 @@
         - ./sonarr/config:/containers/sonarr
         - ./spesatracker/data:/containers/spesatracker
         - ./trilium/trilium-data:/containers/trilium
+        # Consistent sqlite3 snapshots from the vaultwarden-backup sidecar, NOT
+        # the live db.sqlite3
+        - ./vaultwarden/backups:/containers/vaultwarden-backups
         # conf holds config.json + unmanaged login.json; data holds the Django DB
         - ./vibravid/conf:/containers/vibravid-conf
         - ./vibravid/data:/containers/vibravid-data

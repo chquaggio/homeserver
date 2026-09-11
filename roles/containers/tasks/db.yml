@@ -1,11 +1,11 @@
 ---
-# Every database on the shared instance: the first is the image's default DB, the
-# rest are created by the initdb script; all of them are dumped by the sidecar.
+# Every database on the shared instance: the first is the image's default DB, any
+# further ones are created by the initdb script; all of them are dumped by the
+# sidecar.
 - name: List the shared Postgres databases
   set_fact:
     shared_postgres_databases:
       - "{{ db_name }}"
-      - infisical
 
 - name: Configure db
   set_fact:

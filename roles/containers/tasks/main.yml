@@ -11,7 +11,6 @@
 - import_tasks: flaresolverr.yml
 - import_tasks: homepage.yml
 - import_tasks: immich.yml
-- import_tasks: infisical.yml
 - import_tasks: jellyfin.yml
 - import_tasks: jellyseerr.yml
 - import_tasks: karutuogg.yml
@@ -25,6 +24,7 @@
 - import_tasks: sonarr.yml
 - import_tasks: spesatracker.yml
 - import_tasks: trilium.yml
+- import_tasks: vaultwarden.yml
 - import_tasks: vibravid.yml
 - import_tasks: zerobyte.yml
 # - import_tasks: actualtap.yml
