@@ -94,7 +94,7 @@ Editable diagram: [`docs/architecture.drawio`](docs/architecture.drawio) (open w
 - **Tailscale**: The server is part of a private Tailscale tailnet for secure remote access; MagicDNS resolves `quoggioserver`
 - **Cloudflare tunnel**: `cloudflared` publishes selected apps on `*.fantaquoggio.bid` behind Cloudflare Access; no inbound port is opened
 - **Firewall**: UFW allows only the tailnet and the LAN to reach host services. Published container ports bypass UFW (Docker manages its own iptables rules), so a service that must stay internal should not declare `ports:` at all
-- **Docker Networks**: apps talk to each other on the shared `qnet`. Databases and caches live only on per-stack `internal: true` networks — `db-shared` (postgres + dump sidecar, joined by spesatracker), `immich`, `karutuogg` — so an app can reach the database it owns and nothing else; the shared Postgres has no published port (use `docker exec postgres psql …`). `docker-api` (internal) carries only the Docker socket proxy and its consumers; beszel-agent keeps the raw socket because it runs on the host network for accurate metrics
+- **Docker Networks**: apps talk to each other on the shared `qnet`. Databases and caches live only on per-stack `internal: true` networks — `db-shared` (postgres + dump sidecar, joined by spesatracker), `immich`, `karutuogg`, `fantaquoggio` — so an app can reach the database it owns and nothing else; the shared Postgres has no published port (use `docker exec postgres psql …`). One exception: `fantaquoggio-postgres` also sits on `qnet` and publishes `5432` **bound to the Tailscale address** (`tailscale_ip`), because the valuation model runs on Christian's machine and reads it directly. Binding a `ports:` line to `{{ tailscale_ip }}` is the pattern for anything that must be reachable from the tailnet but not from the LAN or the internet; the Airflow UI uses it too. `docker-api` (internal) carries only the Docker socket proxy and its consumers; beszel-agent keeps the raw socket because it runs on the host network for accurate metrics
 - **Cross-machine Communication**: OpenWebUI can communicate with a self-hosted LLM API running on my home PC (`bestione:8000`)
 
 ### Storage
@@ -176,6 +176,7 @@ Each service is defined in `roles/containers/tasks/<service>.yml`. Ports shown a
 | **Mealie** | `:9925→9000` | Recipe management with AI integration |
 | **Spesatracker** | `:8400` | Grocery receipt and expense tracker |
 | **Karutuogg** | `:8410→8000` | Discord card-game bot with companion web app (`karutuogg-web` + `karutuogg-bot`, own Postgres) |
+| **FantaQuoggio** | — (tunnel only) | Fantacalcio auction copilot and lineup advisor: API + SPA in one image (`fantaquoggio`), reached only through the tunnel at `app.fantaquoggio.bid`. Its Airflow 3 pipeline runs as `fantaquoggio-airflow-apiserver` (UI `:8420→8080` on the Tailscale address only), `fantaquoggio-airflow-scheduler` and `fantaquoggio-airflow-dag-processor`; `fantaquoggio-db-init` is a one-shot from the app image that creates databases and roles and runs the migrations before the others start. Images are pinned to `fantaquoggio_version`; a deploy is a bump of that variable. Provider files (SofaSport response cache, fantacalcio.it xlsx) live in `fantaquoggio/data/raw/<provider>/`, outside the backup set |
 
 Disabled in `main.yml`: **Actualtap** (`:8000`), **Docling** (`:5001`).
 
@@ -218,6 +219,7 @@ Databases and caches are containers too. Some apps share the general Postgres; l
 | **postgres** (`:5432`) | `postgres:17` | Spesatracker |
 | **immich-postgres** | `immich-app/postgres` (vectorchord) | Immich |
 | **karutuogg-postgres** | `postgres:17` | Karutuogg |
+| **fantaquoggio-postgres** (`:5432`, Tailscale address only) | `postgres:17` | FantaQuoggio: app database `fantaquoggio` and Airflow metadata `airflow`, one role per writer |
 
 ### Redis / Valkey
 
@@ -227,7 +229,7 @@ Databases and caches are containers too. Some apps share the general Postgres; l
 
 ### Backups
 
-Each Postgres instance has a `*-db-backup` sidecar (`prodrigestivill/postgres-backup-local`) writing daily dumps: **db-backup** (postgres), **immich-db-backup** (immich-postgres), **karutuogg-db-backup** (karutuogg-postgres).
+Each Postgres instance has a `*-db-backup` sidecar (`prodrigestivill/postgres-backup-local`) writing daily dumps: **db-backup** (postgres), **immich-db-backup** (immich-postgres), **karutuogg-db-backup** (karutuogg-postgres), **fantaquoggio-db-backup** (fantaquoggio-postgres, both databases).
 
 Vaultwarden's SQLite vault gets the same treatment from **vaultwarden-backup**: a file copy of a live SQLite database can capture a torn state, so the sidecar writes `sqlite3 .backup` snapshots (plus attachments, sends, `config.json` and the RSA keys) into `vaultwarden/backups`.
 

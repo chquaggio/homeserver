@@ -80,3 +80,30 @@ karuta_drop_channel_id: 1526871184396779560
 karuta_announce_channel_id: 1526871184396779560
 karuta_notify_channel_id: 1526871184396779560
 karuta_ping_role_id: 1526876875606196264
+
+# --- FantaQuoggio ---
+# Pinned release: a deploy is a bump here, WUD notifies the next vX.Y.Z
+fantaquoggio_version: "0.4.0"
+fantaquoggio_url: "https://app.fantaquoggio.bid"
+# Serie A transfer windows, ISO date ranges; roster refresh is weekly inside them
+fantaquoggio_transfer_windows: "2026-07-01/2026-09-01,2027-01-02/2027-02-02"
+fantaquoggio_postgres_password: "{{ FQ_POSTGRES_PASSWORD }}"
+fantaquoggio_db_password_migrate: "{{ FQ_DB_PASSWORD_MIGRATE }}"
+fantaquoggio_db_password_ingestion: "{{ FQ_DB_PASSWORD_INGESTION }}"
+fantaquoggio_db_password_dbt: "{{ FQ_DB_PASSWORD_DBT }}"
+fantaquoggio_db_password_api: "{{ FQ_DB_PASSWORD_API }}"
+fantaquoggio_db_password_mister: "{{ FQ_DB_PASSWORD_MISTER }}"
+fantaquoggio_db_password_scout: "{{ FQ_DB_PASSWORD_SCOUT }}"
+fantaquoggio_db_password_airflow: "{{ FQ_DB_PASSWORD_AIRFLOW }}"
+fantaquoggio_secret_key: "{{ FQ_SECRET_KEY }}"
+fantaquoggio_rapidapi_key: "{{ FQ_RAPIDAPI_KEY }}"
+fantaquoggio_airflow_jwt_secret: "{{ FQ_AIRFLOW_JWT_SECRET }}"
+fantaquoggio_airflow_fernet_key: "{{ FQ_AIRFLOW_FERNET_KEY }}"
+fantaquoggio_airflow_ui_password: "{{ FQ_AIRFLOW_UI_PASSWORD }}"
+# Amazon SES over SMTP (eu-west-1); empty until the account exists
+fantaquoggio_smtp_host: "{{ FQ_SMTP_HOST | default('') }}"
+fantaquoggio_smtp_user: "{{ FQ_SMTP_USER | default('') }}"
+fantaquoggio_smtp_password: "{{ FQ_SMTP_PASSWORD | default('') }}"
+fantaquoggio_emails_from: "noreply@fantaquoggio.bid"
+fantaquoggio_first_superuser_email: "{{ FQ_FIRST_SUPERUSER_EMAIL | default('') }}"
+fantaquoggio_first_superuser_password: "{{ FQ_FIRST_SUPERUSER_PASSWORD | default('') }}"

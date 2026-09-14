@@ -102,6 +102,24 @@
         statusStyle: "dot"
         showStats: true
 
+    - FantaQuoggio:
+        icon: mdi-soccer
+        href: {{ fantaquoggio_url }}
+        description: Asta e formazione, con la matematica
+        server: server-docker
+        container: fantaquoggio
+        statusStyle: "dot"
+        showStats: true
+
+    - FantaQuoggio Airflow:
+        icon: sh-apache-airflow
+        href: http://{{ tailscale_ip }}:8420
+        description: La pipeline dei Round
+        server: server-docker
+        container: fantaquoggio-airflow-apiserver
+        statusStyle: "dot"
+        showStats: true
+
     - Mealie:
         icon: mealie.png
         href: http://quoggioserver:9925

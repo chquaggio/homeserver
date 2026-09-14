@@ -27,3 +27,5 @@ ghcr_token: "{{ GH_TOKEN }}"
 
 # Networking
 cf_token: "{{ CF_TOKEN }}"
+# Services published on the tailnet only bind their ports to this address
+tailscale_ip: "100.96.94.38"

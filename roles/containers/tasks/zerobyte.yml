@@ -30,6 +30,9 @@
         # Postgres: back up logical dumps (consistent/restorable), NOT the live data
         # dir. Dumps are produced by the db-backup / immich-db-backup sidecars.
         - ./db-backups:/containers/postgres-dumps
+        # Dumps only: the FantaQuoggio data dir (SofaSport cache, fantacalcio.it
+        # files) is re-fetchable and stays out
+        - ./fantaquoggio/db-backups:/containers/fantaquoggio-postgres-dumps
         - ./immich/db-backups:/containers/immich-postgres-dumps
         - ./karutuogg/data:/containers/karutuogg-data
         - ./karutuogg/db-backups:/containers/karutuogg-postgres-dumps
