@@ -1,3 +1,39 @@
+## [2026-09-26 10:51] Push Summary
+
+### Conversation Context
+This push carries three commits that never had an entry. The first replaces Infisical with Vaultwarden; it was deployed on 2026-09-04 and committed later on `main`. The second adds FantaQuoggio's deployment on the `fantaquoggio` branch; it was written on 2026-09-14, before the application's own stack existed. The last two bring that branch in line with the stack FantaQuoggio's work item 7 built and ran locally, for the first deploy (FantaQuoggio work item 8).
+
+A survey of the branch against the local `compose.yml` found several mismatches:
+- the migration command and the bootstrap DSN did not work with the released image;
+- the transfer windows were in a format the app rejects;
+- five settings were never rendered;
+- the Airflow UI password file was mounted read-only, which SimpleAuthManager cannot open for appending;
+- the three Airflow services had no healthchecks;
+- the metadata migration ran inside the scheduler, so the api-server and dag-processor could start against an unmigrated schema.
+
+The migration now has its own one-shot, as in Airflow's official compose, which makes eight containers. The UI password is written at the api-server's start. Every non-secret tunable lives in `services.yml`. The dag-processor gets 768m after a 459 MiB local peak against 512m.
+
+A fresh-context review then showed that DAGs unpaused at creation would run their latest tick at once, against an empty warehouse. The stack therefore starts paused, and the first deploy unpauses the DAGs in order after the backfill and the first model training. FantaQuoggio is pinned to the `v0.5.0` images.
+
+### Commits
+1. `feat(containers): replace Infisical with Vaultwarden`
+   - `roles/containers/tasks/vaultwarden.yml`: added; `infisical.yml`: removed
+   - `roles/containers/tasks/{db,main,zerobyte}.yml`, `templates/compose.yml.j2`, `services.yaml.j2`, `vibravid_config.json.j2`, `group_vars/all/services.yml`: the swap
+   - `README.md`, `docs/architecture.drawio`: the service tables and diagram
+2. `feat(containers): add FantaQuoggio app and its Airflow pipeline`
+   - `roles/containers/tasks/fantaquoggio.yml`: Postgres, db-backup, db-init, the app, the three Airflow services
+   - `group_vars/all/{services,infrastructure}.yml`, `templates/compose.yml.j2`, `services.yaml.j2`, `tasks/{main,zerobyte}.yml`: variables, network, tiles, backups
+   - `README.md`, `docs/architecture.drawio`: the stack documented
+3. `fix(containers): align FantaQuoggio with the stack as built`
+   - `roles/containers/tasks/fantaquoggio.yml`: db-init command and DSN, the `fantaquoggio-airflow-init` one-shot and dependencies, healthchecks, the api-server's start command, 768m dag-processor, DAGs paused at creation, the rendered settings, `data/models/mister`
+   - `group_vars/all/services.yml`: transfer windows as a list, Season ids, the request budget
+   - `roles/containers/templates/fantaquoggio-airflow-passwords.json.j2`: removed
+   - `README.md`, `docs/architecture.drawio`: the second one-shot, the model artifacts
+4. `feat(containers): deploy FantaQuoggio v0.5.0`
+   - `group_vars/all/services.yml`: `fantaquoggio_version` 0.5.0
+
+---
+
 ## [2026-08-28 12:22] Push Summary
 
 ### Conversation Context
