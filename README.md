@@ -30,7 +30,7 @@ The home server runs a comprehensive media management and personal productivity 
 Complete *arr stack with Jellyfin, automated downloads, and subtitle management
 
 ### 🤖 AI-Powered
-OpenWebUI and Mealie integrated with self-hosted LLM API
+Mealie integrated with self-hosted LLM API
 
 ### 🔒 Secure Access
 Tailscale VPN for encrypted remote access, Vaultwarden as the password and secret store
@@ -95,7 +95,7 @@ Editable diagram: [`docs/architecture.drawio`](docs/architecture.drawio) (open w
 - **Cloudflare tunnel**: `cloudflared` publishes selected apps on `*.fantaquoggio.bid` behind Cloudflare Access; no inbound port is opened
 - **Firewall**: UFW allows only the tailnet and the LAN to reach host services. Published container ports bypass UFW (Docker manages its own iptables rules), so a service that must stay internal should not declare `ports:` at all
 - **Docker Networks**: apps talk to each other on the shared `qnet`. Databases and caches live only on per-stack `internal: true` networks — `db-shared` (postgres + dump sidecar, joined by spesatracker), `immich`, `karutuogg`, `fantaquoggio` — so an app can reach the database it owns and nothing else; the shared Postgres has no published port (use `docker exec postgres psql …`). One exception: `fantaquoggio-postgres` also sits on `qnet` and publishes `5432` **bound to the Tailscale address** (`tailscale_ip`), because the valuation model runs on Christian's machine and reads it directly. Binding a `ports:` line to `{{ tailscale_ip }}` is the pattern for anything that must be reachable from the tailnet but not from the LAN or the internet; the Airflow UI uses it too. `docker-api` (internal) carries only the Docker socket proxy and its consumers; beszel-agent keeps the raw socket because it runs on the host network for accurate metrics
-- **Cross-machine Communication**: OpenWebUI can communicate with a self-hosted LLM API running on my home PC (`bestione:8000`)
+- **Cross-machine Communication**: services on the server call a self-hosted LLM API running on my home PC (`bestione:8000`)
 
 ### Storage
 
@@ -161,7 +161,6 @@ Each service is defined in `roles/containers/tasks/<service>.yml`. Ports shown a
 
 | Service | Port | Description |
 |---------|------|-------------|
-| **OpenWebUI** | `:3333→8080` | Web interface for LLM interaction (connects to home PC LLM API) |
 | **MyMCP** | `:7000` | Personal MCP (Model Context Protocol) server |
 | **Trilium** | `:5050→8080` | Note-taking and knowledge management |
 
@@ -289,4 +288,4 @@ Services are configured through environment variables and volume mounts defined 
 | **User/Group** | `PUID=1000`, `PGID=1000` | Service execution context |
 | **Media Storage** | `/mnt/das/` | Shared media directory on TerraMaster D4-320 DAS (`media_dir` var) |
 | **Service Data** | `./service-name/` | Per-service data directories |
-| **AI Integration** | `http://bestione:8000/v1` | LLM API endpoint for OpenWebUI and Mealie |
+| **AI Integration** | `http://bestione:8000/v1` | LLM API endpoint for Mealie |

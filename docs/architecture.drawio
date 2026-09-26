@@ -31,7 +31,7 @@
         <mxCell id="tunnelled_access" value="&lt;b&gt;Public, behind Cloudflare Access (email OTP)&lt;/b&gt;&lt;br&gt;&lt;br&gt;homepage :3000 — no login of its own (v1)&lt;br&gt;actualbudget :5006 — server password" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=18;align=left;spacingLeft=16;" vertex="1" parent="1">
           <mxGeometry x="1400" y="330" width="560" height="190" as="geometry"/>
         </mxCell>
-        <mxCell id="tunnelled_open" value="&lt;b&gt;Public, app login only (no Access)&lt;/b&gt;&lt;br&gt;&lt;br&gt;jellyfin :8096 (TVs, apps) · openwebui :3333→8080&lt;br&gt;trilium :5050→8080 · mealie :9925→9000&lt;br&gt;karutuogg-web :8410→8000 (Discord OAuth) · fantaquoggio :8000, no published port (app login)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=18;align=left;spacingLeft=16;" vertex="1" parent="1">
+        <mxCell id="tunnelled_open" value="&lt;b&gt;Public, app login only (no Access)&lt;/b&gt;&lt;br&gt;&lt;br&gt;jellyfin :8096 (TVs, apps)&lt;br&gt;trilium :5050→8080 · mealie :9925→9000&lt;br&gt;karutuogg-web :8410→8000 (Discord OAuth) · fantaquoggio :8000, no published port (app login)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=18;align=left;spacingLeft=16;" vertex="1" parent="1">
           <mxGeometry x="1990" y="330" width="590" height="190" as="geometry"/>
         </mxCell>
         <mxCell id="arr" value="&lt;b&gt;Download / arr stack&lt;/b&gt; — LAN + tailnet only&lt;br&gt;&lt;br&gt;sonarr · radarr · prowlarr · bazarr · seerr&lt;br&gt;qbittorrent · vibravid · flaresolverr" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=18;align=left;spacingLeft=16;" vertex="1" parent="1">
@@ -84,7 +84,7 @@
         <mxCell id="tailnet" value="&lt;b&gt;Tailnet 100.64.0.0/10&lt;/b&gt;&lt;br&gt;dev box (WSL), laptop, phone&lt;br&gt;MagicDNS: quoggioserver" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=18;" vertex="1" parent="1">
           <mxGeometry x="40" y="1100" width="400" height="150" as="geometry"/>
         </mxCell>
-        <mxCell id="bestione" value="&lt;b&gt;bestione&lt;/b&gt; (home PC, tailnet)&lt;br&gt;vLLM API :8000&lt;br&gt;used by openwebui + spesatracker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=18;" vertex="1" parent="1">
+        <mxCell id="bestione" value="&lt;b&gt;bestione&lt;/b&gt; (home PC, tailnet)&lt;br&gt;vLLM API :8000&lt;br&gt;used by spesatracker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=18;" vertex="1" parent="1">
           <mxGeometry x="40" y="1320" width="400" height="150" as="geometry"/>
         </mxCell>
         <mxCell id="s3" value="&lt;b&gt;S3 bucket&lt;/b&gt;&lt;br&gt;restic repository (Zerobyte)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=18;" vertex="1" parent="1">

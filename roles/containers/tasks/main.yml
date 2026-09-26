@@ -17,7 +17,7 @@
 - import_tasks: karutuogg.yml
 - import_tasks: mealie.yml
 - import_tasks: mymcp.yml
-- import_tasks: openwebui.yml
+# - import_tasks: openwebui.yml
 - import_tasks: prowlarr.yml
 - import_tasks: qbittorrent.yml
 - import_tasks: radarr.yml

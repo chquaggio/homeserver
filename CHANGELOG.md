@@ -1,3 +1,17 @@
+## [2026-09-26 13:54] Push Summary
+
+### Conversation Context
+FantaQuoggio's first deploy went through on the `fantaquoggio` branch, and the branch is now fast-forwarded into `main`. During that deploy Christian also turned Open WebUI off by commenting out its import. `run.yml`'s `remove_orphans` then removed its container, as intended. Its data stays in `./open-webui`, which Zerobyte still backs up, so turning it back on means restoring the import line. The documentation contract asks for the service's README row, Homepage tile and diagram entry to go in the same commit, so they do.
+
+### Commits
+1. `chore(containers): disable openwebui`
+   - `roles/containers/tasks/main.yml`: the `openwebui.yml` import commented out
+   - `README.md`: the service row removed, the LLM mentions without Open WebUI
+   - `roles/containers/templates/services.yaml.j2`: the Homepage tile removed
+   - `docs/architecture.drawio`: Open WebUI out of the public-apps box and bestione's users
+
+---
+
 ## [2026-09-26 10:51] Push Summary
 
 ### Conversation Context
