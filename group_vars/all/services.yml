@@ -85,8 +85,27 @@ karuta_ping_role_id: 1526876875606196264
 # Pinned release: a deploy is a bump here, WUD notifies the next vX.Y.Z
 fantaquoggio_version: "0.4.0"
 fantaquoggio_url: "https://app.fantaquoggio.bid"
-# Serie A transfer windows, ISO date ranges; roster refresh is weekly inside them
-fantaquoggio_transfer_windows: "2026-07-01/2026-09-01,2027-01-02/2027-02-02"
+# Non-secret pipeline settings, rendered into the Airflow environment. The two
+# structured ones go out as JSON, the format fq_core.settings parses.
+# Serie A transfer windows (placeholder dates until the official ones); the
+# roster refresh is weekly inside them.
+fantaquoggio_transfer_windows:
+  - {season: "2026/27", from: "2026-07-01", to: "2026-09-01"}
+  - {season: "2026/27", from: "2027-01-02", to: "2027-02-02"}
+# SofaSport's tournament-season id for each Season
+fantaquoggio_season_ids:
+  "2022/23": 42415
+  "2023/24": 52760
+  "2024/25": 63515
+  "2025/26": 76457
+  "2026/27": 95836
+# SofaSport request budget: requests a run may declare, the month's soft limit
+# (Telegram warning) and hard limit (the run stops), and the provider quota a
+# run leaves untouched
+fantaquoggio_request_ceiling_run: 100
+fantaquoggio_request_soft_limit_month: 200
+fantaquoggio_request_hard_limit_month: 400
+fantaquoggio_request_reserve: 20
 fantaquoggio_postgres_password: "{{ FQ_POSTGRES_PASSWORD }}"
 fantaquoggio_db_password_migrate: "{{ FQ_DB_PASSWORD_MIGRATE }}"
 fantaquoggio_db_password_ingestion: "{{ FQ_DB_PASSWORD_INGESTION }}"
