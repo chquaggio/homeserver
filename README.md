@@ -228,7 +228,7 @@ Databases and caches are containers too. Some apps share the general Postgres; l
 
 ### Backups
 
-Each Postgres instance has a `*-db-backup` sidecar (`prodrigestivill/postgres-backup-local`) writing daily dumps: **db-backup** (postgres), **immich-db-backup** (immich-postgres), **karutuogg-db-backup** (karutuogg-postgres), **fantaquoggio-db-backup** (fantaquoggio-postgres, both databases).
+Each Postgres instance has a `*-db-backup` sidecar (`prodrigestivill/postgres-backup-local`) writing daily dumps: **db-backup** (postgres), **immich-db-backup** (immich-postgres), **karutuogg-db-backup** (karutuogg-postgres), **fantaquoggio-db-backup** (fantaquoggio-postgres, both databases, without the dbt schemas `staging`, `intermediate` and `marts`, which a `dbt_build` recreates).
 
 Vaultwarden's SQLite vault gets the same treatment from **vaultwarden-backup**: a file copy of a live SQLite database can capture a torn state, so the sidecar writes `sqlite3 .backup` snapshots (plus attachments, sends, `config.json` and the RSA keys) into `vaultwarden/backups`.
 

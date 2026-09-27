@@ -81,7 +81,10 @@
         - POSTGRES_DB=fantaquoggio airflow
         - POSTGRES_USER=postgres
         - "POSTGRES_PASSWORD={{ fantaquoggio_postgres_password }}"
-        - POSTGRES_EXTRA_OPTS=--clean --if-exists
+        # -Z1 is the image's default; setting the variable replaces it, and without it
+        # the .sql.gz files hold plain SQL. The dbt schemas are 91% of a plain dump
+        # and `dbt build` recreates them from raw_*, so a restore ends with dbt_build.
+        - POSTGRES_EXTRA_OPTS=-Z1 --clean --if-exists --exclude-schema=staging --exclude-schema=intermediate --exclude-schema=marts
         - SCHEDULE=@daily
         - BACKUP_KEEP_DAYS=14
         - BACKUP_KEEP_WEEKS=8
