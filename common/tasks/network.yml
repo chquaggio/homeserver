@@ -8,17 +8,17 @@
 # ports are NOT filtered by these rules: Docker inserts its own iptables rules
 # ahead of UFW, so a container's `ports:` is reachable on every interface.
 - name: Allow all traffic from the tailnet
-  ufw:
+  community.general.ufw:
     rule: allow
     src: 100.64.0.0/10
 
 - name: Allow all traffic from the LAN
-  ufw:
+  community.general.ufw:
     rule: allow
     src: 192.168.1.0/24
 
 - name: Remove world-open rules
-  ufw:
+  community.general.ufw:
     rule: allow
     port: "{{ item.port }}"
     proto: "{{ item.proto }}"
@@ -29,7 +29,7 @@
     - { port: '53', proto: udp }
 
 - name: Enable UFW with default deny
-  ufw:
+  community.general.ufw:
     state: enabled
     policy: deny
 

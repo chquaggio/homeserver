@@ -2,6 +2,9 @@
 collections:
   - name: ansible.posix
     version: ">=1.5.0"
+  # ufw (common/tasks/network.yml) comes from here.
+  - name: community.general
+    version: ">=10.0.0"
   # docker_login (ghcr_login.yml), docker_compose_v2 (run.yml) and
   # docker_container (roles/docker) come from here.
   - name: community.docker
