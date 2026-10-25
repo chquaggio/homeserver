@@ -83,7 +83,7 @@ karuta_ping_role_id: 1526876875606196264
 
 # --- FantaQuoggio ---
 # Pinned release: a deploy is a bump here, WUD notifies the next vX.Y.Z
-fantaquoggio_version: "0.5.0"
+fantaquoggio_version: "0.13.0"
 fantaquoggio_url: "https://app.fantaquoggio.bid"
 # Non-secret pipeline settings, rendered into the Airflow environment. The two
 # structured ones go out as JSON, the format fq_core.settings parses.

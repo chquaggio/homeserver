@@ -26,8 +26,9 @@
     # scp). Re-fetchable and re-downloadable, hence outside Zerobyte.
     - data/raw/sofasport
     - data/raw/fantacalcio
-    # mister artifacts, trained on the server by `fq mister train`; retrainable
-    # from the marts, hence outside Zerobyte too.
+    # mister artifacts: the fitted model and scenarios/, the parquet archive of each
+    # Round's official Scenarios. Both are regenerable (retrain, a replay of the
+    # Round), hence outside Zerobyte too: it mounts only the db-backups directories.
     - data/models/mister
 
 # Dedicated Postgres, like karutuogg: dbt rebuilds schemas freely and Airflow's
@@ -84,7 +85,10 @@
         # -Z1 is the image's default; setting the variable replaces it, and without it
         # the .sql.gz files hold plain SQL. The dbt schemas are 91% of a plain dump
         # and `dbt build` recreates them from raw_*, so a restore ends with dbt_build.
-        - POSTGRES_EXTRA_OPTS=-Z1 --clean --if-exists --exclude-schema=staging --exclude-schema=intermediate --exclude-schema=marts
+        # mister_scenarios is made by Alembic, so its schema stays in the dump and only
+        # its rows go (the next live run rewrites them). The image expands this variable
+        # unquoted, so pg_dump takes any quote character literally: write none.
+        - POSTGRES_EXTRA_OPTS=-Z1 --clean --if-exists --exclude-schema=staging --exclude-schema=intermediate --exclude-schema=marts --exclude-table-data=mister_scenarios.*
         - SCHEDULE=@daily
         - BACKUP_KEEP_DAYS=14
         - BACKUP_KEEP_WEEKS=8
