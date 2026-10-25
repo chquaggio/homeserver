@@ -104,7 +104,7 @@ fantaquoggio_season_ids:
 # run leaves untouched
 fantaquoggio_request_ceiling_run: 100
 fantaquoggio_request_soft_limit_month: 200
-fantaquoggio_request_hard_limit_month: 400
+fantaquoggio_request_hard_limit_month: 600
 fantaquoggio_request_reserve: 20
 fantaquoggio_postgres_password: "{{ FQ_POSTGRES_PASSWORD }}"
 fantaquoggio_db_password_migrate: "{{ FQ_DB_PASSWORD_MIGRATE }}"
