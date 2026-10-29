@@ -65,6 +65,10 @@ vaultwarden_url: "https://vaultwarden.fantaquoggio.bid"
 vibravid_secret_key: "{{ VIBRAVID_SECRET_KEY }}"
 tmdb_key: "{{ TMDB_API_KEY }}"
 
+# WUD
+wud_user: "{{ WUD_USER }}"
+wud_password: "{{ WUD_PASSWORD }}"
+
 # Zerobyte
 zerobyte_secret: "{{ ZEROBYTE_SECRET }}"
 

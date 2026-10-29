@@ -6,13 +6,15 @@
   set_fact:
     wud_service:
       name: wud
-      image: getwud/wud:8.3.0
+      image: getwud/wud:9.6.0
       container_name: wud
       ports:
         - "3004:3000"
       environment:
         - "TZ={{ tz }}"
         - WUD_LOG_LEVEL=info
+        - "WUD_AUTH_ADMIN_USER={{ wud_user }}"
+        - "WUD_AUTH_ADMIN_PASSWORD={{ wud_password | replace('$', '$$') }}"
         # Docker API through the read-only socket proxy, not the socket itself
         - WUD_WATCHER_LOCAL_HOST=socket-proxy
         - WUD_WATCHER_LOCAL_PORT=2375
