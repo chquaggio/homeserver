@@ -10,7 +10,7 @@
       volumes:
         - ./jellyseerr/config:/app/config
       labels:
-        - "wud.link.template=https://github.com/seerr-team/seerr/releases"
+        - "wud.link.changelog=https://github.com/seerr-team/seerr/releases"
       networks:
         - qnet
       restart: unless-stopped

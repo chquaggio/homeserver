@@ -34,7 +34,7 @@
       volumes:
         - ./karutuogg/postgres_data:/var/lib/postgresql/data
       labels:
-        - "wud.link.template=https://www.postgresql.org/docs/release/"
+        - "wud.link.changelog=https://www.postgresql.org/docs/release/"
       networks:
         - karutuogg
 
@@ -60,7 +60,7 @@
       volumes:
         - ./karutuogg/db-backups:/backups
       labels:
-        - "wud.link.template=https://github.com/prodrigestivill/docker-postgres-backup-local/releases"
+        - "wud.link.changelog=https://github.com/prodrigestivill/docker-postgres-backup-local/releases"
       networks:
         - karutuogg
       restart: unless-stopped
@@ -91,7 +91,7 @@
         - ./karutuogg/data:/data
         - ./karutuogg/config.yaml:/config/config.yaml:ro
       labels:
-        - "wud.link.template=https://github.com/chquaggio/karuta_tunnel/releases"
+        - "wud.link.changelog=https://github.com/chquaggio/karuta_tunnel/releases"
       networks:
         - qnet
         - karutuogg

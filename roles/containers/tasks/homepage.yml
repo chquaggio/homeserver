@@ -13,7 +13,7 @@
       environment:
         - HOMEPAGE_ALLOWED_HOSTS=quoggioserver:3000,homepage.fantaquoggio.bid
       labels:
-        - "wud.link.template=https://github.com/gethomepage/homepage/releases"
+        - "wud.link.changelog=https://github.com/gethomepage/homepage/releases"
       networks:
         - qnet
         - docker-api

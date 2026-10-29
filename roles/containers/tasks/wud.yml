@@ -1,6 +1,6 @@
 ---
 # Image-update notifier with a web dashboard (:3004) and per-image changelog links
-# (wud.link.template label on each service). Notify-only: no update trigger is
+# (wud.link.changelog label on each service). Notify-only: no update trigger is
 # configured, so it never pulls or restarts containers.
 - name: Configure WUD (What's Up Docker — update dashboard + notifier)
   set_fact:
@@ -23,6 +23,10 @@
         - "WUD_WATCHER_LOCAL_CRON=0 6 * * *"
         - "WUD_TRIGGER_TELEGRAM_1_BOTTOKEN={{ telegram_token }}"
         - "WUD_TRIGGER_TELEGRAM_1_CHATID={{ telegram_chat_id }}"
+        - >-
+          WUD_TRIGGER_TELEGRAM_1_SIMPLEBODY=Container $${container.name} running with
+          $${container.updateKind.kind} $${container.updateKind.localValue} can be updated to
+          $${container.updateKind.kind} $${container.updateKind.remoteValue}$${changelogUrl ? "\n" + changelogUrl : ""}
         # Auth for the private ghcr.io/chquaggio/* images (needs read:packages)
         - "WUD_REGISTRY_GHCR_PRIVATE_USERNAME={{ ghcr_username }}"
         - "WUD_REGISTRY_GHCR_PRIVATE_TOKEN={{ ghcr_token }}"

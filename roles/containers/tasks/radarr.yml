@@ -16,7 +16,7 @@
         - "PGID={{ pgid }}"
         - "TZ={{ tz }}"
       labels:
-        - "wud.link.template=https://github.com/Radarr/Radarr/releases"
+        - "wud.link.changelog=https://github.com/Radarr/Radarr/releases"
       networks:
         - qnet
       restart: unless-stopped

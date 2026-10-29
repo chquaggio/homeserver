@@ -12,7 +12,7 @@
         - "{{ media_dir }}/Shows:/tv"
         - "{{ media_dir }}/downloads:/downloads"
       labels:
-        - "wud.link.template=https://github.com/Sonarr/Sonarr/releases"
+        - "wud.link.changelog=https://github.com/Sonarr/Sonarr/releases"
       networks:
         - qnet
       restart: unless-stopped

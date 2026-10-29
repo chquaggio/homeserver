@@ -18,6 +18,6 @@
         - ALLOW_SIGNUP=false
         - BASE_URL=https://mealie.fantaquoggio.bid
       labels:
-        - "wud.link.template=https://github.com/mealie-recipes/mealie/releases"
+        - "wud.link.changelog=https://github.com/mealie-recipes/mealie/releases"
       networks:
         - qnet

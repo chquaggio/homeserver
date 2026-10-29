@@ -28,7 +28,7 @@
         - ./postgres_data:/var/lib/postgresql/data
         - ./postgres/initdb:/docker-entrypoint-initdb.d:ro
       labels:
-        - "wud.link.template=https://www.postgresql.org/docs/release/"
+        - "wud.link.changelog=https://www.postgresql.org/docs/release/"
       networks:
         - db-shared
 
@@ -58,7 +58,7 @@
       volumes:
         - ./db-backups:/backups
       labels:
-        - "wud.link.template=https://github.com/prodrigestivill/docker-postgres-backup-local/releases"
+        - "wud.link.changelog=https://github.com/prodrigestivill/docker-postgres-backup-local/releases"
       networks:
         - db-shared
       restart: unless-stopped

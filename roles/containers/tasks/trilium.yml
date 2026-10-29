@@ -16,6 +16,6 @@
       ports:
         - "5050:8080"
       labels:
-        - "wud.link.template=https://github.com/TriliumNext/Trilium/releases"
+        - "wud.link.changelog=https://github.com/TriliumNext/Trilium/releases"
       networks:
         - qnet

@@ -52,6 +52,6 @@
       ports:
         - "4096:4096"
       labels:
-        - "wud.link.template=https://github.com/nicotsx/zerobyte/releases"
+        - "wud.link.changelog=https://github.com/nicotsx/zerobyte/releases"
       networks:
         - qnet

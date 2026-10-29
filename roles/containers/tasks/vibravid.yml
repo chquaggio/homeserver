@@ -36,7 +36,7 @@
         # TMDB is env-only config; enables strict TMDB id matching for arr polling
         - "TMDB_API_KEY={{ tmdb_key }}"
       labels:
-        - "wud.link.template=https://github.com/AstraeLabs/VibraVid/releases"
+        - "wud.link.changelog=https://github.com/AstraeLabs/VibraVid/releases"
       networks:
         - qnet
       restart: unless-stopped

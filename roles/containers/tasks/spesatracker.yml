@@ -29,7 +29,7 @@
         postgres:
           condition: service_healthy
       labels:
-        - "wud.link.template=https://github.com/chquaggio/spesatracker/releases"
+        - "wud.link.changelog=https://github.com/chquaggio/spesatracker/releases"
       networks:
         - qnet
         - db-shared

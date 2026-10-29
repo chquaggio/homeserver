@@ -10,7 +10,7 @@
         # Env rather than --token so the credential stays out of `ps` on the host
         - "TUNNEL_TOKEN={{ cf_token }}"
       labels:
-        - "wud.link.template=https://github.com/cloudflare/cloudflared/releases"
+        - "wud.link.changelog=https://github.com/cloudflare/cloudflared/releases"
       networks:
         - qnet
       restart: unless-stopped

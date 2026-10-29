@@ -25,7 +25,7 @@
         # directory works, so CWA needs no polling fallback.
         - NETWORK_SHARE_MODE=false
       labels:
-        - "wud.link.template=https://github.com/crocodilestick/Calibre-Web-Automated/releases"
+        - "wud.link.changelog=https://github.com/crocodilestick/Calibre-Web-Automated/releases"
       networks:
         - qnet
       restart: unless-stopped

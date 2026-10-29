@@ -17,7 +17,7 @@
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
       labels:
-        - "wud.link.template=https://github.com/Tecnativa/docker-socket-proxy/releases"
+        - "wud.link.changelog=https://github.com/Tecnativa/docker-socket-proxy/releases"
       networks:
         - docker-api
       restart: unless-stopped

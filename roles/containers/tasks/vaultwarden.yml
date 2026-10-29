@@ -22,7 +22,7 @@
       volumes:
         - ./vaultwarden/data:/data
       labels:
-        - "wud.link.template=https://github.com/dani-garcia/vaultwarden/releases"
+        - "wud.link.changelog=https://github.com/dani-garcia/vaultwarden/releases"
       networks:
         - qnet
       restart: unless-stopped
@@ -53,7 +53,7 @@
         - ./vaultwarden/data:/data
         - ./vaultwarden/backups:/backup
       labels:
-        - "wud.link.template=https://github.com/Bruceforce/vaultwarden-backup/releases"
+        - "wud.link.changelog=https://github.com/Bruceforce/vaultwarden-backup/releases"
       networks:
         - qnet
       restart: unless-stopped

@@ -17,6 +17,6 @@
         - "TZ={{ tz }}"
         - OPENAI_API_BASE_URL=http://bestione:8000/v1
       labels:
-        - "wud.link.template=https://github.com/open-webui/open-webui/releases"
+        - "wud.link.changelog=https://github.com/open-webui/open-webui/releases"
       networks:
         - qnet

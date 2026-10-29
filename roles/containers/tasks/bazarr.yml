@@ -16,7 +16,7 @@
         - "PGID={{ pgid }}"
         - "TZ={{ tz }}"
       labels:
-        - "wud.link.template=https://github.com/morpheus65535/bazarr/releases"
+        - "wud.link.changelog=https://github.com/morpheus65535/bazarr/releases"
       networks:
         - qnet
       restart: unless-stopped

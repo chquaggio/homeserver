@@ -1,3 +1,26 @@
+## [2026-10-29 11:21] Push Summary
+
+### Conversation Context
+Christian bumped several images, WUD among them from 8.3.0 to 9.6.0. WUD 9 removes anonymous access and refuses to start without an administrator, so the admin now comes from `WUD_AUTH_ADMIN_USER` and `WUD_AUTH_ADMIN_PASSWORD`, backed by `WUD_USER` and `WUD_PASSWORD` in the vault. WUD's source shows it re-applies these credentials on every start, while its docs say they seed the first start only. The vault therefore stays the source of truth, and a password changed from the UI does not survive a restart. The Homepage widget reads the API with the same credentials through HTTP Basic auth.
+
+WUD 9.5 deprecates `wud.link.template` in favour of `wud.link.changelog`, `wud.link.doc` and `wud.link.upstream`. Every label in the stack points to a release page, so all of them become `wud.link.changelog`. The default Telegram body takes its link from the old label only (`container.result.link`), so the trigger gets a body identical to the default except that the link comes from `${changelogUrl}`. Both changes are deployed.
+
+### Commits
+1. `feat(containers): upgrade WUD to 9.6.0 with mandatory login`
+   - `roles/containers/tasks/wud.yml`: image 9.6.0, the admin bootstrap variables
+   - `group_vars/all/services.yml`: `wud_user`, `wud_password`
+   - `roles/containers/templates/services.yaml.j2`: credentials on the WUD widget
+2. `feat(containers): deploy FantaQuoggio v0.14.1`
+   - `group_vars/all/services.yml`: `fantaquoggio_version` 0.14.1
+3. `chore(containers): update service images`
+   - `roles/containers/tasks/{actual,beszel,cloudflared,homepage,jellyfin,mealie,zerobyte}.yml`: image tags
+4. `refactor(containers): migrate WUD release links to wud.link.changelog`
+   - `roles/containers/tasks/*.yml`: 42 labels renamed across 27 files
+   - `roles/containers/tasks/wud.yml`: `WUD_TRIGGER_TELEGRAM_1_SIMPLEBODY` with the changelog link
+   - `CHANGELOG.md`: this entry
+
+---
+
 ## [2026-09-26 13:54] Push Summary
 
 ### Conversation Context

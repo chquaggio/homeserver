@@ -10,7 +10,7 @@
       environment:
         - "TZ={{ tz }}"
       labels:
-        - "wud.link.template=https://github.com/FlareSolverr/FlareSolverr/releases"
+        - "wud.link.changelog=https://github.com/FlareSolverr/FlareSolverr/releases"
       networks:
         - qnet
       restart: unless-stopped

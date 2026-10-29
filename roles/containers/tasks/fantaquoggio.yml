@@ -62,7 +62,7 @@
           limits:
             memory: 1g
       labels:
-        - "wud.link.template=https://www.postgresql.org/docs/release/"
+        - "wud.link.changelog=https://www.postgresql.org/docs/release/"
       networks:
         - qnet
         - fantaquoggio
@@ -97,7 +97,7 @@
       volumes:
         - ./fantaquoggio/db-backups:/backups
       labels:
-        - "wud.link.template=https://github.com/prodrigestivill/docker-postgres-backup-local/releases"
+        - "wud.link.changelog=https://github.com/prodrigestivill/docker-postgres-backup-local/releases"
       networks:
         - fantaquoggio
       restart: unless-stopped
@@ -166,7 +166,7 @@
           limits:
             memory: 768m
       labels:
-        - "wud.link.template=https://github.com/chquaggio/FantaQuoggio/releases"
+        - "wud.link.changelog=https://github.com/chquaggio/FantaQuoggio/releases"
       networks:
         - qnet
         - fantaquoggio
@@ -281,7 +281,7 @@
           limits:
             memory: 768m
       labels:
-        - "wud.link.template=https://github.com/chquaggio/FantaQuoggio/releases"
+        - "wud.link.changelog=https://github.com/chquaggio/FantaQuoggio/releases"
       networks:
         - qnet
         - fantaquoggio
@@ -317,7 +317,7 @@
           limits:
             memory: 3g
       labels:
-        - "wud.link.template=https://github.com/chquaggio/FantaQuoggio/releases"
+        - "wud.link.changelog=https://github.com/chquaggio/FantaQuoggio/releases"
       networks:
         - qnet
         - fantaquoggio
@@ -351,7 +351,7 @@
           limits:
             memory: 768m
       labels:
-        - "wud.link.template=https://github.com/chquaggio/FantaQuoggio/releases"
+        - "wud.link.changelog=https://github.com/chquaggio/FantaQuoggio/releases"
       networks:
         - qnet
         - fantaquoggio

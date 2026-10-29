@@ -13,6 +13,6 @@
       ports:
         - "5001:5001"
       labels:
-        - "wud.link.template=https://github.com/docling-project/docling-serve/releases"
+        - "wud.link.changelog=https://github.com/docling-project/docling-serve/releases"
       networks:
         - qnet
