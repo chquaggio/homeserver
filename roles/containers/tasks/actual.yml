@@ -3,7 +3,7 @@
   set_fact:
     actual_service:
       name: actualbudget
-      image: docker.io/actualbudget/actual-server:26.8.1
+      image: docker.io/actualbudget/actual-server:26.10.0
       container_name: actualbudget
       ports:
         - '5006:5006'
