@@ -12,6 +12,8 @@ import yaml
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 TASKS = ROOT / "roles/containers/tasks"
+# Ansible's !unsafe tag marks strings Jinja must not template; only the names matter here.
+yaml.SafeLoader.add_constructor("!unsafe", lambda loader, node: loader.construct_scalar(node))
 DOCS = (ROOT / "README.md").read_text().lower() + (ROOT / "docs/architecture.drawio").read_text().lower()
 
 

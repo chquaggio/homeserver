@@ -12,9 +12,13 @@ sections below that the change touches and update them **in the same commit**:
 | Change | Update |
 |---|---|
 | Service added / removed / renamed, image or port changed | `README.md` service tables; homepage tile in `roles/containers/templates/services.yaml.j2`; the matching box in `docs/architecture.drawio` |
-| Network membership, published ports, firewall, tunnel or Access scope | `README.md` → Networking; `docs/architecture.drawio` (networks, entry paths, legend) |
+| Network membership, published ports, firewall, tunnel or Access scope | `README.md` → Networking; `docs/architecture.drawio` (networks, entry paths, legend); per-app tunnel/Access policy in `docs/private/exposure.md` |
 | Volume added to Zerobyte, backup or storage layout | `README.md` → Backups / Storage; `docs/architecture.drawio` storage boxes |
 | Rendering pipeline (`setup.yml`, `compose.yml.j2`, `run.yml`) or a repo convention | `README.md` → Infrastructure / Deployment; `.claude/skills/add-service/SKILL.md` |
+
+The repo is public. Which apps skip Cloudflare Access, concrete addresses (Tailscale IP, LAN
+subnet) and known weak points go only in `docs/private/`, which
+is gitignored; public docs describe the architecture without them.
 
 `scripts/check_docs.py` enforces the mechanical part (every compose service and network
 is mentioned in the README or the diagram) and runs in CI; run it locally before

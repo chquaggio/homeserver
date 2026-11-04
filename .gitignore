@@ -2,3 +2,6 @@ group_vars/all/vault.yml
 .vault_pass
 roles/containers/files/actualtap_config/config.yml
 .claude/settings.local.json
+
+# Exposure details (hostnames, Access policies, addresses, known weak points); see CLAUDE.md
+docs/private/

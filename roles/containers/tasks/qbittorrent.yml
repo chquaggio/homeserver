@@ -5,17 +5,16 @@
       name: qbittorrent
       image: lscr.io/linuxserver/qbittorrent:5.2.2
       container_name: qbittorrent
-      ports:
-        - 8585:8585
-        - 6881:6881
-        - 6881:6881/udp
+      network_mode: "service:gluetun"
+      depends_on:
+        gluetun:
+          condition: service_healthy
+          restart: true
       volumes:
         - ./qbittorrent/config:/config
         - "{{ media_dir }}/downloads:/downloads"
       labels:
         - "wud.link.changelog=https://github.com/qbittorrent/qBittorrent/releases"
-      networks:
-        - qnet
       restart: unless-stopped
       environment:
         - "PUID={{ puid }}"

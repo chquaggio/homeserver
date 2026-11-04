@@ -1,0 +1,45 @@
+---
+# WireGuard tunnel to Proton VPN for qBittorrent, which joins this container's
+# network namespace; see docs/vpn.md. qBittorrent's WebUI port and its qnet
+# alias live here because a container with network_mode has neither.
+- name: Configure Gluetun service  # noqa: jinja[spacing] (gluetun placeholders, kept literal by !unsafe)
+  set_fact:
+    gluetun_service:
+      name: gluetun
+      image: qmcgaw/gluetun:v3.41.3
+      container_name: gluetun
+      cap_add:
+        - NET_ADMIN
+      devices:
+        - /dev/net/tun:/dev/net/tun
+      ports:
+        - 8585:8585
+      volumes:
+        - ./gluetun:/gluetun
+      environment:
+        - VPN_SERVICE_PROVIDER=protonvpn
+        - VPN_TYPE=wireguard
+        - "WIREGUARD_PRIVATE_KEY={{ protonvpn_key }}"
+        - VPN_PORT_FORWARDING=on
+        # Only P2P servers forward a port.
+        - PORT_FORWARD_ONLY=on
+        # Commands from the gluetun wiki with the WebUI on 8585. {{PORT}} and
+        # {{VPN_INTERFACE}} are gluetun placeholders, hence !unsafe to keep
+        # Jinja off them. The down command resets the port because qBittorrent
+        # otherwise fails to re-listen after a reconnect.
+        - !unsafe >-
+          VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c 'wget -O- -nv --retry-connrefused
+          --post-data "json={\"listen_port\":{{PORT}},\"current_network_interface\":\"{{VPN_INTERFACE}}\",\"random_port\":false,\"upnp\":false}"
+          http://127.0.0.1:8585/api/v2/app/setPreferences'
+        - !unsafe >-
+          VPN_PORT_FORWARDING_DOWN_COMMAND=/bin/sh -c 'wget -O- -nv --retry-connrefused
+          --post-data "json={\"listen_port\":0,\"current_network_interface\":\"lo\"}"
+          http://127.0.0.1:8585/api/v2/app/setPreferences'
+        - "TZ={{ tz }}"
+      labels:
+        - "wud.link.changelog=https://github.com/qdm12/gluetun/releases"
+      networks:
+        qnet:
+          aliases:
+            - qbittorrent
+      restart: unless-stopped

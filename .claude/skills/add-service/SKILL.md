@@ -79,6 +79,7 @@ Create `roles/containers/tasks/<name>.yml`. Standard skeleton:
 - The fact name MUST end in `_service` (e.g. `foo_service`) — `setup.yml` auto-discovers via `query('varnames', '_service$')`. If you skip this convention, the service won't appear in the rendered compose.
 - **No directory-creation task.** `setup.yml` creates every `./…` and `{{ media_dir }}/…` bind-mount directory (owned by `{{ username }}`) before rendering compose. A mount whose basename has an extension is treated as a file and skipped. Only add an `ansible.builtin.file` task when the service renders a config file into a directory before compose runs (see `karutuogg.yml`, `vibravid.yml`).
 - Don't add `ports:` for services only other containers talk to — published ports bypass UFW
+- A service whose traffic must leave through Proton VPN sets `network_mode: "service:gluetun"` and drops `networks` and `ports`; its ports and its `qnet` alias go on gluetun instead (see `qbittorrent.yml`, `gluetun.yml`, `docs/vpn.md`)
 
 ### Step 4 — Wire into main.yml
 

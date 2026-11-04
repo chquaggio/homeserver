@@ -40,6 +40,9 @@ sonarr_key: "{{ SONARR_KEY }}"
 qb_user: "{{ QB_USER }}"
 qb_password: "{{ QB_PASSWORD }}"
 
+# Proton VPN (gluetun)
+protonvpn_key: "{{ PROTONVPN_KEY }}"
+
 # Spesatracker
 spesatracker_iper_email: "{{ SPESATRACKER_IPER_EMAIL }}"
 spesatracker_iper_psw: "{{ SPESATRACKER_IPER_PSW }}"
@@ -58,7 +61,7 @@ trilium_url: "{{ TRILIUM_BASE_URL_PROD }}"
 
 # Vaultwarden
 vaultwarden_admin_token: "{{ VAULTWARDEN_ADMIN_TOKEN }}"
-# Origin served by Tailscale Serve, not a public hostname
+# Public origin served through the Cloudflare tunnel
 vaultwarden_url: "https://vaultwarden.fantaquoggio.bid"
 
 # VibraVid
@@ -87,7 +90,7 @@ karuta_ping_role_id: 1526876875606196264
 
 # --- FantaQuoggio ---
 # Pinned release: a deploy is a bump here, WUD notifies the next vX.Y.Z
-fantaquoggio_version: "0.14.1"
+fantaquoggio_version: "0.15.1"
 fantaquoggio_url: "https://app.fantaquoggio.bid"
 # Non-secret pipeline settings, rendered into the Airflow environment. The two
 # structured ones go out as JSON, the format fq_core.settings parses.
