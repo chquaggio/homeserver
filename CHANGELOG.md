@@ -1,3 +1,15 @@
+## [2026-11-09 10:15] Push Summary
+
+### Conversation Context
+After the FantaQuoggio cut-over, the vault keys took the names of the roles they serve: `FQ_DB_PASSWORD_OWNER` replaces `FQ_DB_PASSWORD_MIGRATE` and `FQ_DB_PASSWORD_DESKTOP` replaces `FQ_DB_PASSWORD_SCOUT`. Christian made the vault edit. The desktop's `.env` uses the same names, so a password has one name on every host. The db-init one-shot runs `ALTER ROLE … PASSWORD` on every start, so the next playbook run applies the values.
+
+### Commits
+1. `refactor(containers): FantaQuoggio role passwords read by role name`
+   - `group_vars/all/services.yml`: `FQ_DB_PASSWORD_OWNER` and `FQ_DB_PASSWORD_DESKTOP`
+   - `CHANGELOG.md`: this entry
+
+---
+
 ## [2026-11-09 09:30] Push Summary
 
 ### Conversation Context
