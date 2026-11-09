@@ -1,16 +1,4 @@
 ---
-# FantaQuoggio: the fantacalcio app (FastAPI + SPA in one image) and its Airflow 3
-# pipeline, on a dedicated Postgres. Design record: the "FantaQuoggio services in
-# homeserver Ansible" ticket on the FantaQuoggio Todoist map (2026-09-11).
-#
-# Eight containers, two of them one-shots. Only fantaquoggio-db-init holds the
-# Postgres superuser and the per-role passwords: it creates databases and roles
-# (identity), then runs the Alembic migrations (structure), and exits; then
-# fantaquoggio-airflow-init migrates the Airflow metadata and exits. Everything
-# else connects with its own least-privilege role. Every FQ_* variable here is
-# the environment contract that fq_core.settings implements. The FantaQuoggio
-# repo's compose.yml runs the same services locally; a difference between the
-# two is either a server-only setting or a bug.
 
 - name: Setup FantaQuoggio directories
   ansible.builtin.file:
@@ -18,25 +6,11 @@
     owner: "{{ username }}"
     group: "{{ username }}"
     state: directory
-  # Subdirectories of the scheduler's /data mount, which setup.yml does not see.
-  # The Airflow containers run as uid 1000 and write here.
   loop:
-    # Provider files: the SofaSport response cache (fetched) and the
-    # fantacalcio.it xlsx (Voti per Round and the yearly Quotazioni, copied in by
-    # scp). Re-fetchable and re-downloadable, hence outside Zerobyte.
     - data/raw/sofasport
     - data/raw/fantacalcio
-    # mister artifacts: the fitted model and scenarios/, the parquet archive of each
-    # Round's official Scenarios. Both are regenerable (retrain, a replay of the
-    # Round), hence outside Zerobyte too: it mounts only the db-backups directories.
     - data/models/mister
 
-# Dedicated Postgres, like karutuogg: dbt rebuilds schemas freely and Airflow's
-# metadata is chatty, so neither touches the shared instance. Also on qnet
-# because the port is published: scout (the Season valuation model) fits on
-# Christian's machine and reads the marts directly. Binding to the Tailscale IP
-# keeps it off the LAN and the internet; if tailscale0 has no address yet at
-# boot the bind fails and the restart policy retries until it does.
 - name: Configure FantaQuoggio Postgres
   set_fact:
     fantaquoggio_postgres_service:
@@ -82,12 +56,6 @@
         - POSTGRES_DB=fantaquoggio airflow
         - POSTGRES_USER=postgres
         - "POSTGRES_PASSWORD={{ fantaquoggio_postgres_password }}"
-        # -Z1 is the image's default; setting the variable replaces it, and without it
-        # the .sql.gz files hold plain SQL. The dbt schemas are 91% of a plain dump
-        # and `dbt build` recreates them from raw_*, so a restore ends with dbt_build.
-        # mister_scenarios is made by Alembic, so its schema stays in the dump and only
-        # its rows go (the next live run rewrites them). The image expands this variable
-        # unquoted, so pg_dump takes any quote character literally: write none.
         - POSTGRES_EXTRA_OPTS=-Z1 --clean --if-exists --exclude-schema=staging --exclude-schema=intermediate --exclude-schema=marts --exclude-table-data=mister_scenarios.*
         - SCHEDULE=@daily
         - BACKUP_KEEP_DAYS=14
@@ -102,10 +70,6 @@
         - fantaquoggio
       restart: unless-stopped
 
-# One-shot, re-run by every `compose up`, idempotent: creates the two databases
-# and the writer roles (ALTER ROLE ... PASSWORD each time, so rotating a password
-# is a vault edit and a deploy), then migrates the app schema. The app, the
-# backup sidecar and fantaquoggio-airflow-init wait for it to complete.
 - name: Configure FantaQuoggio database bootstrap
   set_fact:
     fantaquoggio_db_init_service:
@@ -119,22 +83,15 @@
       environment:
         - "TZ={{ tz }}"
         - "FQ_BOOTSTRAP_DSN=postgresql+psycopg://postgres:{{ fantaquoggio_postgres_password }}@fantaquoggio-postgres:5432/postgres"
-        - "FQ_DATABASE_URL=postgresql+psycopg://fq_migrate:{{ fantaquoggio_db_password_migrate }}@fantaquoggio-postgres:5432/fantaquoggio"
-        - "FQ_ROLE_PASSWORD_MIGRATE={{ fantaquoggio_db_password_migrate }}"
-        - "FQ_ROLE_PASSWORD_INGESTION={{ fantaquoggio_db_password_ingestion }}"
-        - "FQ_ROLE_PASSWORD_DBT={{ fantaquoggio_db_password_dbt }}"
+        - "FQ_DATABASE_URL=postgresql+psycopg://fq_owner:{{ fantaquoggio_db_password_owner }}@fantaquoggio-postgres:5432/fantaquoggio"
+        - "FQ_ROLE_PASSWORD_OWNER={{ fantaquoggio_db_password_owner }}"
         - "FQ_ROLE_PASSWORD_API={{ fantaquoggio_db_password_api }}"
-        - "FQ_ROLE_PASSWORD_MISTER={{ fantaquoggio_db_password_mister }}"
-        - "FQ_ROLE_PASSWORD_SCOUT={{ fantaquoggio_db_password_scout }}"
+        - "FQ_ROLE_PASSWORD_DESKTOP={{ fantaquoggio_db_password_desktop }}"
         - "FQ_ROLE_PASSWORD_AIRFLOW={{ fantaquoggio_db_password_airflow }}"
       networks:
         - fantaquoggio
       restart: "no"
 
-# API and SPA in one image, reached only through the Cloudflare tunnel at
-# fantaquoggio_url: no published port. The image carries its own HEALTHCHECK on
-# /api/health. Read-only root filesystem: the static files are baked in and the
-# app writes nothing but /tmp.
 - name: Configure FantaQuoggio app
   set_fact:
     fantaquoggio_service:
@@ -149,15 +106,10 @@
         - "FQ_DATABASE_URL=postgresql+psycopg://fq_api:{{ fantaquoggio_db_password_api }}@fantaquoggio-postgres:5432/fantaquoggio"
         - "FQ_SECRET_KEY={{ fantaquoggio_secret_key }}"
         - "FQ_PUBLIC_URL={{ fantaquoggio_url }}"
-        # Transactional email through Amazon SES over SMTP. Empty until the SES
-        # account exists; the app treats an empty host as "email disabled".
         - "FQ_SMTP_HOST={{ fantaquoggio_smtp_host }}"
-        - FQ_SMTP_PORT=587
         - "FQ_SMTP_USER={{ fantaquoggio_smtp_user }}"
         - "FQ_SMTP_PASSWORD={{ fantaquoggio_smtp_password }}"
         - "FQ_EMAILS_FROM={{ fantaquoggio_emails_from }}"
-        - "FQ_FIRST_SUPERUSER_EMAIL={{ fantaquoggio_first_superuser_email }}"
-        - "FQ_FIRST_SUPERUSER_PASSWORD={{ fantaquoggio_first_superuser_password }}"
       read_only: true
       tmpfs:
         - /tmp
@@ -172,104 +124,63 @@
         - fantaquoggio
       restart: unless-stopped
 
-# Environment shared by the four Airflow containers. LocalExecutor: tasks run as
-# child processes of the scheduler, so the scheduler's memory limit is the one
-# that must fit a dbt build or a prediction run. DAGs and the first-party
-# packages are baked into the image; nothing is configured through the UI.
-- name: Define the FantaQuoggio Airflow environment
+- name: Define the FantaQuoggio Airflow base
   set_fact:
-    fantaquoggio_airflow_env:
+    fantaquoggio_airflow_env: &airflow_env
       - "TZ={{ tz }}"
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      - AIRFLOW__CORE__PARALLELISM=2
-      - AIRFLOW__CORE__MAX_ACTIVE_RUNS_PER_DAG=1
-      - AIRFLOW__CORE__LOAD_EXAMPLES=false
-      # Airflow's default, stated: a new DAG starts paused, so the first deploy
-      # unpauses them in order after the backfill and the first train; the pause
-      # state then lives in the metadata database
-      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=true
       - "AIRFLOW__CORE__FERNET_KEY={{ fantaquoggio_airflow_fernet_key }}"
-      - AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS=christian:admin
-      - AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_PASSWORDS_FILE=/opt/airflow/config/simple_auth_manager_passwords.json
       - AIRFLOW__CORE__EXECUTION_API_SERVER_URL=http://fantaquoggio-airflow-apiserver:8080/execution/
       - "AIRFLOW__API__BASE_URL=http://{{ tailscale_ip }}:8420"
       - "AIRFLOW__API_AUTH__JWT_SECRET={{ fantaquoggio_airflow_jwt_secret }}"
       - "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:{{ fantaquoggio_db_password_airflow }}@fantaquoggio-postgres:5432/airflow"
-      # fq_ingestion settings: provider files, the SofaSport key, the request
-      # budget, the transfer windows and the Season ids (services.yml)
-      - FQ_DATA_DIR=/data
+      - "FQ_DATABASE_URL=postgresql+psycopg://fq_owner:{{ fantaquoggio_db_password_owner }}@fantaquoggio-postgres:5432/fantaquoggio"
+      - "FQ_DBT_PASSWORD={{ fantaquoggio_db_password_owner }}"
       - "FQ_RAPIDAPI_KEY={{ fantaquoggio_rapidapi_key }}"
-      - "FQ_REQUEST_CEILING_RUN={{ fantaquoggio_request_ceiling_run }}"
-      - "FQ_REQUEST_SOFT_LIMIT_MONTH={{ fantaquoggio_request_soft_limit_month }}"
-      - "FQ_REQUEST_HARD_LIMIT_MONTH={{ fantaquoggio_request_hard_limit_month }}"
-      - "FQ_REQUEST_RESERVE={{ fantaquoggio_request_reserve }}"
-      - "FQ_TRANSFER_WINDOWS={{ fantaquoggio_transfer_windows | to_json }}"
-      - "FQ_SEASON_IDS={{ fantaquoggio_season_ids | to_json }}"
-      - "FQ_INGESTION_DATABASE_URL=postgresql+psycopg://fq_ingestion:{{ fantaquoggio_db_password_ingestion }}@fantaquoggio-postgres:5432/fantaquoggio"
-      - "FQ_MISTER_DATABASE_URL=postgresql+psycopg://fq_mister:{{ fantaquoggio_db_password_mister }}@fantaquoggio-postgres:5432/fantaquoggio"
-      # dbt profile (dbt/profiles.yml reads these), run by Cosmos from /opt/dbt
-      - FQ_DBT_HOST=fantaquoggio-postgres
-      - FQ_DBT_PORT=5432
-      - FQ_DBT_DBNAME=fantaquoggio
-      - FQ_DBT_USER=fq_dbt
-      - "FQ_DBT_PASSWORD={{ fantaquoggio_db_password_dbt }}"
-      # Failure callbacks and budget warnings through the existing homeserver bot
       - "FQ_TELEGRAM_BOT_TOKEN={{ telegram_token }}"
       - "FQ_TELEGRAM_CHAT_ID={{ telegram_chat_id }}"
+    fantaquoggio_airflow_base: &airflow
+      image: "ghcr.io/chquaggio/fantaquoggio-airflow:v{{ fantaquoggio_version }}"
+      user: "{{ puid }}:0"
+      labels:
+        - "wud.link.changelog=https://github.com/chquaggio/FantaQuoggio/releases"
+      networks:
+        - qnet
+        - fantaquoggio
+      restart: unless-stopped
 
-# One-shot, re-run by every `compose up`, idempotent: the Airflow metadata
-# migrations, the single writer of that schema. The three long-running Airflow
-# services wait for it to complete, so none starts on an unmigrated schema. The
-# image's entrypoint prefixes `airflow` to the command.
 - name: Configure FantaQuoggio Airflow metadata migrations
   set_fact:
     fantaquoggio_airflow_init_service:
       name: fantaquoggio-airflow-init
-      image: "ghcr.io/chquaggio/fantaquoggio-airflow:v{{ fantaquoggio_version }}"
       container_name: fantaquoggio-airflow-init
-      command: db migrate
-      # The image runs as uid 50000; run as the service user so the log files on
-      # the host are ours (gid 0 is what the image's files are writable by). The
-      # official entrypoint stays: it adds the passwd entry an arbitrary uid needs.
+      image: "ghcr.io/chquaggio/fantaquoggio-airflow:v{{ fantaquoggio_version }}"
       user: "{{ puid }}:0"
+      command: db migrate
+      environment: *airflow_env
+      volumes:
+        - ./fantaquoggio/airflow/logs:/opt/airflow/logs
       depends_on:
         fantaquoggio-db-init:
           condition: service_completed_successfully
-      environment: "{{ fantaquoggio_airflow_env }}"
-      volumes:
-        - ./fantaquoggio/airflow/logs:/opt/airflow/logs
       networks:
         - fantaquoggio
       restart: "no"
 
-# SimpleAuthManager opens its password file for appending, so a read-only mount
-# fails: the command writes the file into the container at each start, from
-# FQ_AIRFLOW_UI_PASSWORD, which only this container holds. `$$` is Compose's
-# escape for a literal `$`.
 - name: Configure FantaQuoggio Airflow API server
   set_fact:
     fantaquoggio_airflow_apiserver_service:
+      <<: *airflow
       name: fantaquoggio-airflow-apiserver
-      image: "ghcr.io/chquaggio/fantaquoggio-airflow:v{{ fantaquoggio_version }}"
       container_name: fantaquoggio-airflow-apiserver
-      command:
-        - bash
-        - -c
-        - |
-          mkdir -p "$$(dirname "$$AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_PASSWORDS_FILE")"
-          python -c 'import json, os; print(json.dumps({"christian": os.environ["FQ_AIRFLOW_UI_PASSWORD"]}))' \
-            > "$$AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_PASSWORDS_FILE"
-          exec airflow api-server
-      user: "{{ puid }}:0"
+      command: ["bash", "/opt/airflow/api-server.sh"]
+      environment: "{{ fantaquoggio_airflow_env + ['FQ_AIRFLOW_UI_PASSWORD=' ~ fantaquoggio_airflow_ui_password] }}"
+      volumes:
+        - ./fantaquoggio/airflow/logs:/opt/airflow/logs
       depends_on:
         fantaquoggio-airflow-init:
           condition: service_completed_successfully
-      environment: "{{ fantaquoggio_airflow_env + ['FQ_AIRFLOW_UI_PASSWORD=' ~ fantaquoggio_airflow_ui_password] }}"
-      # UI on the tailnet only
       ports:
         - "{{ tailscale_ip }}:8420:8080"
-      volumes:
-        - ./fantaquoggio/airflow/logs:/opt/airflow/logs
       healthcheck:
         test: ["CMD", "curl", "--fail", "http://localhost:8080/api/v2/monitor/health"]
         interval: 10s
@@ -280,29 +191,20 @@
         resources:
           limits:
             memory: 768m
-      labels:
-        - "wud.link.changelog=https://github.com/chquaggio/FantaQuoggio/releases"
-      networks:
-        - qnet
-        - fantaquoggio
-      restart: unless-stopped
 
-# Its tasks reach the execution API on the api-server, hence the wait for a
-# healthy one. The health endpoint on :8974 is off unless enabled.
 - name: Configure FantaQuoggio Airflow scheduler
   set_fact:
     fantaquoggio_airflow_scheduler_service:
+      <<: *airflow
       name: fantaquoggio-airflow-scheduler
-      image: "ghcr.io/chquaggio/fantaquoggio-airflow:v{{ fantaquoggio_version }}"
       container_name: fantaquoggio-airflow-scheduler
       command: scheduler
-      user: "{{ puid }}:0"
+      environment: *airflow_env
       depends_on:
         fantaquoggio-airflow-init:
           condition: service_completed_successfully
         fantaquoggio-airflow-apiserver:
           condition: service_healthy
-      environment: "{{ fantaquoggio_airflow_env + ['AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK=true'] }}"
       volumes:
         - ./fantaquoggio/airflow/logs:/opt/airflow/logs
         - ./fantaquoggio/data:/data
@@ -316,30 +218,20 @@
         resources:
           limits:
             memory: 3g
-      labels:
-        - "wud.link.changelog=https://github.com/chquaggio/FantaQuoggio/releases"
-      networks:
-        - qnet
-        - fantaquoggio
-      restart: unless-stopped
 
-# 768m: it parses every DAG file at once and peaked at 459 MiB against the local
-# stack's 512m during a dbt_build. Each healthcheck starts a whole airflow CLI
-# process, hence the 30s interval.
 - name: Configure FantaQuoggio Airflow DAG processor
   set_fact:
     fantaquoggio_airflow_dag_processor_service:
+      <<: *airflow
       name: fantaquoggio-airflow-dag-processor
-      image: "ghcr.io/chquaggio/fantaquoggio-airflow:v{{ fantaquoggio_version }}"
       container_name: fantaquoggio-airflow-dag-processor
       command: dag-processor
-      user: "{{ puid }}:0"
+      environment: *airflow_env
+      volumes:
+        - ./fantaquoggio/airflow/logs:/opt/airflow/logs
       depends_on:
         fantaquoggio-airflow-init:
           condition: service_completed_successfully
-      environment: "{{ fantaquoggio_airflow_env }}"
-      volumes:
-        - ./fantaquoggio/airflow/logs:/opt/airflow/logs
       healthcheck:
         test: ["CMD-SHELL", 'airflow jobs check --job-type DagProcessorJob --hostname "$${HOSTNAME}"']
         interval: 30s
@@ -350,9 +242,3 @@
         resources:
           limits:
             memory: 768m
-      labels:
-        - "wud.link.changelog=https://github.com/chquaggio/FantaQuoggio/releases"
-      networks:
-        - qnet
-        - fantaquoggio
-      restart: unless-stopped

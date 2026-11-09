@@ -1,3 +1,16 @@
+## [2026-11-09 09:30] Push Summary
+
+### Conversation Context
+FantaQuoggio v0.17.0 reduces its database to four roles: `fq_owner` (migrations, ingestion, dbt and the model batch), `fq_api`, `fq_desktop` and `airflow`. The task follows. `fantaquoggio-db-init` creates the four roles, and every Airflow container connects as `fq_owner` through one `FQ_DATABASE_URL`. The vault needs no new secret: `fq_owner` reads `FQ_DB_PASSWORD_MIGRATE` and `fq_desktop` reads `FQ_DB_PASSWORD_SCOUT`, because the cut-over renames those two roles and keeps their passwords. Settings with one value on every host now live in the images as `ENV` or as constants in the app: Airflow's executor and auth settings, the data directory, dbt's profile, the Season ids, the transfer windows, the request budget, the SMTP port. The task keeps only secrets and this host's addresses. The four Airflow services share one YAML anchor, so each declares only its command, healthcheck, ports, volumes and memory. The task drops its comments (Christian's rule for this repo since 2026-10-29) and goes from 358 to 244 lines. The playbook runs only after the cut-over script has committed on quoggioserver: run earlier, the new db-init creates empty roles and its migration fails on the old revision.
+
+### Commits
+1. `feat(containers): FantaQuoggio v0.17.0, four database roles`
+   - `group_vars/all/services.yml`: `fantaquoggio_version` 0.17.0, passwords by role, the constants removed
+   - `roles/containers/tasks/fantaquoggio.yml`: four roles, the reduced environment, one anchor for the Airflow services
+   - `CHANGELOG.md`: this entry
+
+---
+
 ## [2026-10-29 11:21] Push Summary
 
 ### Conversation Context
