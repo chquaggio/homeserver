@@ -85,9 +85,6 @@
         - "FQ_BOOTSTRAP_DSN=postgresql+psycopg://postgres:{{ fantaquoggio_postgres_password }}@fantaquoggio-postgres:5432/postgres"
         - "FQ_DATABASE_URL=postgresql+psycopg://fq_owner:{{ fantaquoggio_db_password_owner }}@fantaquoggio-postgres:5432/fantaquoggio"
         - "FQ_ROLE_PASSWORD_OWNER={{ fantaquoggio_db_password_owner }}"
-        - "FQ_ROLE_PASSWORD_API={{ fantaquoggio_db_password_api }}"
-        - "FQ_ROLE_PASSWORD_DESKTOP={{ fantaquoggio_db_password_desktop }}"
-        - "FQ_ROLE_PASSWORD_AIRFLOW={{ fantaquoggio_db_password_airflow }}"
       networks:
         - fantaquoggio
       restart: "no"
@@ -103,7 +100,7 @@
           condition: service_completed_successfully
       environment:
         - "TZ={{ tz }}"
-        - "FQ_DATABASE_URL=postgresql+psycopg://fq_api:{{ fantaquoggio_db_password_api }}@fantaquoggio-postgres:5432/fantaquoggio"
+        - "FQ_DATABASE_URL=postgresql+psycopg://fq_owner:{{ fantaquoggio_db_password_owner }}@fantaquoggio-postgres:5432/fantaquoggio"
         - "FQ_SECRET_KEY={{ fantaquoggio_secret_key }}"
         - "FQ_PUBLIC_URL={{ fantaquoggio_url }}"
         - "FQ_SMTP_HOST={{ fantaquoggio_smtp_host }}"
@@ -132,7 +129,7 @@
       - AIRFLOW__CORE__EXECUTION_API_SERVER_URL=http://fantaquoggio-airflow-apiserver:8080/execution/
       - "AIRFLOW__API__BASE_URL=http://{{ tailscale_ip }}:8420"
       - "AIRFLOW__API_AUTH__JWT_SECRET={{ fantaquoggio_airflow_jwt_secret }}"
-      - "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:{{ fantaquoggio_db_password_airflow }}@fantaquoggio-postgres:5432/airflow"
+      - "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://fq_owner:{{ fantaquoggio_db_password_owner }}@fantaquoggio-postgres:5432/airflow"
       - "FQ_DATABASE_URL=postgresql+psycopg://fq_owner:{{ fantaquoggio_db_password_owner }}@fantaquoggio-postgres:5432/fantaquoggio"
       - "FQ_DBT_PASSWORD={{ fantaquoggio_db_password_owner }}"
       - "FQ_RAPIDAPI_KEY={{ fantaquoggio_rapidapi_key }}"

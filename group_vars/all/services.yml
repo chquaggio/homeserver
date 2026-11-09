@@ -90,13 +90,10 @@ karuta_ping_role_id: 1526876875606196264
 
 # --- FantaQuoggio ---
 # Pinned release: a deploy is a bump here, WUD notifies the next vX.Y.Z
-fantaquoggio_version: "0.17.0"
+fantaquoggio_version: "0.18.0"
 fantaquoggio_url: "https://app.fantaquoggio.bid"
 fantaquoggio_postgres_password: "{{ FQ_POSTGRES_PASSWORD }}"
 fantaquoggio_db_password_owner: "{{ FQ_DB_PASSWORD_OWNER }}"
-fantaquoggio_db_password_api: "{{ FQ_DB_PASSWORD_API }}"
-fantaquoggio_db_password_desktop: "{{ FQ_DB_PASSWORD_DESKTOP }}"
-fantaquoggio_db_password_airflow: "{{ FQ_DB_PASSWORD_AIRFLOW }}"
 fantaquoggio_secret_key: "{{ FQ_SECRET_KEY }}"
 fantaquoggio_rapidapi_key: "{{ FQ_RAPIDAPI_KEY }}"
 fantaquoggio_airflow_jwt_secret: "{{ FQ_AIRFLOW_JWT_SECRET }}"

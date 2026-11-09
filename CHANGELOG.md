@@ -1,3 +1,16 @@
+## [2026-11-09 14:31] Push Summary
+
+### Conversation Context
+FantaQuoggio v0.18.0 keeps one database role, `fq_owner`, which owns the `fantaquoggio` and `airflow` databases. The other three roles added vault keys and grants without separating anything: every process holding a password runs on this host with the same trust. The app, db-init and Airflow's metadata connection now use `FQ_DB_PASSWORD_OWNER`. The cut-over script already ran on quoggioserver, so this playbook run starts the new version on a one-role database. The vault keys `FQ_DB_PASSWORD_API`, `FQ_DB_PASSWORD_DESKTOP` and `FQ_DB_PASSWORD_AIRFLOW` are no longer read; they stay in the vault until giornata 12 runs on v0.18.0, because the rollback needs them.
+
+### Commits
+1. `feat(containers): FantaQuoggio v0.18.0, one database role`
+   - `group_vars/all/services.yml`: `fantaquoggio_version` 0.18.0, the three role passwords removed
+   - `roles/containers/tasks/fantaquoggio.yml`: app, db-init and Airflow connect as `fq_owner`
+   - `CHANGELOG.md`: this entry
+
+---
+
 ## [2026-11-09 10:15] Push Summary
 
 ### Conversation Context
