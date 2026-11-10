@@ -1,6 +1,6 @@
 ---
 - name: Configure homepage service
-  set_fact:
+  ansible.builtin.set_fact:
     homepage_service:
       name: homepage
       image: ghcr.io/gethomepage/homepage:v2.7.0
@@ -11,7 +11,7 @@
         - ./homepage/config:/app/config
         - ./homepage/images:/app/public/images
       environment:
-        - HOMEPAGE_ALLOWED_HOSTS=quoggioserver:3000,homepage.fantaquoggio.bid
+        - HOMEPAGE_ALLOWED_HOSTS={{ inventory_hostname }}:3000,homepage.{{ public_domain }}
       labels:
         - "wud.link.changelog=https://github.com/gethomepage/homepage/releases"
       networks:

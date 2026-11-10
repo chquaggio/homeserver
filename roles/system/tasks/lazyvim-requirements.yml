@@ -42,7 +42,7 @@
       register: ripgrep_check
       changed_when: false
 
-    - name: link fd
+    - name: Link fd
       shell: |
         ln -s $(which fdfind) ~/.local/bin/fd
     - name: Check for fd

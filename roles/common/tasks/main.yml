@@ -1,0 +1,8 @@
+---
+- ansible.builtin.include_tasks: essential.yml
+- ansible.builtin.include_tasks: node.yml
+- ansible.builtin.include_tasks: dotfiles.yml
+- ansible.builtin.include_tasks: brew.yml
+# Static import so the tag reaches the tasks: ansible-playbook site.yml -t firewall
+- ansible.builtin.import_tasks: network.yml
+  tags: [firewall]

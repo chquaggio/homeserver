@@ -7,13 +7,9 @@ exclude_paths:
   - scripts/
 
 skip_list:
-  - yaml[line-length]
-  - name[casing]
-  # Pre-existing repo conventions, deliberately not enforced (2026-06 lint pass):
-  - var-naming[no-role-prefix]   # `<svc>_service` facts & role vars intentionally unprefixed
-  - name[missing]                # include_tasks and some tasks left unnamed
-  - name[template]
-  - key-order[task]
-  - command-instead-of-module    # intentional curl/shell usage in bootstrap tasks
+  - var-naming[no-role-prefix]   # `<svc>_service` facts and role vars are unprefixed on purpose
+  - name[missing]                # import_tasks / include_tasks lines carry no name
+  # Workstation tooling (Homebrew, nvm, Neovim) installs through curl and shell
+  - command-instead-of-module
   - command-instead-of-shell
-  - partial-become[task]
+  - key-order[task]

@@ -1,6 +1,6 @@
 ---
 - name: Configure Vaultwarden service
-  set_fact:
+  ansible.builtin.set_fact:
     vaultwarden_service:
       name: vaultwarden
       image: vaultwarden/server:1.37.2-alpine
@@ -32,7 +32,7 @@
 # reasoning as the Postgres dump sidecars. The archive is not GPG-encrypted: vault
 # items are already end-to-end encrypted under the user's master key.
 - name: Configure Vaultwarden backup sidecar
-  set_fact:
+  ansible.builtin.set_fact:
     vaultwarden_backup_service:
       name: vaultwarden-backup
       image: bruceforce/vaultwarden-backup:2.1.6

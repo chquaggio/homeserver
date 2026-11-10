@@ -1,3 +1,29 @@
+## [2026-11-10 17:15] Push Summary
+
+### Conversation Context
+A review of the server, the repository and the S3 backup led to this cleanup. The backup plan in the Zerobyte UI copies ten configuration directories once a week, while the database dumps, the Vaultwarden snapshots and Immich stay on the server's disk; Christian keeps the dumps and Immich out so that the bucket costs nothing, and the README now describes that state where it used to describe daily dumps shipped to S3. The README was rewritten without badges, emoji and repeated sections, in the order what the repository is, how to use it, services, networking, storage, backups, internals, and it gained a restore procedure and a rebuild checklist.
+
+The roles moved towards Ansible's conventions. `common` lives under `roles/` like the others. `site.yml` no longer upgrades packages or reboots the server: both moved to `upgrade.yml`, which is run on purpose. The dotfiles restore runs only when the clone brings new commits. The `docker` role adds the key and the apt repository through modules, so a second run reports no change. Every task uses the full module name, which let the `.ansible-lint` skip list drop four rules. Actualtap, Docling and OpenWebUI, disabled for months, left the repository, and `jellyseerr.yml` took the name of the container it defines, `seerr`.
+
+For variables, the Tailscale address and the LAN subnet moved into the vault as `TAILSCALE_IP` and `LAN_SUBNET`, as `CLAUDE.md` requires for a public repository (the old values remain in the history). Tasks and templates read the server name from `inventory_hostname` and the published domain from the new `public_domain`. `scripts/check_vault_keys.py` fails on a referenced key that the vault lacks and lists the unreferenced ones; eight are listed today and stay, three of them for a possible FantaQuoggio rollback. FantaQuoggio v1.0.0 was already running on the server and is recorded here.
+
+### Commits
+1. `feat(containers): FantaQuoggio v1.0.0`
+   - `group_vars/all/services.yml`: `fantaquoggio_version` 1.0.0
+2. `refactor: roles under roles/, upgrade playbook, unused services removed, README rewritten`
+   - `common/` → `roles/common/`; `tasks/user.yml` and `roles/containers/meta/main.yml` deleted
+   - `upgrade.yml`: apt upgrade and reboot, taken out of `roles/common/tasks/essential.yml`
+   - `roles/common/tasks/dotfiles.yml`: restore only after a changed clone
+   - `roles/docker/tasks/main.yml`: `get_url` and `apt_repository`, no hello-world test
+   - `roles/containers/tasks/`: `actualtap.yml`, `docling.yml`, `openwebui.yml` deleted; `jellyseerr.yml` → `seerr.yml`; full module names; `zerobyte.yml` without the `open-webui` mount
+   - `roles/containers/templates/services.yaml.j2`: dead tiles removed, hostname and domain from variables
+   - `group_vars/all/`: `public_domain`, `lan_subnet`, `tailscale_ip` from the vault; `password`, `ssh_public_key`, `shell` removed
+   - `scripts/check_vault_keys.py`, `scripts/README.md`, `.ansible-lint`, `.gitignore`, `requirements.yml`
+   - `README.md`, `docs/architecture.drawio`, `CLAUDE.md`, `.claude/skills/add-service/SKILL.md`
+   - `CHANGELOG.md`: this entry
+
+---
+
 ## [2026-11-09 14:31] Push Summary
 
 ### Conversation Context

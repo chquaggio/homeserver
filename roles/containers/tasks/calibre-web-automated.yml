@@ -2,7 +2,7 @@
 # Ebook library served over OPDS to KOReader on the Kobo. LAN/Tailscale only —
 # deliberately no Cloudflare tunnel route, since the Kobo syncs at home.
 - name: Configure Calibre-Web Automated service
-  set_fact:
+  ansible.builtin.set_fact:
     calibre_web_automated_service:
       name: calibre-web-automated
       image: crocodilestick/calibre-web-automated:v4.0.6

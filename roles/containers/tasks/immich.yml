@@ -3,7 +3,7 @@
 # and a Redis-compatible cache. Official compose reference:
 # https://github.com/immich-app/immich/releases/latest/download/docker-compose.yml
 - name: Configure Immich server service
-  set_fact:
+  ansible.builtin.set_fact:
     immich_service:
       name: immich-server
       image: ghcr.io/immich-app/immich-server:v3.0.1
@@ -31,7 +31,7 @@
       restart: unless-stopped
 
 - name: Configure Immich machine learning service
-  set_fact:
+  ansible.builtin.set_fact:
     immich_ml_service:
       name: immich-machine-learning
       image: ghcr.io/immich-app/immich-machine-learning:v3.0.1
@@ -52,7 +52,7 @@
       restart: unless-stopped
 
 - name: Configure Immich redis service
-  set_fact:
+  ansible.builtin.set_fact:
     immich_redis_service:
       name: immich-redis
       image: docker.io/valkey/valkey:9.0.4
@@ -64,7 +64,7 @@
       restart: unless-stopped
 
 - name: Configure Immich postgres service
-  set_fact:
+  ansible.builtin.set_fact:
     immich_postgres_service:
       name: immich-postgres
       image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
@@ -89,7 +89,7 @@
 # image tag used above: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
 # The backup image major version (14) is pinned to match that server.
 - name: Configure Immich Postgres backup sidecar
-  set_fact:
+  ansible.builtin.set_fact:
     immich_db_backup_service:
       name: immich-db-backup
       image: prodrigestivill/postgres-backup-local:14

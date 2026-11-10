@@ -1,8 +1,6 @@
 ---
 # Host / user
 username: quoghs
-password: "{{ VAULT_PASSWORD }}"
-ssh_public_key: "{{ SSH_PUBLIC_KEY }}"
 
 # Container runtime defaults
 tz: Europe/Rome
@@ -26,6 +24,10 @@ ghcr_username: "chquaggio"
 ghcr_token: "{{ GH_TOKEN }}"
 
 # Networking
+# Apex of the hostnames the Cloudflare tunnel publishes
+public_domain: fantaquoggio.bid
 cf_token: "{{ CF_TOKEN }}"
 # Services published on the tailnet only bind their ports to this address
-tailscale_ip: "100.96.94.38"
+tailscale_ip: "{{ TAILSCALE_IP }}"
+# Allowed through UFW together with the tailnet
+lan_subnet: "{{ LAN_SUBNET }}"

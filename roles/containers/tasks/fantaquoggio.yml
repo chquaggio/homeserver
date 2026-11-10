@@ -12,7 +12,7 @@
     - data/models/mister
 
 - name: Configure FantaQuoggio Postgres
-  set_fact:
+  ansible.builtin.set_fact:
     fantaquoggio_postgres_service:
       name: fantaquoggio-postgres
       image: postgres:17
@@ -43,7 +43,7 @@
       restart: unless-stopped
 
 - name: Configure FantaQuoggio Postgres backup sidecar
-  set_fact:
+  ansible.builtin.set_fact:
     fantaquoggio_db_backup_service:
       name: fantaquoggio-db-backup
       image: prodrigestivill/postgres-backup-local:17
@@ -71,7 +71,7 @@
       restart: unless-stopped
 
 - name: Configure FantaQuoggio database bootstrap
-  set_fact:
+  ansible.builtin.set_fact:
     fantaquoggio_db_init_service:
       name: fantaquoggio-db-init
       image: "ghcr.io/chquaggio/fantaquoggio:v{{ fantaquoggio_version }}"
@@ -90,7 +90,7 @@
       restart: "no"
 
 - name: Configure FantaQuoggio app
-  set_fact:
+  ansible.builtin.set_fact:
     fantaquoggio_service:
       name: fantaquoggio
       image: "ghcr.io/chquaggio/fantaquoggio:v{{ fantaquoggio_version }}"
@@ -122,7 +122,7 @@
       restart: unless-stopped
 
 - name: Define the FantaQuoggio Airflow base
-  set_fact:
+  ansible.builtin.set_fact:
     fantaquoggio_airflow_env: &airflow_env
       - "TZ={{ tz }}"
       - "AIRFLOW__CORE__FERNET_KEY={{ fantaquoggio_airflow_fernet_key }}"
@@ -146,7 +146,7 @@
       restart: unless-stopped
 
 - name: Configure FantaQuoggio Airflow metadata migrations
-  set_fact:
+  ansible.builtin.set_fact:
     fantaquoggio_airflow_init_service:
       name: fantaquoggio-airflow-init
       container_name: fantaquoggio-airflow-init
@@ -164,7 +164,7 @@
       restart: "no"
 
 - name: Configure FantaQuoggio Airflow API server
-  set_fact:
+  ansible.builtin.set_fact:
     fantaquoggio_airflow_apiserver_service:
       <<: *airflow
       name: fantaquoggio-airflow-apiserver
@@ -190,7 +190,7 @@
             memory: 768m
 
 - name: Configure FantaQuoggio Airflow scheduler
-  set_fact:
+  ansible.builtin.set_fact:
     fantaquoggio_airflow_scheduler_service:
       <<: *airflow
       name: fantaquoggio-airflow-scheduler
@@ -217,7 +217,7 @@
             memory: 3g
 
 - name: Configure FantaQuoggio Airflow DAG processor
-  set_fact:
+  ansible.builtin.set_fact:
     fantaquoggio_airflow_dag_processor_service:
       <<: *airflow
       name: fantaquoggio-airflow-dag-processor

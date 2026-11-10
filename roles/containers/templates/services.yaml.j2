@@ -2,7 +2,7 @@
 - Utilities:
     - Actual:
         icon: actual-budget.png
-        href: https://actual.fantaquoggio.bid
+        href: https://actual.{{ public_domain }}
         description: Gestisce i sordi
         server: server-docker
         container: actualbudget
@@ -20,7 +20,7 @@
 
     - Trilium:
         icon: trilium.png
-        href: https://trilium.fantaquoggio.bid
+        href: https://trilium.{{ public_domain }}
         description: Note taking app
         server: server-docker
         container: trilium
@@ -33,7 +33,7 @@
 
     - zerobyte:
         icon: zerobyte.png
-        href: http://quoggioserver:4096
+        href: http://{{ inventory_hostname }}:4096
         description: backup
         server: server-docker
         container: zerobyte
@@ -42,7 +42,7 @@
 
     - beszel:
         icon: beszel.png
-        href: http://quoggioserver:8090
+        href: http://{{ inventory_hostname }}:8090
         description: monitoring
         server: server-docker
         container: beszel
@@ -58,7 +58,7 @@
 
     - WUD:
         icon: sh-wud.png
-        href: http://quoggioserver:3004
+        href: http://{{ inventory_hostname }}:3004
         description: Aggiornamenti immagini disponibili
         server: server-docker
         container: wud
@@ -72,7 +72,7 @@
 
     - qBitTorrent:
         icon: qbittorrent.png
-        href: http://quoggioserver:8585
+        href: http://{{ inventory_hostname }}:8585
         description: Attento ai pornazzi
         server: server-docker
         container: qbittorrent
@@ -96,7 +96,7 @@
 
     - Spesatracker:
         icon: shopify.png
-        href: http://quoggioserver:8400
+        href: http://{{ inventory_hostname }}:8400
         description: Mangiare costa caro
         server: server-docker
         container: spesatracker
@@ -105,7 +105,7 @@
 
     - karutuogg:
         icon: mdi-cards
-        href: https://karutuogg.fantaquoggio.bid
+        href: https://karutuogg.{{ public_domain }}
         description: Il gioco di carte del tunnel
         server: server-docker
         container: karutuogg-web
@@ -132,35 +132,18 @@
 
     - Mealie:
         icon: mealie.png
-        href: http://quoggioserver:9925
+        href: http://{{ inventory_hostname }}:9925
         description: Pasta al salame?
         server: server-docker
         container: mealie
         statusStyle: "dot"
         showStats: true
 
-    # - Docling:
-    #     icon: sh-docling.png
-    #     href: http://quoggioserver:5001/ui
-    #     description: convertitore documenti
-    #     server: server-docker
-    #     container: docling
-    #     statusStyle: "dot"
-    #     showStats: true
-
-    # - Actualtap:
-    #     icon: actual-budget.png
-    #     description: Actual integration with contactless payments
-    #     server: server-docker
-    #     container: actualtap-py
-    #     statusStyle: "dot"
-    #     showStats: true
-
 
 - Arr:
     - Sonarr:
         icon: sonarr.png
-        href: http://quoggioserver:8989
+        href: http://{{ inventory_hostname }}:8989
         description: Scarica serie tv
         server: server-docker
         container: sonarr
@@ -174,7 +157,7 @@
 
     - Radarr:
         icon: radarr.png
-        href: http://quoggioserver:7878
+        href: http://{{ inventory_hostname }}:7878
         description: Scarica film
         server: server-docker
         container: radarr
@@ -188,7 +171,7 @@
 
     - Bazarr:
         icon: bazarr.png
-        href: http://quoggioserver:6767
+        href: http://{{ inventory_hostname }}:6767
         description: THEBOAZAAARRR
         server: server-docker
         container: bazarr
@@ -201,7 +184,7 @@
 
     - Jellyseerr:
         icon: jellyseerr.png
-        href: http://quoggioserver:5055
+        href: http://{{ inventory_hostname }}:5055
         description: Chiedi e ti sarà dato
         server: server-docker
         container: seerr
@@ -214,7 +197,7 @@
 
     - Prowlarr:
         icon: prowlarr.png
-        href: http://quoggioserver:9696
+        href: http://{{ inventory_hostname }}:9696
         description: Lo smistatore
         server: server-docker
         container: prowlarr
@@ -235,7 +218,7 @@
 
     - VibraVid:
         icon: mdi-movie-open
-        href: http://quoggioserver:8001
+        href: http://{{ inventory_hostname }}:8001
         description: Scarica dallo streaming per Sonarr/Radarr
         server: server-docker
         container: vibravid
@@ -245,7 +228,7 @@
 - Media:
     - Jellyfin:
         icon: jellyfin.png
-        href: https://jellyfin.fantaquoggio.bid
+        href: https://jellyfin.{{ public_domain }}
         description: Pezzotto
         server: server-docker
         container: jellyfin
@@ -264,7 +247,7 @@
 
     - Calibre-Web Automated:
         icon: calibre-web.png
-        href: http://quoggioserver:8083
+        href: http://{{ inventory_hostname }}:8083
         description: Ebook e OPDS per il Kobo
         server: server-docker
         container: calibre-web-automated
@@ -273,7 +256,7 @@
 
     - Immich:
         icon: immich.png
-        href: http://quoggioserver:2283
+        href: http://{{ inventory_hostname }}:2283
         description: Foto e ricordi
         server: server-docker
         container: immich-server
@@ -290,7 +273,6 @@
 - AI:
     - MCP Server:
         icon: sh-investbrain
-        # href: https://chat.fantaquoggio.bid
         description: Magi
         server: server-docker
         container: mymcp

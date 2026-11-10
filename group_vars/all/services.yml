@@ -62,7 +62,7 @@ trilium_url: "{{ TRILIUM_BASE_URL_PROD }}"
 # Vaultwarden
 vaultwarden_admin_token: "{{ VAULTWARDEN_ADMIN_TOKEN }}"
 # Public origin served through the Cloudflare tunnel
-vaultwarden_url: "https://vaultwarden.fantaquoggio.bid"
+vaultwarden_url: "https://vaultwarden.{{ public_domain }}"
 
 # VibraVid
 vibravid_secret_key: "{{ VIBRAVID_SECRET_KEY }}"
@@ -91,7 +91,7 @@ karuta_ping_role_id: 1526876875606196264
 # --- FantaQuoggio ---
 # Pinned release: a deploy is a bump here, WUD notifies the next vX.Y.Z
 fantaquoggio_version: "1.0.0"
-fantaquoggio_url: "https://app.fantaquoggio.bid"
+fantaquoggio_url: "https://app.{{ public_domain }}"
 fantaquoggio_postgres_password: "{{ FQ_POSTGRES_PASSWORD }}"
 fantaquoggio_db_password_owner: "{{ FQ_DB_PASSWORD_OWNER }}"
 fantaquoggio_secret_key: "{{ FQ_SECRET_KEY }}"
@@ -103,4 +103,4 @@ fantaquoggio_airflow_ui_password: "{{ FQ_AIRFLOW_UI_PASSWORD }}"
 fantaquoggio_smtp_host: "{{ FQ_SMTP_HOST | default('') }}"
 fantaquoggio_smtp_user: "{{ FQ_SMTP_USER | default('') }}"
 fantaquoggio_smtp_password: "{{ FQ_SMTP_PASSWORD | default('') }}"
-fantaquoggio_emails_from: "noreply@fantaquoggio.bid"
+fantaquoggio_emails_from: "noreply@{{ public_domain }}"

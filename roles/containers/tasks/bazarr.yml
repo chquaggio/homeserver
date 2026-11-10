@@ -1,6 +1,6 @@
 ---
 - name: Configure Bazarr service
-  set_fact:
+  ansible.builtin.set_fact:
     bazarr_service:
       name: bazarr
       image: lscr.io/linuxserver/bazarr:1.5.6

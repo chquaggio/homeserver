@@ -1,6 +1,6 @@
 ---
 - name: Configure qBittorrent service
-  set_fact:
+  ansible.builtin.set_fact:
     qbittorrent_service:
       name: qbittorrent
       image: lscr.io/linuxserver/qbittorrent:5.2.2

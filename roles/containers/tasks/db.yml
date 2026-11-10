@@ -3,12 +3,12 @@
 # further ones are created by the initdb script; all of them are dumped by the
 # sidecar.
 - name: List the shared Postgres databases
-  set_fact:
+  ansible.builtin.set_fact:
     shared_postgres_databases:
       - "{{ db_name }}"
 
 - name: Configure db
-  set_fact:
+  ansible.builtin.set_fact:
     db_service:
       name: postgres
       image: postgres:17
@@ -37,7 +37,7 @@
 # DB (can capture a torn state); these dumps are restorable. Image major version is
 # pinned to match the server (postgres:17).
 - name: Configure shared Postgres backup sidecar
-  set_fact:
+  ansible.builtin.set_fact:
     db_backup_service:
       name: db-backup
       image: prodrigestivill/postgres-backup-local:17

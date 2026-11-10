@@ -1,5 +1,5 @@
 - name: Ensure Homebrew dependencies are installed
-  apt:
+  ansible.builtin.apt:
     name:
       - build-essential
       - curl
@@ -8,13 +8,13 @@
   become: true
 
 - name: Check if Homebrew is installed
-  stat:
+  ansible.builtin.stat:
     path: "/home/linuxbrew/.linuxbrew/bin/brew"
   register: brew_stat
 
 - block:
     - name: Create Homebrew directory
-      file:
+      ansible.builtin.file:
         path: "/home/linuxbrew/.linuxbrew"
         state: directory
         owner: "{{ ansible_env.USER }}"
@@ -23,7 +23,7 @@
       become: true
 
     - name: Install Homebrew
-      shell: |
+      ansible.builtin.shell: |
         curl -fsSL https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C /home/linuxbrew/.linuxbrew
   when: not brew_stat.stat.exists
   environment:

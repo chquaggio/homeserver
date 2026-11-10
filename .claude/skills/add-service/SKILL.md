@@ -51,7 +51,7 @@ Create `roles/containers/tasks/<name>.yml`. Standard skeleton:
 ```yaml
 ---
 - name: Configure <Name> service
-  set_fact:
+  ansible.builtin.set_fact:
     <name>_service:
       name: <name>
       image: <image>
@@ -121,7 +121,7 @@ Append a tile to `roles/containers/templates/services.yaml.j2` under the chosen 
 ```yaml
     - <Name>:
         icon: <name>.png
-        href: http://quoggioserver:<port>
+        href: http://{{ inventory_hostname }}:<port>
         description: <short description>
         server: server-docker
         container: <name>

@@ -10,3 +10,4 @@ These are helpers that live outside the Ansible playbook. Most of them bootstrap
 | `upgrade_nvim.sh` | Downloads the latest Neovim release tarball into `/opt/nvim`, which is faster than waiting for the role to run. | **Partially**: `roles/system/tasks/neovim.yml` handles installs, and the script is a quick manual upgrade path. |
 | `check_docs.py` | Fails if a compose service or network is missing from `README.md` and `docs/architecture.drawio`. CI runs it, and CLAUDE.md asks for it before every commit. | Not applicable. |
 | `add_transactions.py` | Imports a semicolon-delimited CSV from an Italian bank into the Actual Budget server, and is run on demand. | No, because it is a runtime tool that changes no server configuration. |
+| `check_vault_keys.py` | Fails if `group_vars` references a vault key that `vault.yml` lacks, and lists the vault keys that nothing references. It decrypts the vault, so it runs on the control machine and not in CI. | Not applicable. |

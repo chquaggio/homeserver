@@ -1,0 +1,9 @@
+---
+# Package upgrades and the reboot they may need live in upgrade.yml, so that a
+# deploy never restarts the server.
+- name: Install base packages
+  ansible.builtin.apt:
+    name: "{{ extra_packages + ['python3-pip', 'python3-docker'] }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600

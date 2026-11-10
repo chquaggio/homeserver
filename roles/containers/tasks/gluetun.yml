@@ -3,7 +3,7 @@
 # network namespace; see docs/vpn.md. qBittorrent's WebUI port and its qnet
 # alias live here because a container with network_mode has neither.
 - name: Configure Gluetun service  # noqa: jinja[spacing] (gluetun placeholders, kept literal by !unsafe)
-  set_fact:
+  ansible.builtin.set_fact:
     gluetun_service:
       name: gluetun
       image: qmcgaw/gluetun:v3.41.3

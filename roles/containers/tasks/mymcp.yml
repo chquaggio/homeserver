@@ -1,6 +1,6 @@
 ---
 - name: Configure mymcp service
-  set_fact:
+  ansible.builtin.set_fact:
     mymcp_service:
       name: mymcp
       image: ghcr.io/chquaggio/mymcp:latest

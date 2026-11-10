@@ -21,7 +21,7 @@
 # Dedicated Postgres, like Immich: its dumps and restores stay independent of
 # the shared instance.
 - name: Configure karutuogg Postgres
-  set_fact:
+  ansible.builtin.set_fact:
     karutuogg_postgres_service:
       name: karutuogg-postgres
       image: postgres:17
@@ -39,7 +39,7 @@
         - karutuogg
 
 - name: Configure karutuogg Postgres backup sidecar
-  set_fact:
+  ansible.builtin.set_fact:
     karutuogg_db_backup_service:
       name: karutuogg-db-backup
       image: prodrigestivill/postgres-backup-local:17
@@ -68,7 +68,7 @@
 # Web owns migrations (single writer, idempotent); the bot just retries via
 # restart: unless-stopped if it wins the startup race before the schema exists.
 - name: Configure karutuogg web
-  set_fact:
+  ansible.builtin.set_fact:
     karutuogg_web_service:
       name: karutuogg-web
       image: ghcr.io/chquaggio/karutuogg:latest
@@ -82,7 +82,7 @@
         - "DISCORD_CLIENT_ID={{ karuta_discord_client_id }}"
         - "DISCORD_CLIENT_SECRET={{ karuta_discord_client_secret }}"
         - "KARUTA_SESSION_SECRET={{ karuta_session_secret }}"
-        - KARUTA_BASE_URL=https://karutuogg.fantaquoggio.bid
+        - KARUTA_BASE_URL=https://karutuogg.{{ public_domain }}
       ports:
         - 8410:8000
       depends_on:
@@ -98,7 +98,7 @@
       restart: unless-stopped
 
 - name: Configure karutuogg bot
-  set_fact:
+  ansible.builtin.set_fact:
     karutuogg_bot_service:
       name: karutuogg-bot
       image: ghcr.io/chquaggio/karutuogg:latest
@@ -109,7 +109,7 @@
         - "KARUTA_DATABASE_URL=postgresql+asyncpg://karuta:{{ karuta_db_password }}@karutuogg-postgres:5432/karuta"
         - KARUTA_CONFIG=/config/config.yaml
         - "DISCORD_TOKEN={{ karuta_discord_token }}"
-        - KARUTA_BASE_URL=https://karutuogg.fantaquoggio.bid
+        - KARUTA_BASE_URL=https://karutuogg.{{ public_domain }}
       depends_on:
         - karutuogg-web
         - karutuogg-postgres

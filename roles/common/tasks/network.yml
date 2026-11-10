@@ -1,5 +1,5 @@
 - name: Ensure UFW is installed
-  apt:
+  ansible.builtin.apt:
     name: ufw
     state: present
 
@@ -15,7 +15,7 @@
 - name: Allow all traffic from the LAN
   community.general.ufw:
     rule: allow
-    src: 192.168.1.0/24
+    src: "{{ lan_subnet }}"
 
 - name: Remove world-open rules
   community.general.ufw:

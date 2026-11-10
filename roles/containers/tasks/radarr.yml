@@ -1,6 +1,6 @@
 ---
 - name: Configure Radarr service
-  set_fact:
+  ansible.builtin.set_fact:
     radarr_service:
       name: radarr
       image: lscr.io/linuxserver/radarr:6.2.1

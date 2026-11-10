@@ -27,5 +27,5 @@ on whoever commits.
 
 ## Verification before claiming done
 
-`yamllint . && ansible-lint && ansible-playbook --syntax-check site.yml && python3 scripts/check_docs.py`,
+`yamllint . && ansible-lint && ansible-playbook --syntax-check site.yml upgrade.yml && python3 scripts/check_docs.py && python3 scripts/check_vault_keys.py`,
 then `ansible-playbook site.yml -t containers --check --diff` against the server.

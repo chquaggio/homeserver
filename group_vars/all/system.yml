@@ -1,6 +1,4 @@
 ---
-shell: /usr/bin/zsh
-
 dotfiles_repo: https://github.com/chquaggio/dotfiles
 
 extra_packages:

@@ -1,0 +1,26 @@
+---
+- name: Chown the repo
+  ansible.builtin.file:
+    path: '/home/{{ username }}/dotfiles'
+    recurse: true
+    state: directory
+    owner: '{{ username }}'
+    group: '{{ username }}'
+
+- name: Clone the latest dotfiles repo
+  become: true
+  become_user: '{{ username }}'
+  ansible.builtin.git:
+    repo: '{{ dotfiles_repo }}'
+    dest: '/home/{{ username }}/dotfiles'
+    recursive: false
+    force: true
+  register: dotfiles_clone
+
+- name: Restore config, tmux, zsh
+  become: true
+  become_user: '{{ username }}'
+  ansible.builtin.command:
+    cmd: make restore DEVENV=personal
+    chdir: '/home/{{ username }}/dotfiles'
+  when: dotfiles_clone is changed

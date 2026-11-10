@@ -1,6 +1,6 @@
 ---
 - name: Configure trilium service
-  set_fact:
+  ansible.builtin.set_fact:
     trilium_service:
       name: trilium
       image: triliumnext/trilium:v0.104.0

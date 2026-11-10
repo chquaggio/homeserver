@@ -157,7 +157,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="e_compose_s3" value="Zerobyte → restic (config volumes + dumps, not media)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="compose" target="s3">
+        <mxCell id="e_compose_s3" value="Zerobyte → restic (app config volumes; not dumps, photos or media)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=16;strokeWidth=2;endArrow=classic;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="compose" target="s3">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="1880" y="2010"/>

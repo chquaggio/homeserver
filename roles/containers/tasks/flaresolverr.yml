@@ -1,6 +1,6 @@
 ---
 - name: Configure FlareSolverr service
-  set_fact:
+  ansible.builtin.set_fact:
     flaresolverr_service:
       name: flaresolverr
       image: ghcr.io/flaresolverr/flaresolverr:v3.5.0

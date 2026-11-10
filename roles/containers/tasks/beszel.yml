@@ -1,6 +1,6 @@
 ---
 - name: Configure Beszel service
-  set_fact:
+  ansible.builtin.set_fact:
     beszel_service:
       name: beszel
       image: henrygd/beszel:0.21.1
@@ -17,7 +17,7 @@
         - qnet
 
 - name: Configure Beszel-agent service
-  set_fact:
+  ansible.builtin.set_fact:
     beszel_agent_service:
       name: beszel-agent
       image: henrygd/beszel-agent:alpine

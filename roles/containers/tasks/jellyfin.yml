@@ -1,6 +1,6 @@
 ---
 - name: Configure jellyfin service
-  set_fact:
+  ansible.builtin.set_fact:
     jellyfin_service:
       name: jellyfin
       image: jellyfin/jellyfin:12.4

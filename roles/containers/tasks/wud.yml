@@ -3,7 +3,7 @@
 # (wud.link.changelog label on each service). Notify-only: no update trigger is
 # configured, so it never pulls or restarts containers.
 - name: Configure WUD (What's Up Docker — update dashboard + notifier)
-  set_fact:
+  ansible.builtin.set_fact:
     wud_service:
       name: wud
       image: getwud/wud:9.6.0

@@ -1,6 +1,6 @@
 ---
 - name: Configure mealie service
-  set_fact:
+  ansible.builtin.set_fact:
     mealie_service:
       name: mealie
       image: ghcr.io/mealie-recipes/mealie:v3.29.0
@@ -16,7 +16,7 @@
         - "PGID={{ pgid }}"
         - "TZ={{ tz }}"
         - ALLOW_SIGNUP=false
-        - BASE_URL=https://mealie.fantaquoggio.bid
+        - BASE_URL=https://mealie.{{ public_domain }}
       labels:
         - "wud.link.changelog=https://github.com/mealie-recipes/mealie/releases"
       networks:

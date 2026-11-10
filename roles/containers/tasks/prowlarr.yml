@@ -1,6 +1,6 @@
 ---
 - name: Configure Prowlarr service
-  set_fact:
+  ansible.builtin.set_fact:
     prowlarr_service:
       name: prowlarr
       image: lscr.io/linuxserver/prowlarr:2.4.0

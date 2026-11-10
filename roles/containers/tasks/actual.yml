@@ -1,6 +1,6 @@
 ---
 - name: Configure actual service
-  set_fact:
+  ansible.builtin.set_fact:
     actual_service:
       name: actualbudget
       image: docker.io/actualbudget/actual-server:26.10.0

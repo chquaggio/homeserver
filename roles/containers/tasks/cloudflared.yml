@@ -1,6 +1,6 @@
 ---
 - name: Configure Cloudflared service
-  set_fact:
+  ansible.builtin.set_fact:
     cloudflared_service:
       name: cloudflared
       image: cloudflare/cloudflared:2026.10.5
